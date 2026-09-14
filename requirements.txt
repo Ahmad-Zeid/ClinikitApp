@@ -1,0 +1,29 @@
+# ---- Part 1: Conversational / Agentic AI ----
+google-genai>=1.0          # Gemini SDK (structured output)
+python-dotenv>=1.0         # loads .env, keeps secrets out of the repo
+pydantic>=2.0              # the extraction schema / validation contract
+python-dateutil>=2.9       # relative date arithmetic ("next Tuesday")
+rich>=13.0                 # readable CLI output
+
+# ---- Part 2: Machine Learning ----
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5
+# NOTE: xgboost deliberately omitted. sklearn's HistGradientBoostingClassifier is the
+# same algorithm family, performs comparably here, and needs no OpenMP system library,
+# so `pip install -r requirements.txt` works on a clean machine with no extra steps.
+shap>=0.46                 # per-prediction explanations
+matplotlib>=3.9
+seaborn>=0.13
+joblib>=1.4                # model persistence
+
+# ---- Serving ----
+fastapi>=0.115
+uvicorn[standard]>=0.32
+
+# ---- Notebook ----
+jupyter>=1.1
+ipykernel>=6.29
+
+# ---- Tests ----
+pytest>=8.3
