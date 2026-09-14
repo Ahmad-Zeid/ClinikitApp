@@ -39,7 +39,19 @@ from .base import Extractor, ExtractorUnavailable
 PROMPT_VERSION = "v1"
 
 # Tried in order. The first that responds wins.
-DEFAULT_MODELS = ("gemini-3-flash-preview", "gemini-3.5-flash", "gemini-flash-latest")
+#
+# Order matters more than it looks. We originally listed the newest preview model first;
+# it was returning 503 every time, so every single message wasted about 12 seconds failing
+# through it before reaching a model that worked. The fallback chain did its job, but a
+# working system that takes 15 seconds per reply is not a working system.
+#
+# Stable first, newest last.
+DEFAULT_MODELS = ("gemini-3.5-flash", "gemini-3-flash-preview", "gemini-flash-latest")
+
+# Hard ceiling on one extraction, across every retry and every model. Without this, a bad
+# day at Google turns into a request that hangs for minutes. Better to fail quickly and
+# let the caller fall back to the keyword reader.
+REQUEST_BUDGET_SECONDS = 25.0
 
 # The free tier allows roughly 15 requests a minute, so we leave 4 seconds between calls.
 MIN_SECONDS_BETWEEN_CALLS = 4.0
@@ -176,9 +188,15 @@ class GeminiExtractor(Extractor):
         self.last_was_cached = False
         contents = self._build_contents(message, history)
 
+        deadline = time.monotonic() + REQUEST_BUDGET_SECONDS
         last_error: Exception | None = None
         for model in self._models:
             for attempt in range(MAX_RETRIES_PER_MODEL):
+                if time.monotonic() > deadline:
+                    raise ExtractorUnavailable(
+                        f"Gave up after {REQUEST_BUDGET_SECONDS}s. "
+                        f"Last error: {type(last_error).__name__}: {str(last_error)[:150]}"
+                    ) from last_error
                 try:
                     self._throttle()
                     started = time.monotonic()

@@ -1,19 +1,48 @@
-"""Interchangeable ways of reading a patient message."""
+"""
+Interchangeable ways of reading a patient message.
+
+Two kinds live here, and the difference matters:
+
+  READERS THAT TALK TO PATIENTS
+      groq, gemini, openrouter, and "auto" which tries them in that order.
+      These use a language model and can handle typos, Arabizi and vague messages.
+
+  A READER THAT NEVER TALKS TO PATIENTS
+      "rules" -- keyword matching. It exists only so the evaluation can answer
+      "did the language model actually earn its place?" by comparing against it.
+      It gives bad answers to ordinary messages, so it is never used as a stand-in
+      when a provider is down. See chain.py for what happens instead.
+"""
 
 from .base import Extractor, ExtractorUnavailable
 
-__all__ = ["Extractor", "ExtractorUnavailable", "get_extractor", "available_backends"]
+__all__ = [
+    "Extractor", "ExtractorUnavailable", "get_extractor",
+    "available_backends", "patient_facing_backends",
+]
+
+# Tried in this order by "auto". Groq first: 14,400 requests a day against Gemini's 1,500,
+# double the per-minute rate, and it runs on hardware built for speed.
+CHAIN_ORDER = ("groq", "gemini", "openrouter")
 
 
-def get_extractor(name: str = "rules") -> Extractor:
-    """
-    Build a backend by name.
+def get_extractor(name: str = "auto") -> Extractor:
+    name = (name or "auto").lower().strip()
 
-    Kept here rather than in base.py so that importing the interface never drags in the
-    Gemini SDK. Someone running the rule-based backend on a clean machine should not need
-    google-genai installed at all.
-    """
-    name = name.lower().strip()
+    if name == "auto":
+        from .chain import ChainExtractor
+        members = []
+        for provider in CHAIN_ORDER:
+            try:
+                members.append(get_extractor(provider))
+            except ExtractorUnavailable:
+                continue
+        if not members:
+            raise ExtractorUnavailable(
+                "No AI provider is configured. Add GROQ_API_KEY (free, no card, from "
+                "https://console.groq.com) or GEMINI_API_KEY to your .env file."
+            )
+        return ChainExtractor(members)
 
     if name == "rules":
         from .rules import RuleBasedExtractor
@@ -23,22 +52,34 @@ def get_extractor(name: str = "rules") -> Extractor:
         from .gemini import GeminiExtractor
         return GeminiExtractor()
 
-    raise ValueError(f"Unknown backend {name!r}. Available: rules, gemini")
+    if name in ("groq", "openrouter"):
+        from .openai_compat import OpenAICompatibleExtractor
+        return OpenAICompatibleExtractor(provider=name)
+
+    raise ValueError(f"Unknown backend {name!r}. Try: auto, groq, gemini, openrouter, rules")
 
 
-def available_backends() -> list[str]:
-    """
-    Which backends can actually run right now.
-
-    'rules' is always present — that is the point of it. 'gemini' appears only if the SDK
-    is installed and an API key is configured, so the CLI and the API can degrade to
-    something that works instead of showing an error.
-    """
-    found = ["rules"]
+def patient_facing_backends() -> list[str]:
+    """Readers good enough to answer a real patient. Never includes 'rules'."""
+    found = []
+    try:
+        from .openai_compat import OpenAICompatibleExtractor
+        for provider in ("groq", "openrouter"):
+            if OpenAICompatibleExtractor.is_configured(provider):
+                found.append(provider)
+    except ImportError:
+        pass
     try:
         from .gemini import GeminiExtractor
         if GeminiExtractor.is_configured():
             found.append("gemini")
     except ImportError:
         pass
-    return found
+    # Put them back in preference order, then offer the combined chain.
+    ordered = [p for p in CHAIN_ORDER if p in found]
+    return (["auto"] + ordered) if ordered else []
+
+
+def available_backends() -> list[str]:
+    """Everything that can run, including the evaluation-only keyword reader."""
+    return patient_facing_backends() + ["rules"]

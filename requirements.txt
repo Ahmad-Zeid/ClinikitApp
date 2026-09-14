@@ -1,4 +1,5 @@
 # ---- Part 1: Conversational / Agentic AI ----
+openai>=1.50               # talks to Groq, OpenRouter, and anything OpenAI-compatible
 google-genai>=1.0          # Gemini SDK (structured output)
 python-dotenv>=1.0         # loads .env, keeps secrets out of the repo
 pydantic>=2.0              # the extraction schema / validation contract
