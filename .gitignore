@@ -17,4 +17,12 @@ venv/
 
 # OS
 .DS_Store
+
+# Docs
 CliniKit_AI_Assessment.pdf
+
+# Claude
+CLAUDE.md
+
+# Cached LLM responses
+.cache/

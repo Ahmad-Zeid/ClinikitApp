@@ -195,9 +195,14 @@ class ClinicDB:
     def doctor(self, doctor_id: str) -> Optional[Doctor]:
         return next((d for d in DOCTORS if d.id == doctor_id), None)
 
-    def active_for_patient(self, patient_id: str) -> list[Appointment]:
-        """Upcoming, non-cancelled appointments, soonest first."""
-        now = datetime.now(TIMEZONE)
+    def active_for_patient(self, patient_id: str, now: datetime) -> list[Appointment]:
+        """
+        Upcoming, non-cancelled appointments, soonest first.
+
+        `now` is a parameter rather than read from the clock inside this method. A hidden
+        clock makes a function untestable: the same test would pass in the morning and
+        fail in the evening. Everything time-dependent in this codebase takes the time in.
+        """
         return sorted(
             (a for a in self.appointments
              if a.patient_id == patient_id and a.status == "booked" and a.start >= now),
@@ -208,8 +213,13 @@ class ClinicDB:
         return any(a.doctor_id == doctor_id and a.start == start and a.status == "booked"
                    for a in self.appointments)
 
-    def free_slots(self, doctor: Doctor, d: date) -> list[datetime]:
-        """Every open slot for one doctor on one day, respecting clinic AND doctor hours."""
+    def free_slots(self, doctor: Doctor, d: date, now: datetime) -> list[datetime]:
+        """
+        Every open slot for one doctor on one day, respecting clinic AND doctor hours.
+
+        `now` is passed in so past slots can be excluded deterministically — see the note
+        on active_for_patient above.
+        """
         hours = clinic_hours_on(d)
         if hours is None or not doctor.works_on(d):
             return []
@@ -223,7 +233,6 @@ class ClinicDB:
 
         slots, cursor = [], datetime.combine(d, start_t, tzinfo=TIMEZONE)
         limit = datetime.combine(d, end_t, tzinfo=TIMEZONE)
-        now = datetime.now(TIMEZONE)
         while cursor < limit:
             if cursor > now and not self.is_slot_taken(doctor.id, cursor):
                 slots.append(cursor)
