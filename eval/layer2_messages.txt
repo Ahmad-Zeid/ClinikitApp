@@ -1,0 +1,26 @@
+# One message per line. Lines starting with # are ignored.
+# Do not write the answers -- we will label these together.
+
+## Arabizi / Lebanese  (target 6)
+
+
+## Typos and sloppy typing  (target 5)
+
+
+## Missing information  (target 4)
+
+
+## Two things at once  (target 3)
+
+
+## Vague or hesitant  (target 4)
+
+
+## A symptom, not a request  (target 3)
+
+
+## Annoyed or blunt  (target 2)
+
+
+## Changing mind mid-message  (target 3)
+

@@ -58,11 +58,13 @@ PROVIDERS: dict[str, Provider] = {
         base_url="https://api.groq.com/openai/v1",
         env_key="GROQ_API_KEY",
         # Ordered best-first. If one is retired or busy we walk down the list.
+        # Checked against the live model list rather than guessed: the Llama models that
+        # most guides still recommend now return 404 on Groq. Measured round trips on
+        # these: gpt-oss-120b 0.8s, gpt-oss-20b 0.6s.
         models=(
-            "llama-3.3-70b-versatile",
             "openai/gpt-oss-120b",
             "openai/gpt-oss-20b",
-            "llama-3.1-8b-instant",
+            "qwen/qwen3.8-27b",
         ),
         requests_per_minute=30,
         signup="https://console.groq.com  (free, no card)",
@@ -86,71 +88,51 @@ def _roster() -> str:
 
 
 SYSTEM_PROMPT = f"""\
-You read messages that patients send to a medical clinic in Beirut, Lebanon, and turn them
-into structured data. You never reply to the patient and never take any action. Another
-part of the system decides what to do. Report accurately what the message says.
+You read messages patients send to a clinic in Beirut and turn them into JSON. You never
+reply to the patient and never take any action.
 
-Doctors at this clinic:
+Doctors:
 {_roster()}
 
 RULES
+1. Copy dates/times EXACTLY as written ("tomorrow", "after 5"). Never convert to a real
+   date - you do not know today's date.
+2. Reschedule: preferred_date is the NEW date; the old one goes in
+   existing_appointment_phrase. "from Monday to Wednesday" -> new=Wednesday, old=Monday.
+3. is_hedged = the patient explicitly said not to act yet ("don't book yet", "just
+   checking"). A plain question is NOT hedged. Politeness is NOT hedging.
+4. Only record a doctor they actually named. "a doctor"/"my doctor"/"someone" = nobody;
+   leave doctor empty (set refers_to_previous_visit if they meant a past doctor).
+5. Expect typos and Arabizi (Lebanese Arabic in Latin letters). Glossary:
+   badde=I want, shouf/shoufo=see, bukra=tomorrow, lyom=today, 3anjad=really, shu=what,
+   eymta=when, fi=is there, fadi/fadye=free, dawam=working hours, tabaakon=yours,
+   3iyede=clinic, mawad=appointment, baddi=I want, ba3dein=later, mnee7=good,
+   la2=no, eh/na3am=yes, 7akim/doktor=doctor, sa3a=hour/time, jomaa=Friday.
+6. confidence 0-1, honest. Vague message = low, so we ask instead of guessing.
+7. Asking to COME IN on a day ("can I come in Thursday?", "are you free Friday?") is
+   book_appointment. ask_opening_hours is ONLY for what hours the clinic operates.
+8. A symptom with no request ("my back hurts") is book_appointment, modest confidence,
+   symptom in reason_for_visit. A bare greeting is "other", low confidence.
+9. confirm/deny are ONLY short replies to a question we just asked ("yes", "go ahead",
+   "no thanks"). "ok thanks" is "other". A yes carrying a new request is NOT a confirm.
 
-1. Copy dates and times EXACTLY as written. "tomorrow" goes in preferred_date, not a
-   calendar date. "after 5" goes in preferred_time, not 17:00. You do not know today's
-   date and must not guess it. Separate code handles that.
+Return only JSON."""
 
-2. For a reschedule, preferred_date is the NEW date wanted. The appointment being moved
-   away from goes in existing_appointment_phrase. In "move my appointment from Monday to
-   Wednesday": preferred_date is "Wednesday", existing_appointment_phrase is "Monday".
-
-3. is_hedged means the patient explicitly said NOT to act yet: "don't book anything yet",
-   "just checking", "I'm not sure yet". A plain question like "is Dr. George free
-   tomorrow?" is NOT hedged. Politeness is not hedging. This blocks real bookings, so
-   judge it only on the words written.
-
-4. Only record a doctor the patient actually named. "a doctor", "my doctor", "someone"
-   name nobody -- leave doctor empty. If they referred to a previous doctor, set
-   refers_to_previous_visit to true.
-
-5. Messages contain typos, and Lebanese Arabic written in Latin letters and numbers
-   ("Arabizi"): "badde shouf" = I want to see, "bukra" = tomorrow, "3anjad" = really,
-   "shu" = what, "eymta" = when, "fi" = is there. Read these as normal language.
-
-6. confidence is how sure you are of the intent, 0 to 1. Be honest. A vague message
-   should score low so the system asks rather than guesses.
-
-7. Choose "other" only if the message has nothing to do with the clinic. Someone
-   describing a symptom without asking for anything is book_appointment with modest
-   confidence, and the symptom goes in reason_for_visit. A greeting like "hi" is "other"
-   with low confidence.
-
-8. "confirm" and "deny" are for short replies answering a question we just asked -- "yes",
-   "go ahead", "no thanks". A message that says yes AND makes a new request is not a
-   confirmation; classify it by the request. "ok thanks" is "other", not a confirmation.
-
-Return only JSON matching the required schema."""
-
+# Two examples, not four. Every token here is spent on every single request, and Groq's
+# free tier caps us at 8,000 tokens a minute -- the cost is throughput, not money.
 _EXAMPLES = [
     ("I might want to see Dr. George tomorrow at 4, but don't book anything yet.",
      {"intent": "book_appointment", "confidence": 0.9, "doctor": "Dr. George",
-      "preferred_date": "tomorrow", "preferred_time": "4", "existing_appointment_phrase": None,
-      "is_hedged": True, "refers_to_previous_visit": False, "reason_for_visit": None,
-      "reasoning": "names a doctor and a time but explicitly defers booking"}),
+      "preferred_date": "tomorrow", "preferred_time": "4",
+      "existing_appointment_phrase": None, "is_hedged": True,
+      "refers_to_previous_visit": False, "reason_for_visit": None,
+      "reasoning": "names a doctor and time but defers booking"}),
     ("cn u mve my apt frm mon to wed pls",
      {"intent": "reschedule_appointment", "confidence": 0.88, "doctor": None,
-      "preferred_date": "wed", "preferred_time": None, "existing_appointment_phrase": "mon",
-      "is_hedged": False, "refers_to_previous_visit": False, "reason_for_visit": None,
-      "reasoning": "typos, but clearly moving an appointment from Monday to Wednesday"}),
-    ("i need to see a doctor",
-     {"intent": "book_appointment", "confidence": 0.8, "doctor": None,
-      "preferred_date": None, "preferred_time": None, "existing_appointment_phrase": None,
-      "is_hedged": False, "refers_to_previous_visit": False, "reason_for_visit": None,
-      "reasoning": "wants an appointment; 'a doctor' names nobody in particular"}),
-    ("my back hurts",
-     {"intent": "book_appointment", "confidence": 0.6, "doctor": None,
-      "preferred_date": None, "preferred_time": None, "existing_appointment_phrase": None,
-      "is_hedged": False, "refers_to_previous_visit": False, "reason_for_visit": "back pain",
-      "reasoning": "a symptom with no explicit request; most likely wants to be seen"}),
+      "preferred_date": "wed", "preferred_time": None,
+      "existing_appointment_phrase": "mon", "is_hedged": False,
+      "refers_to_previous_visit": False, "reason_for_visit": None,
+      "reasoning": "typos, but clearly moving Monday to Wednesday"}),
 ]
 
 
@@ -240,6 +222,11 @@ class OpenAICompatibleExtractor(Extractor):
 
                 except Exception as exc:  # noqa: BLE001
                     last_error = exc
+                    # Each model has its OWN tokens-per-minute budget. So when one says
+                    # "too many requests", the fastest fix is a different model, not
+                    # waiting a minute for the same one to recover.
+                    if _is_rate_limited(exc):
+                        break
                     if _is_transient(exc) and attempt == 0 and time.monotonic() < deadline:
                         time.sleep(1.5)
                         continue
@@ -249,6 +236,34 @@ class OpenAICompatibleExtractor(Extractor):
             f"{self.name}: every model failed. Last error: "
             f"{type(last_error).__name__}: {str(last_error)[:160]}"
         ) from last_error
+
+    def write_text(self, system: str, user: str) -> str:
+        """
+        Plain-language generation, used for rewording replies.
+
+        max_tokens is generous and reasoning effort is set low on purpose. The gpt-oss
+        models think before they answer, and that thinking is charged against the same
+        budget. With a tight limit they used the whole allowance thinking and returned an
+        empty answer -- which looked like the model being broken when it was us starving it.
+        """
+        last_error: Exception | None = None
+        for model in self._models:
+            for extra in ({"reasoning_effort": "low"}, {}):
+                try:
+                    self._throttle()
+                    response = self._client.chat.completions.create(
+                        model=model, temperature=0.4, max_tokens=700,
+                        messages=[{"role": "system", "content": system},
+                                  {"role": "user", "content": user}],
+                        **extra,
+                    )
+                    text = (response.choices[0].message.content or "").strip()
+                    if text:
+                        return text
+                except Exception as exc:  # noqa: BLE001
+                    last_error = exc
+                    continue
+        raise ExtractorUnavailable(f"{self.name}: {str(last_error)[:120]}") from last_error
 
     # ---- helpers ------------------------------------------------------------
 
@@ -265,6 +280,16 @@ class OpenAICompatibleExtractor(Extractor):
         schema = Extraction.model_json_schema()
         for drop in ("raw_message", "backend"):
             schema.get("properties", {}).pop(drop, None)
+
+        # Strip the long field descriptions before sending.
+        #
+        # Those descriptions were originally doubling as the instructions -- neat, because
+        # the comment explaining a field to a human was literally what the model read. It
+        # turned out to cost 1,076 tokens of our 8,000-per-minute budget, more than half,
+        # and the system prompt already says the same things. They stay in schema.py for
+        # anyone reading the code; they are simply not worth sending on every request.
+        _strip_descriptions(schema)
+
         schema["additionalProperties"] = False
         schema["required"] = [k for k in schema.get("properties", {})]
         return {
@@ -316,6 +341,17 @@ class OpenAICompatibleExtractor(Extractor):
             result.model_dump_json(indent=1))
 
 
+def _strip_descriptions(node) -> None:
+    """Remove every 'description' key, however deeply nested."""
+    if isinstance(node, dict):
+        node.pop("description", None)
+        for value in node.values():
+            _strip_descriptions(value)
+    elif isinstance(node, list):
+        for value in node:
+            _strip_descriptions(value)
+
+
 def _strip_fences(text: str) -> str:
     """Some models wrap JSON in ```json fences even when told not to."""
     t = text.strip()
@@ -334,6 +370,11 @@ def _load_key(env_key: str) -> str | None:
     except ImportError:
         pass
     return os.environ.get(env_key)
+
+
+def _is_rate_limited(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return "429" in text or "rate limit" in text or "rate_limit" in text
 
 
 def _is_transient(exc: Exception) -> bool:

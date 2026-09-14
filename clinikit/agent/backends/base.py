@@ -56,6 +56,18 @@ class Extractor(ABC):
         the single most important rule in this codebase.
         """
 
+    def write_text(self, system: str, user: str) -> str:
+        """
+        Ask the model for a plain sentence rather than structured data.
+
+        Used by phrasing.py to reword a reply in natural language. Kept here so any
+        provider can offer it and the phrasing code does not care which one answered.
+
+        Readers with no language model behind them (the keyword matcher) raise, and the
+        caller falls back to the hand-written reply.
+        """
+        raise ExtractorUnavailable(f"{self.name} cannot write free text")
+
     def _finalise(self, extraction: Extraction, message: str) -> Extraction:
         """
         Stamp provenance onto a finished extraction.

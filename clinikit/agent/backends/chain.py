@@ -56,5 +56,14 @@ class ChainExtractor(Extractor):
             "every provider is unavailable — " + " | ".join(problems)
         )
 
+    def write_text(self, system: str, user: str) -> str:
+        problems = []
+        for extractor in self._extractors:
+            try:
+                return extractor.write_text(system, user)
+            except ExtractorUnavailable as exc:
+                problems.append(str(exc)[:60])
+        raise ExtractorUnavailable("no provider could write text: " + " | ".join(problems))
+
     def __repr__(self) -> str:
         return f"<ChainExtractor {' -> '.join(self.members)}>"

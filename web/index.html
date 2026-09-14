@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CliniKit Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── tokens ─────────────────────────────────────────────────────────────── */
+:root{
+  --paper:      oklch(98.4% 0.003 250);
+  --paper-2:    oklch(96.2% 0.005 250);
+  --paper-3:    oklch(93.0% 0.008 250);
+  --ink:        oklch(22% 0.02 255);
+  --ink-2:      oklch(45% 0.015 255);
+  --ink-3:      oklch(62% 0.012 255);
+  --rule:       oklch(89% 0.008 255);
+  --accent:     oklch(52% 0.18 258);
+  --accent-soft:oklch(94% 0.03 258);
+  --safe:       oklch(52% 0.13 155);
+  --safe-soft:  oklch(95% 0.04 155);
+  --danger:     oklch(55% 0.19 25);
+  --danger-soft:oklch(95% 0.04 25);
+  --guard:      oklch(58% 0.14 75);
+  --guard-soft: oklch(95% 0.05 75);
+
+  --font-ui: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+  --radius: 10px;
+  --ease-out: cubic-bezier(.16,1,.3,1);
+}
+:root:not([data-theme="light"]){ @media (prefers-color-scheme: dark){
+  --paper:      oklch(18% 0.012 258);
+  --paper-2:    oklch(22% 0.014 258);
+  --paper-3:    oklch(27% 0.016 258);
+  --ink:        oklch(95% 0.006 258);
+  --ink-2:      oklch(76% 0.012 258);
+  --ink-3:      oklch(60% 0.014 258);
+  --rule:       oklch(32% 0.016 258);
+  --accent:     oklch(72% 0.15 258);
+  --accent-soft:oklch(30% 0.06 258);
+  --safe:       oklch(75% 0.14 155);
+  --safe-soft:  oklch(28% 0.05 155);
+  --danger:     oklch(72% 0.16 25);
+  --danger-soft:oklch(30% 0.06 25);
+  --guard:      oklch(78% 0.13 75);
+  --guard-soft: oklch(30% 0.06 75);
+}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% 0.012 258); --paper-2:oklch(22% 0.014 258); --paper-3:oklch(27% 0.016 258);
+  --ink:oklch(95% 0.006 258); --ink-2:oklch(76% 0.012 258); --ink-3:oklch(60% 0.014 258);
+  --rule:oklch(32% 0.016 258); --accent:oklch(72% 0.15 258); --accent-soft:oklch(30% 0.06 258);
+  --safe:oklch(75% 0.14 155); --safe-soft:oklch(28% 0.05 155);
+  --danger:oklch(72% 0.16 25); --danger-soft:oklch(30% 0.06 25);
+  --guard:oklch(78% 0.13 75); --guard-soft:oklch(30% 0.06 75);
+}
+
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--font-ui); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── header ─────────────────────────────────────────────────────────────── */
+header{
+  display:flex; align-items:center; gap:var(--s4); flex-wrap:wrap;
+  padding:var(--s4) var(--s5); border-bottom:1px solid var(--rule);
+  background:var(--paper-2); position:sticky; top:0; z-index:10;
+}
+.brand{display:flex; align-items:baseline; gap:var(--s3); margin-right:auto; min-width:0}
+.brand h1{font-size:17px; font-weight:600; margin:0; letter-spacing:-.01em; white-space:nowrap}
+.brand span{font-size:12.5px; color:var(--ink-3); font-family:var(--font-mono)}
+.controls{display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap}
+
+select,button{font-family:inherit; font-size:13px; color:var(--ink);
+  background:var(--paper); border:1px solid var(--rule); border-radius:8px;
+  padding:7px 11px; cursor:pointer; transition:background .15s var(--ease-out), border-color .15s var(--ease-out);}
+select:hover,button:hover{background:var(--paper-3); border-color:var(--ink-3)}
+button:active{transform:translateY(1px)}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+button[disabled]{opacity:.45; cursor:not-allowed; transform:none}
+button.primary{background:var(--accent); color:oklch(99% 0 0); border-color:transparent; font-weight:500}
+button.primary:hover{filter:brightness(1.08); background:var(--accent)}
+:root[data-theme="dark"] button.primary, :root:not([data-theme="light"]) button.primary{color:oklch(15% 0.01 258)}
+
+/* ─── layout ─────────────────────────────────────────────────────────────── */
+main{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,420px); min-height:calc(100vh - 62px)}
+main[data-inspector="off"]{grid-template-columns:minmax(0,1fr)}
+main[data-inspector="off"] .inspector{display:none}
+@media (max-width:900px){ main,main[data-inspector="off"]{grid-template-columns:minmax(0,1fr)} }
+
+/* ─── chat ───────────────────────────────────────────────────────────────── */
+.chat{display:flex; flex-direction:column; border-right:1px solid var(--rule); min-width:0}
+.scenarios{display:flex; gap:var(--s2); padding:var(--s3) var(--s5); flex-wrap:wrap;
+  border-bottom:1px solid var(--rule); align-items:center}
+.scenarios b{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3); font-weight:600}
+.chip{font-size:12px; padding:5px 10px; border-radius:99px; background:var(--paper-2)}
+
+.stream{flex:1; overflow-y:auto; padding:var(--s5); display:flex; flex-direction:column; gap:var(--s4)}
+.msg{max-width:min(78%,560px); padding:var(--s3) var(--s4); border-radius:var(--radius);
+  white-space:pre-wrap; word-break:break-word; animation:rise .25s var(--ease-out)}
+@keyframes rise{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){ .msg{animation:none} }
+.msg.you{align-self:flex-end; background:var(--accent); color:oklch(99% 0 0)}
+:root[data-theme="dark"] .msg.you, :root:not([data-theme="light"]) .msg.you{color:oklch(15% 0.01 258)}
+.msg.bot{align-self:flex-start; background:var(--paper-2); border:1px solid var(--rule)}
+.msg.sys{align-self:center; font-size:12.5px; color:var(--ink-3); font-family:var(--font-mono);
+  background:none; border:none; text-align:center; max-width:100%}
+
+.banner{align-self:stretch; display:flex; gap:var(--s3); padding:var(--s3) var(--s4);
+  border-radius:var(--radius); font-size:13.5px; line-height:1.45;
+  background:var(--guard-soft); border:1px solid var(--guard); color:var(--ink)}
+.banner .tag{font-family:var(--font-mono); font-weight:500; color:var(--guard); flex-shrink:0}
+
+.composer{display:flex; gap:var(--s2); padding:var(--s4) var(--s5);
+  border-top:1px solid var(--rule); background:var(--paper-2)}
+textarea{flex:1; min-width:0; font-family:inherit; font-size:15px; color:var(--ink);
+  background:var(--paper); border:1px solid var(--rule); border-radius:var(--radius);
+  padding:var(--s3); resize:none; min-height:46px; max-height:140px}
+
+/* ─── inspector ──────────────────────────────────────────────────────────── */
+.inspector{overflow-y:auto; padding:var(--s5); display:flex; flex-direction:column; gap:var(--s5);
+  background:var(--paper-2); min-width:0}
+.panel h2{font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-3);
+  margin:0 0 var(--s3); font-weight:600}
+.card{background:var(--paper); border:1px solid var(--rule); border-radius:var(--radius); padding:var(--s4)}
+
+.verdict{display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap; margin-bottom:var(--s3)}
+.pill{font-family:var(--font-mono); font-size:12px; padding:3px 9px; border-radius:99px; font-weight:500}
+.pill.safe{background:var(--safe-soft); color:var(--safe)}
+.pill.write{background:var(--danger-soft); color:var(--danger)}
+.pill.guard{background:var(--guard-soft); color:var(--guard)}
+.pill.mute{background:var(--paper-3); color:var(--ink-3)}
+.why{font-size:13.5px; color:var(--ink-2); line-height:1.5}
+
+dl.kv{display:grid; grid-template-columns:auto minmax(0,1fr); gap:var(--s2) var(--s4);
+  margin:0; font-size:13px}
+dl.kv dt{color:var(--ink-3); font-family:var(--font-mono); font-size:12px}
+dl.kv dd{margin:0; font-family:var(--font-mono); word-break:break-word}
+.hl{color:var(--guard); font-weight:500}
+.none{color:var(--ink-3); font-style:italic; font-family:var(--font-ui)}
+
+ul.book{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:var(--s2)}
+ul.book li{display:flex; justify-content:space-between; gap:var(--s3); font-size:13px;
+  padding:var(--s2) 0; border-bottom:1px dashed var(--rule)}
+ul.book li:last-child{border-bottom:none}
+ul.book .when{font-family:var(--font-mono); font-size:12px; color:var(--ink-2); text-align:right}
+
+footer{padding:var(--s4) var(--s5); border-top:1px solid var(--rule);
+  font-size:12px; color:var(--ink-3); font-family:var(--font-mono)}
+.dot{display:inline-block; width:7px; height:7px; border-radius:99px; background:var(--safe); margin-right:6px}
+.dot.off{background:var(--danger)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>CliniKit Assistant</h1>
+    <span id="hdr-backend">connecting…</span>
+  </div>
+  <div class="controls">
+    <select id="backend" aria-label="Message reader"></select>
+    <button id="toggle" aria-pressed="true">Inspector · on</button>
+    <button id="theme" aria-label="Switch theme">◐</button>
+    <button id="reset">Reset</button>
+  </div>
+</header>
+
+<main data-inspector="on">
+  <section class="chat">
+    <div class="scenarios" id="scenarios"><b>Try</b></div>
+    <div class="stream" id="stream" aria-live="polite"></div>
+    <form class="composer" id="composer">
+      <textarea id="input" rows="1" placeholder="Message the clinic…" autocomplete="off"></textarea>
+      <button class="primary" type="submit" id="send">Send</button>
+    </form>
+  </section>
+
+  <aside class="inspector" id="inspector">
+    <div class="panel">
+      <h2>Decision</h2>
+      <div class="card" id="decision"><p class="why none">Send a message to see how it was handled.</p></div>
+    </div>
+    <div class="panel">
+      <h2>Extracted</h2>
+      <div class="card"><dl class="kv" id="extraction"><dd class="none">nothing yet</dd></dl></div>
+    </div>
+    <div class="panel">
+      <h2>Appointment book</h2>
+      <div class="card"><ul class="book" id="book"><li class="none">loading…</li></ul></div>
+    </div>
+  </aside>
+</main>
+
+<footer id="status"><span class="dot"></span>ready</footer>
+
+<script>
+const API = location.origin.startsWith('http') ? '' : 'http://127.0.0.1:8000';
+const $ = id => document.getElementById(id);
+let sessionId = null, busy = false;
+
+/* ── theme ───────────────────────────────────────────────────────────────── */
+$('theme').onclick = () => {
+  const now = document.documentElement.getAttribute('data-theme');
+  const next = now === 'dark' ? 'light' : now === 'light' ? '' : 'dark';
+  next ? document.documentElement.setAttribute('data-theme', next)
+       : document.documentElement.removeAttribute('data-theme');
+  try { localStorage.setItem('ck-theme', next); } catch (e) {}
+};
+try { const t = localStorage.getItem('ck-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+
+/* ── inspector toggle ────────────────────────────────────────────────────── */
+$('toggle').onclick = () => {
+  const main = document.querySelector('main');
+  const on = main.dataset.inspector === 'on';
+  main.dataset.inspector = on ? 'off' : 'on';
+  $('toggle').textContent = on ? 'Inspector · off' : 'Inspector · on';
+  $('toggle').setAttribute('aria-pressed', String(!on));
+};
+
+/* ── chat rendering ──────────────────────────────────────────────────────── */
+function bubble(text, who) {
+  const el = document.createElement('div');
+  el.className = 'msg ' + who;
+  el.textContent = text;
+  $('stream').append(el);
+  $('stream').scrollTop = $('stream').scrollHeight;
+  return el;
+}
+function banner(tag, text) {
+  const el = document.createElement('div');
+  el.className = 'banner';
+  el.innerHTML = `<span class="tag">${tag}</span><span></span>`;
+  el.lastElementChild.textContent = text;
+  $('stream').append(el);
+  $('stream').scrollTop = $('stream').scrollHeight;
+}
+
+/* ── inspector rendering ─────────────────────────────────────────────────── */
+function renderDecision(d) {
+  const write = d.changed_the_book;
+  const pills = [
+    `<span class="pill ${write ? 'write' : 'safe'}">${write ? 'BOOK CHANGED' : 'book unchanged'}</span>`,
+    `<span class="pill mute">${d.action}</span>`,
+  ];
+  if (d.guarantee) pills.push(`<span class="pill guard">${d.guarantee}</span>`);
+  if (d.reply_source === 'gemini') pills.push('<span class="pill mute">reply: gemini</span>');
+  $('decision').innerHTML =
+    `<div class="verdict">${pills.join('')}</div><p class="why"></p>`;
+  $('decision').querySelector('.why').textContent = d.reason;
+
+  if (d.reply_rejected_because) {
+    const p = document.createElement('p');
+    p.className = 'why'; p.style.marginTop = '12px'; p.style.color = 'var(--guard)';
+    p.textContent = 'Model wording rejected: ' + d.reply_rejected_because;
+    $('decision').append(p);
+  }
+}
+
+function renderExtraction(e, meta) {
+  const rows = [
+    ['intent', e.intent], ['confidence', e.confidence],
+    ['doctor', e.doctor], ['date', e.preferred_date], ['time', e.preferred_time],
+    ['moving from', e.existing_appointment_phrase], ['reason', e.reason_for_visit],
+  ];
+  let html = '';
+  for (const [k, v] of rows) {
+    if (v === null || v === undefined || v === '') continue;
+    html += `<dt>${k}</dt><dd>${String(v).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}</dd>`;
+  }
+  if (e.is_hedged) html += `<dt>hedged</dt><dd class="hl">true — writes blocked</dd>`;
+  if (e.refers_to_previous_visit) html += `<dt>prior visit</dt><dd>true</dd>`;
+  html += `<dt>read by</dt><dd>${meta.backend} · ${meta.seconds}s</dd>`;
+  $('extraction').innerHTML = html || '<dd class="none">nothing extracted</dd>';
+}
+
+function renderBook(list) {
+  $('book').innerHTML = list.length
+    ? list.map(a => `<li><span>${a.doctor}</span><span class="when">${a.label}</span></li>`).join('')
+    : '<li class="none">no upcoming appointments</li>';
+}
+
+/* ── sending ─────────────────────────────────────────────────────────────── */
+async function send(text) {
+  if (busy || !text.trim()) return;
+  busy = true; $('send').disabled = true;
+  bubble(text, 'you');
+  const thinking = bubble('…', 'sys');
+  try {
+    const res = await fetch(API + '/api/chat', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: text, session_id: sessionId, backend: $('backend').value}),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    sessionId = d.session_id;
+    thinking.remove();
+
+    if (d.degraded_reason) banner('FALLBACK', d.degraded_reason);
+    bubble(d.reply, 'bot');
+    if (d.guarantee && !d.changed_the_book) {
+      banner(d.guarantee, d.reason);
+    }
+    renderDecision(d); renderExtraction(d.extraction, d); renderBook(d.appointments);
+    $('status').innerHTML = `<span class="dot"></span>${d.action} · ${d.backend} · ${d.seconds}s`;
+  } catch (err) {
+    thinking.remove();
+    bubble('Could not reach the server. Is it running? (' + err.message + ')', 'sys');
+    $('status').innerHTML = '<span class="dot off"></span>disconnected';
+  } finally {
+    busy = false; $('send').disabled = false; $('input').focus();
+  }
+}
+
+$('composer').onsubmit = e => { e.preventDefault(); const v = $('input').value; $('input').value = ''; send(v); };
+$('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('composer').requestSubmit(); }
+});
+$('reset').onclick = async () => {
+  if (sessionId) await fetch(API + '/api/reset?session_id=' + sessionId, {method: 'POST'});
+  sessionId = null; $('stream').innerHTML = '';
+  $('decision').innerHTML = '<p class="why none">Send a message to see how it was handled.</p>';
+  $('extraction').innerHTML = '<dd class="none">nothing yet</dd>';
+  boot();
+};
+
+/* ── startup ─────────────────────────────────────────────────────────────── */
+async function boot() {
+  try {
+    const h = await (await fetch(API + '/api/health')).json();
+    $('backend').innerHTML = h.backends.map(b =>
+      `<option value="${b}"${b === h.default_backend ? ' selected' : ''}>${b}</option>`).join('');
+    $('hdr-backend').textContent = h.backends.join(' · ') +
+      (h.natural_replies ? ' · natural replies' : '');
+
+    const s = await (await fetch(API + '/api/scenarios')).json();
+    const box = $('scenarios');
+    box.querySelectorAll('button').forEach(b => b.remove());
+    for (const sc of s.scenarios) {
+      const b = document.createElement('button');
+      b.className = 'chip'; b.textContent = sc.name; b.type = 'button';
+      b.onclick = async () => { for (const m of sc.messages) { await send(m); } };
+      box.append(b);
+    }
+    const c = await (await fetch(API + '/api/chat', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: 'hello', backend: $('backend').value}),
+    })).json();
+    sessionId = c.session_id; renderBook(c.appointments);
+    $('stream').innerHTML = '';
+    bubble('Hello — how can the clinic help today?', 'bot');
+  } catch (err) {
+    $('status').innerHTML = '<span class="dot off"></span>server not reachable';
+    bubble('Start the server with:  uvicorn clinikit.api.main:app', 'sys');
+  }
+}
+boot();
+</script>
+</body>
+</html>

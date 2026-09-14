@@ -82,6 +82,21 @@ MAX_CLARIFICATIONS = 3
 # ──────────────────────────────────────────────────────────────────────────────
 
 @dataclass(frozen=True)
+class FreeSlot:
+    """
+    One bookable time, and the doctor it belongs to.
+
+    Used to be a bare time. That produced replies like "8:00 am, 8:00 am, 8:30 am" --
+    two different doctors free at the same moment, listed twice, with no way for the
+    patient to tell them apart. Carrying the doctor alongside the time fixes both the
+    duplicate and the missing name.
+    """
+
+    start: datetime
+    doctor: "Doctor"
+
+
+@dataclass(frozen=True)
 class Offer:
     """
     A specific thing the SYSTEM proposed and the patient may accept.
@@ -127,6 +142,16 @@ class Decision:
 
     guarantee: Optional[str] = None
     """Which guarantee (G1..G7) blocked a write, when one did. Empty otherwise."""
+
+    problem: Optional[str] = None
+    """
+    A short code for what went wrong, e.g. "doctor_missing", "doctor_unknown",
+    "doctor_ambiguous". The wording of the reply is chosen from this.
+
+    It used to be chosen by searching for words inside `reason`, which broke: the reason
+    "No doctor was named" contains "No doctor", so a patient who said "I need to see a
+    doctor" was told "I couldn't find that doctor". Codes cannot misfire that way.
+    """
 
     doctor: Optional[Doctor] = None
     slot: Optional[datetime] = None
@@ -275,14 +300,15 @@ def _remember_single_slot(decision: Decision) -> Decision:
     unclear, and picking one for the patient is the kind of quiet guess this system does
     not make.
     """
-    if decision.offer is not None or decision.doctor is None:
+    if decision.offer is not None:
         return decision
 
-    slots = [c for c in decision.candidates if isinstance(c, datetime)]
+    slots = [c for c in decision.candidates if isinstance(c, FreeSlot)]
     if len(slots) != 1:
         return decision
 
-    slot = slots[0]
+    slot, doctor_for_slot = slots[0].start, slots[0].doctor
+    decision = replace(decision, doctor=decision.doctor or doctor_for_slot)
     if decision.appointment is not None:
         summary = (f"move {decision.doctor.full_name} to "
                    f"{slot:%A %d %B at %H:%M}")
@@ -532,12 +558,12 @@ def _resolve_doctor(
             return None, Decision(
                 action=Action.ASK_FOR_MORE_INFORMATION,
                 reason="The patient referred to a previous doctor we cannot identify.",
-                guarantee="G3", missing=("doctor",),
+                guarantee="G3", problem="doctor_previous", missing=("doctor",),
             )
         return None, Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
             reason="No doctor was named.",
-            guarantee="G3", missing=("doctor",),
+            guarantee="G3", problem="doctor_missing", missing=("doctor",),
         )
 
     matches = find_doctors(name)
@@ -545,13 +571,14 @@ def _resolve_doctor(
         return None, Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
             reason=f"No doctor at this clinic matches {name!r}.",
-            guarantee="G3", missing=("doctor",), candidates=(),
+            guarantee="G3", problem="doctor_unknown", missing=("doctor",), candidates=(),
         )
     if len(matches) > 1:
         return None, Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
             reason=f"{name!r} matches {len(matches)} doctors. Asking which one.",
-            guarantee="G3", missing=("doctor",), candidates=tuple(matches),
+            guarantee="G3", problem="doctor_ambiguous", missing=("doctor",),
+            candidates=tuple(matches),
         )
     return matches[0], None
 
@@ -612,21 +639,28 @@ def _availability_lookup(
         resolved = resolve(extraction.preferred_date, extraction.preferred_time, ctx.now)
 
     days = resolved.days or _upcoming_days(ctx.now.date(), 5)
-    doctors = [doctor] if doctor else list(find_doctors("") or [])
+    doctors = [doctor] if doctor else _all_doctors()
 
-    slots: list[datetime] = []
+    found: list[FreeSlot] = []
+    seen_times: set[datetime] = set()
     for d in days[:5]:
-        for doc in (doctors or _all_doctors()):
+        for doc in doctors:
             for s in ctx.db.free_slots(doc, d, ctx.now):
                 if resolved.earliest and s.time() < resolved.earliest:
                     continue
                 if resolved.latest and s.time() >= resolved.latest:
                     continue
-                slots.append(s)
-        if len(slots) >= 6:
+                # When no particular doctor was asked for, show each time once. Listing
+                # "8:00 am" five times because five doctors are free then is useless.
+                if doctor is None and s in seen_times:
+                    continue
+                seen_times.add(s)
+                found.append(FreeSlot(s, doc))
+        if len(found) >= 6:
             break
 
-    return {"doctor": doctor, "candidates": tuple(sorted(slots)[:6])}
+    found.sort(key=lambda f: f.start)
+    return {"doctor": doctor, "candidates": tuple(found[:6])}
 
 
 def _slots_for_doctor(doctor_id: str, day: date, ctx: Context) -> dict:
@@ -640,7 +674,9 @@ def _slots_for_doctor(doctor_id: str, day: date, ctx: Context) -> dict:
     doctor = ctx.db.doctor(doctor_id)
     if doctor is None:
         return {"candidates": ()}
-    return {"candidates": tuple(ctx.db.free_slots(doctor, day, ctx.now)[:6])}
+    return {"candidates": tuple(
+        FreeSlot(s, doctor) for s in ctx.db.free_slots(doctor, day, ctx.now)[:6]
+    )}
 
 
 def _next_working_day(doctor: Doctor, start: date) -> date:

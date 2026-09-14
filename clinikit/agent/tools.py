@@ -55,7 +55,8 @@ class ToolResult:
     """Plain sentence describing the outcome. Goes into the audit log."""
 
     appointment: Optional[Appointment] = None
-    slots: tuple[datetime, ...] = ()
+    slots: tuple = ()
+    """Free times to offer. Each carries the doctor it belongs to (policy.FreeSlot)."""
     info: str = ""
     extra: dict = field(default_factory=dict)
 
@@ -79,7 +80,10 @@ def check_availability(
         from .clinic import DOCTORS
         doctors = list(DOCTORS)
 
-    found: list[datetime] = []
+    from .policy import FreeSlot
+
+    found: list = []
+    seen: set = set()
     for d in days[:5]:
         for doc in doctors:
             for slot in db.free_slots(doc, d, now):
@@ -87,11 +91,14 @@ def check_availability(
                     continue
                 if latest and slot.time() >= latest:
                     continue
-                found.append(slot)
+                if doctor is None and slot in seen:
+                    continue
+                seen.add(slot)
+                found.append(FreeSlot(slot, doc))
         if len(found) >= limit:
             break
 
-    found = sorted(found)[:limit]
+    found = sorted(found, key=lambda f: f.start)[:limit]
     who = doctor.full_name if doctor else "any doctor"
     return ToolResult(
         ok=bool(found),

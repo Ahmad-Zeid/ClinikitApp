@@ -229,6 +229,22 @@ class GeminiExtractor(Extractor):
             f"{str(last_error)[:200]}"
         ) from last_error
 
+    def write_text(self, system: str, user: str) -> str:
+        """Plain-language generation, used for rewording replies."""
+        last_error: Exception | None = None
+        for model in self._models:
+            try:
+                self._throttle()
+                response = self._client.models.generate_content(
+                    model=model, contents=user,
+                    config={"system_instruction": system, "temperature": 0.4},
+                )
+                return (response.text or "").strip()
+            except Exception as exc:  # noqa: BLE001
+                last_error = exc
+                continue
+        raise ExtractorUnavailable(f"gemini: {str(last_error)[:120]}") from last_error
+
     # ---- helpers ----
 
     def _build_contents(self, message: str, history: Sequence[str]) -> str:

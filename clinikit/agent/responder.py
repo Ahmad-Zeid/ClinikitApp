@@ -26,7 +26,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from .clinic import Appointment, describe_opening_hours
-from .policy import Action, Decision
+from .policy import Action, Decision, FreeSlot
 from .tools import ToolResult
 
 
@@ -34,8 +34,22 @@ def _when(moment: datetime) -> str:
     return f"{moment:%A %-d %B at %-I:%M %p}".replace("AM", "am").replace("PM", "pm")
 
 
-def _slot_list(slots: tuple[datetime, ...], limit: int = 4) -> str:
-    return "\n".join(f"  • {_when(s)}" for s in slots[:limit])
+def _slot_list(slots, limit: int = 4, show_doctor: bool = False) -> str:
+    """
+    Format free times for the patient.
+
+    When no particular doctor was asked for, the doctor's name is shown beside each time --
+    otherwise a list of bare times is meaningless, because the patient has no idea who
+    they would be seeing.
+    """
+    lines = []
+    for s in list(slots)[:limit]:
+        if isinstance(s, FreeSlot):
+            when = _when(s.start)
+            lines.append(f"  • {when} — {s.doctor.full_name}" if show_doctor else f"  • {when}")
+        else:
+            lines.append(f"  • {_when(s)}")
+    return "\n".join(lines)
 
 
 def respond(decision: Decision, result: ToolResult, ctx) -> str:
@@ -81,7 +95,9 @@ def respond(decision: Decision, result: ToolResult, ctx) -> str:
             return (f"I couldn't find anything free for {who} then. "
                     "Would a different day work?")
 
-        opening = f"{who} has these times free:" if decision.doctor else "These times are free:"
+        show_doctor = decision.doctor is None
+        opening = (f"{who} has these times free:" if decision.doctor
+                   else "Here's what's free soon:")
         if decision.guarantee == "G1":
             # The patient asked us not to book. Say so plainly, so they know we listened.
             opening = (f"Understood — I won't book anything yet.\n\n"
@@ -91,7 +107,8 @@ def respond(decision: Decision, result: ToolResult, ctx) -> str:
         elif decision.guarantee == "G5":
             opening = f"{decision.reason}\n\nThese are still free:"
 
-        return f"{opening}\n{_slot_list(result.slots)}\n\nWould you like one of these?"
+        return (f"{opening}\n{_slot_list(result.slots, show_doctor=show_doctor)}"
+                "\n\nWould you like one of these?")
 
     # --- asking a question --------------------------------------------------
     if decision.action == Action.ASK_FOR_MORE_INFORMATION:
@@ -114,15 +131,27 @@ def _ask(decision: Decision, ctx) -> str:
             return f"I can {offer.summary}. Shall I go ahead?"
 
     if "doctor" in missing:
-        if decision.candidates:
-            names = "\n".join(f"  • {d.full_name} ({d.specialty})" for d in decision.candidates)
-            return f"We have more than one doctor by that name:\n{names}\n\nWhich one did you mean?"
-        if "matches" in decision.reason or "No doctor" in decision.reason:
-            from .clinic import DOCTORS
-            names = "\n".join(f"  • {d.full_name} ({d.specialty})" for d in DOCTORS)
-            return (f"I couldn't find that doctor. Here's who's at the clinic:\n{names}"
-                    "\n\nWho would you like to see?")
-        return "Which doctor would you like to see?"
+        from .clinic import DOCTORS
+        roster = "\n".join(f"  • {d.full_name} ({d.specialty})" for d in DOCTORS)
+
+        if decision.problem == "doctor_ambiguous" and decision.candidates:
+            names = "\n".join(f"  • {d.full_name} ({d.specialty})"
+                              for d in decision.candidates)
+            return (f"We have more than one doctor by that name:\n{names}"
+                    "\n\nWhich one did you mean?")
+
+        if decision.problem == "doctor_unknown":
+            return (f"I couldn't find a doctor by that name. Here's who's at the clinic:"
+                    f"\n{roster}\n\nWho would you like to see?")
+
+        if decision.problem == "doctor_previous":
+            return ("I can't see which doctor you saw before from here. Here's the team:"
+                    f"\n{roster}\n\nWho would you like to see? If you'd rather someone "
+                    "checked your records, I can pass you to the clinic.")
+
+        # doctor_missing: the patient simply has not said who yet. Offer the list rather
+        # than telling them we could not find somebody they never named.
+        return f"Of course — who would you like to see?\n{roster}"
 
     if "which_appointment" in missing:
         if decision.candidates:

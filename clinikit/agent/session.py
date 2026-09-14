@@ -41,7 +41,9 @@ from datetime import datetime
 from typing import Callable, Optional
 
 from . import responder, tools
-from .backends import get_extractor
+from .phrasing import Phraser, ReplyFacts
+from .backends import CHAIN_ORDER, get_extractor
+from .backends.base import ExtractorUnavailable
 from .clinic import TIMEZONE, ClinicDB, seeded_db
 from .policy import Action, Context, Decision, Offer, WRITE_ACTIONS, decide
 from .schema import Extraction, Intent
@@ -66,6 +68,14 @@ class Turn:
     seconds: float
     backend: str
     changed_the_book: bool
+    reply_source: str = "template"
+    """'gemini' if the model's wording was used, 'template' if the hand-written one was."""
+
+    reply_rejected_because: Optional[str] = None
+    """Why the model's wording was thrown away, when it was. Empty if it was accepted."""
+
+    degraded_reason: Optional[str] = None
+    """Set when the chosen reader was unreachable and the keyword reader stood in."""
 
     def as_dict(self) -> dict:
         """Flat form, for the API and the audit log."""
@@ -81,7 +91,17 @@ class Turn:
             "was_write": self.decision.action in WRITE_ACTIONS,
             "changed_the_book": self.changed_the_book,
             "detail": self.result.detail,
-            "slots": [s.isoformat() for s in self.result.slots],
+            "reply_source": self.reply_source,
+            "reply_rejected_because": self.reply_rejected_because,
+            "degraded_reason": self.degraded_reason,
+            "slots": [
+                {
+                    "when": getattr(s, "start", s).isoformat(),
+                    "label": f"{getattr(s, 'start', s):%A %d %B, %H:%M}",
+                    "doctor": getattr(getattr(s, "doctor", None), "full_name", None),
+                }
+                for s in self.result.slots
+            ],
         }
 
 
@@ -94,8 +114,26 @@ class Session:
         patient_id: str = "p_001",
         db: Optional[ClinicDB] = None,
         clock: Optional[Callable[[], datetime]] = None,
+        natural_replies: bool = False,
     ) -> None:
         self.extractor = get_extractor(backend)
+
+        # When on, Gemini rewrites each reply in natural language and the result is
+        # checked against the facts before the patient sees it. When the check fails, or
+        # no model is available, the hand-written reply is sent instead -- so turning this
+        # on can make replies nicer but can never make them wrong.
+        self.natural_replies = natural_replies
+        self.phraser = Phraser(self.extractor if natural_replies else None)
+
+        # NOTE: there is deliberately no keyword-matching stand-in here.
+        #
+        # There used to be. When the language model was unreachable, the keyword reader
+        # answered instead -- and it answers badly. "I need to see a doctor" came back as
+        # "I couldn't find that doctor". Patients got nonsense during every outage.
+        #
+        # Now, if no provider can be reached, we say so and fetch a person. A clinic would
+        # far rather hear "we are having trouble, someone will help you" than a confident
+        # wrong answer about their appointment.
         self.patient_id = patient_id
         self.db = db if db is not None else seeded_db(patient_id)
 
@@ -117,10 +155,31 @@ class Session:
         started = time.monotonic()
 
         ctx = self._snapshot()
-        extraction = self.extractor.extract(message, self.history)
+
+        try:
+            extraction = self.extractor.extract(message, self.history)
+        except ExtractorUnavailable as exc:
+            # Nobody could read the message. Do not guess -- hand over to a person.
+            turn = self._outage_turn(message, str(exc), time.monotonic() - started)
+            self._remember(turn)
+            return turn
+
+        degraded = None
+        used = getattr(self.extractor, "last_used", None)
+        if used and used != CHAIN_ORDER[0] and self.extractor.name == "auto":
+            degraded = f"first choice unavailable — answered by {used}"
+
         decision = decide(extraction, ctx)
         result = tools.execute(decision, ctx)
         reply = responder.respond(decision, result, ctx)
+
+        changed = result.ok and decision.action in WRITE_ACTIONS
+        reply_source, rejected = "template", None
+        if self.natural_replies and self.phraser.available and degraded is None:
+            phrased = self.phraser.rephrase(
+                _facts_for(decision, result, reply, changed, ctx), message
+            )
+            reply, reply_source, rejected = phrased.text, phrased.source, phrased.rejected_because
 
         turn = Turn(
             message=message,
@@ -129,13 +188,46 @@ class Session:
             result=result,
             reply=reply,
             seconds=time.monotonic() - started,
-            backend=self.extractor.name,
-            changed_the_book=(result.ok and decision.action in WRITE_ACTIONS),
+            backend=extraction.backend or self.extractor.name,
+            changed_the_book=changed,
+            reply_source=reply_source,
+            reply_rejected_because=rejected,
+            degraded_reason=degraded,
         )
         self._remember(turn)
         return turn
 
     # ---- memory in ------------------------------------------------------------
+
+    def _outage_turn(self, message: str, problem: str, seconds: float) -> Turn:
+        """
+        What the patient sees when no AI provider can be reached.
+
+        Honest, and safe: handing over to a person cannot book, move or cancel anything.
+        """
+        from .policy import Action, Decision
+
+        decision = Decision(
+            action=Action.HANDOFF_TO_HUMAN,
+            reason=f"No message reader was available, so nothing was interpreted. {problem}",
+        )
+        return Turn(
+            message=message,
+            extraction=Extraction(
+                intent=Intent.OTHER, confidence=0.0,
+                reasoning="the message was never read — every provider was unavailable",
+                raw_message=message, backend="none",
+            ),
+            decision=decision,
+            result=ToolResult(ok=True, action=Action.HANDOFF_TO_HUMAN,
+                              detail="Handed to a person: no reader available."),
+            reply=("Sorry — I'm having trouble on my end right now. "
+                   "I've passed this to the clinic team and someone will get back to you shortly."),
+            seconds=seconds,
+            backend="none",
+            changed_the_book=False,
+            degraded_reason=f"all providers unavailable — {problem[:110]}",
+        )
 
     def _snapshot(self) -> Context:
         """
@@ -164,6 +256,23 @@ class Session:
         self.turns.append(turn)
         self.history.append(turn.message)
 
+        # Forget earlier details once a request is over.
+        #
+        # Details are remembered so a patient does not have to repeat themselves while we
+        # are filling in the gaps of one request. They should NOT leak into the next one.
+        # Without this, someone who asked about Dr. George and then said "I need to see a
+        # doctor" was quietly assumed to still mean Dr. George.
+        #
+        # We are mid-request only while we are asking a question, or while an offer is
+        # waiting for a yes. Anything else ends the thread.
+        still_gathering = (
+            turn.decision.action == Action.ASK_FOR_MORE_INFORMATION
+            or turn.decision.offer is not None
+            or self.pending_offer is not None
+        )
+        if not still_gathering:
+            self.known_slots.clear()
+
         # Hold on to details the patient gave, so they do not have to repeat themselves.
         if turn.extraction.doctor:
             self.known_slots["doctor"] = turn.extraction.doctor
@@ -172,12 +281,19 @@ class Session:
         if turn.extraction.preferred_time:
             self.known_slots["time"] = turn.extraction.preferred_time
 
-        # Count clarifying questions in a row. Enough of them and the policy layer
-        # hands the conversation to a person instead of asking again.
-        if turn.decision.action == Action.ASK_FOR_MORE_INFORMATION:
-            self.clarifications += 1
-        else:
-            self.clarifications = 0
+        # Count only questions that mean "I did not understand you" -- not the ordinary
+        # back-and-forth of gathering details.
+        #
+        # This used to count every question, so a normal conversation ("which doctor?",
+        # "which day?", "what time?") hit the limit and the agent handed the patient to a
+        # person on the fourth message. Asking which doctor is the agent working, not the
+        # agent failing.
+        confused = (
+            turn.decision.guarantee == "G6"
+            or "clarification" in turn.decision.missing
+            or "what_they_need" in turn.decision.missing
+        )
+        self.clarifications = self.clarifications + 1 if confused else 0
 
         # A finished booking ends the thread: clear the offer and the gathered details so
         # the next request starts clean.
@@ -214,3 +330,47 @@ class Session:
     @property
     def writes_so_far(self) -> int:
         return sum(1 for t in self.turns if t.changed_the_book)
+
+
+def _facts_for(decision, result, template: str, changed: bool, ctx) -> ReplyFacts:
+    """
+    Collect exactly what the reply is allowed to mention.
+
+    Anything not gathered here will be rejected if it appears in the model's wording, so
+    this list is the boundary of what the patient can be told.
+    """
+    doctors: list[str] = []
+    if decision.doctor is not None:
+        doctors.append(decision.doctor.full_name)
+    for c in decision.candidates:
+        full = getattr(c, "full_name", None)
+        if full:
+            doctors.append(full)
+
+    times: list[datetime] = []
+    for s in result.slots:
+        start = getattr(s, "start", s)
+        times.append(start)
+        slot_doctor = getattr(s, "doctor", None)
+        if slot_doctor is not None:
+            doctors.append(slot_doctor.full_name)
+    if decision.slot is not None:
+        times.append(decision.slot)
+    if result.appointment is not None:
+        times.append(result.appointment.start)
+        doctor = ctx.db.doctor(result.appointment.doctor_id)
+        if doctor is not None:
+            doctors.append(doctor.full_name)
+    for c in decision.candidates:
+        start = getattr(c, "start", None)
+        if isinstance(start, datetime):
+            times.append(start)
+
+    return ReplyFacts(
+        template=template,
+        action=decision.action,
+        changed_the_book=changed,
+        doctors=tuple(dict.fromkeys(doctors)),
+        times=tuple(dict.fromkeys(times)),
+        reference=result.appointment.id if result.appointment else None,
+    )
