@@ -28,7 +28,7 @@ THE SEVEN GUARANTEES
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from typing import Optional
 
@@ -221,7 +221,7 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     # "not yet", nothing may be written. This is the rule that handles the brief's
     # ambiguous example, and it holds regardless of what the model decided the intent was.
     if extraction.is_hedged:
-        return Decision(
+        return _remember_single_slot(Decision(
             action=Action.CHECK_AVAILABILITY,
             reason=(
                 "The patient explicitly asked us not to act yet, so this is treated as a "
@@ -229,15 +229,15 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
             ),
             guarantee="G1",
             **_availability_lookup(extraction, ctx),
-        )
+        ))
 
     # --- 7. Asking what is free ----------------------------------------------
     if extraction.intent == Intent.ASK_DOCTOR_AVAILABILITY:
-        return Decision(
+        return _remember_single_slot(Decision(
             action=Action.CHECK_AVAILABILITY,
             reason="The patient asked what is available. Looking up, not booking.",
             **_availability_lookup(extraction, ctx),
-        )
+        ))
 
     # --- 8. Cancel -----------------------------------------------------------
     if extraction.intent == Intent.CANCEL_APPOINTMENT:
@@ -257,6 +257,42 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
         reason="The message was not a recognisable clinic request.",
         missing=("what_they_need",),
     )
+
+
+def _remember_single_slot(decision: Decision) -> Decision:
+    """
+    If we showed the patient exactly one free time, remember it as an offer.
+
+    Without this, the conversation dead-ends. We say "Tuesday 11am is free" and the
+    patient says "yes, book it" -- and there is nothing stored for that "yes" to attach
+    to, so we have to ask them to start again. Annoying, and it makes the agent look
+    broken.
+
+    This is still safe. The offer is one WE created from the clinic's real calendar, and
+    it still needs an explicit yes before anything is written. G2 is untouched.
+
+    Only fires when there is exactly one slot. With several on screen, "yes" is genuinely
+    unclear, and picking one for the patient is the kind of quiet guess this system does
+    not make.
+    """
+    if decision.offer is not None or decision.doctor is None:
+        return decision
+
+    slots = [c for c in decision.candidates if isinstance(c, datetime)]
+    if len(slots) != 1:
+        return decision
+
+    slot = slots[0]
+    if decision.appointment is not None:
+        summary = (f"move {decision.doctor.full_name} to "
+                   f"{slot:%A %d %B at %H:%M}")
+        offer = Offer(kind="reschedule", summary=summary, doctor_id=decision.doctor.id,
+                      start=slot, appointment_id=decision.appointment.id)
+    else:
+        summary = f"{decision.doctor.full_name} on {slot:%A %d %B at %H:%M}"
+        offer = Offer(kind="create", summary=summary,
+                      doctor_id=decision.doctor.id, start=slot)
+    return replace(decision, offer=offer)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -350,11 +386,11 @@ def _propose_booking(extraction: Extraction, ctx: Context) -> Decision:
         return _validate_exact_slot(doctor, resolved.exact, ctx)
 
     # Otherwise we have a range. Show what is free and let them choose.
-    return Decision(
+    return _remember_single_slot(Decision(
         action=Action.CHECK_AVAILABILITY,
         reason="A date range was given rather than a specific time, so we offer options.",
         **_availability_lookup(extraction, ctx, doctor=doctor, resolved=resolved),
-    )
+    ))
 
 
 def _validate_exact_slot(doctor: Doctor, slot: datetime, ctx: Context) -> Decision:
