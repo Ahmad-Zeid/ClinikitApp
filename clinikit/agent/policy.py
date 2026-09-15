@@ -639,7 +639,12 @@ def _propose_booking(extraction: Extraction, ctx: Context) -> Decision:
     if problem is not None:
         return problem
 
-    resolved = resolve(extraction.preferred_date, extraction.preferred_time, ctx.now)
+    # Carry date/time from earlier in this thread when the patient only gave one
+    # piece now ("Thursday" then "12 pm"). The reader is told not to invent context,
+    # so policy must do the merge.
+    date_phrase = extraction.preferred_date or ctx.known_slots.get("date")
+    time_phrase = extraction.preferred_time or ctx.known_slots.get("time")
+    resolved = resolve(date_phrase, time_phrase, ctx.now)
 
     if PAST_DATE in resolved.problems:
         return Decision(
@@ -764,7 +769,9 @@ def _propose_reschedule(extraction: Extraction, ctx: Context) -> Decision:
         return problem
 
     doctor = ctx.db.doctor(appointment.doctor_id)
-    resolved = resolve(extraction.preferred_date, extraction.preferred_time, ctx.now)
+    date_phrase = extraction.preferred_date or ctx.known_slots.get("date")
+    time_phrase = extraction.preferred_time or ctx.known_slots.get("time")
+    resolved = resolve(date_phrase, time_phrase, ctx.now)
 
     if not resolved.has_date:
         return Decision(
@@ -839,13 +846,30 @@ _MOVING_WORDS = (
 
 
 def _sounds_like_moving_something(extraction: Extraction) -> bool:
-    """Does this message actually ask to move an existing appointment?"""
-    if extraction.existing_appointment_phrase:
-        return True
+    """
+    Does this message actually ask to move an existing appointment?
+
+    The reader sometimes fills existing_appointment_phrase from ordinary date words
+    ("this Thursday"). That must not send a NEW booking request into the reschedule
+    path, or the patient is shown their existing appointments and asked which one
+    they meant — which is nonsense.
+    """
     message = (extraction.raw_message or "").lower()
-    if not message:
-        return True          # nothing to check against; trust the reader
-    return any(re.search(rf"(?<!\w){word}(?!\w)", message) for word in _MOVING_WORDS)
+    if message:
+        return any(
+            re.search(rf"(?<!\w){re.escape(word)}(?!\w)", message)
+            for word in _MOVING_WORDS
+        )
+
+    # No raw message to check (rare; unit tests). Trust a phrase only when it is not
+    # just the date they asked for.
+    phrase = (extraction.existing_appointment_phrase or "").strip().lower()
+    if not phrase:
+        return True
+    preferred = (extraction.preferred_date or "").strip().lower()
+    if phrase in ("this", "that", "it") or (preferred and phrase in preferred):
+        return False
+    return True
 
 
 def _is_really_picking_an_option(extraction: Extraction, ctx: Context) -> bool:
@@ -1057,7 +1081,9 @@ def _availability_lookup(
         matches = find_doctors(extraction.doctor or ctx.known_slots.get("doctor"))
         doctor = matches[0] if len(matches) == 1 else None
     if resolved is None:
-        resolved = resolve(extraction.preferred_date, extraction.preferred_time, ctx.now)
+        date_phrase = extraction.preferred_date or ctx.known_slots.get("date")
+        time_phrase = extraction.preferred_time or ctx.known_slots.get("time")
+        resolved = resolve(date_phrase, time_phrase, ctx.now)
 
     days = resolved.days or _upcoming_days(ctx.now.date(), 5)
     doctors = [doctor] if doctor else _all_doctors()

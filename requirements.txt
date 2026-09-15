@@ -11,11 +11,9 @@ pandas>=2.2
 numpy>=1.26
 scikit-learn>=1.5
 # NOTE: xgboost deliberately omitted. sklearn's HistGradientBoostingClassifier is the
-# same algorithm family, performs comparably here, and needs no OpenMP system library,
-# so `pip install -r requirements.txt` works on a clean machine with no extra steps.
-shap>=0.46                 # per-prediction explanations
+# tree candidate used in model comparison and needs no OpenMP system library. Logistic
+# regression wins on the supplied data, and permutation importance explains the winner.
 matplotlib>=3.9
-seaborn>=0.13
 joblib>=1.4                # model persistence
 
 # ---- Serving ----

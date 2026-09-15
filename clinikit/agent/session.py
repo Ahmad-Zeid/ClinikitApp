@@ -187,7 +187,10 @@ class Session:
         changed = result.ok and decision.action in WRITE_ACTIONS
         reply = structured.as_text()
         reply_source, rejected = "template", None
-        if self.natural_replies and self.phraser.available and degraded is None:
+        # Still word the reply when we fell over to a backup reader. Skipping here meant
+        # every Groq-exhausted day produced only stiff templates, even though Gemini was
+        # already answering the patient. The fact-checker still throws away unsafe wording.
+        if self.natural_replies and self.phraser.available:
             phrased = self.phraser.rephrase(
                 structured,
                 _facts_for(decision, result, structured, changed, ctx),
@@ -315,6 +318,21 @@ class Session:
         if turn.decision.candidates:
             self.offered_options = tuple(turn.decision.candidates)
 
+        # A new day/time request means they have moved on from the old numbered list.
+        # Leaving it in memory made later messages look like picks from a list nobody
+        # was looking at any more.
+        asking_for_a_time = (
+            turn.extraction.intent in (
+                Intent.BOOK_APPOINTMENT,
+                Intent.ASK_DOCTOR_AVAILABILITY,
+                Intent.RESCHEDULE_APPOINTMENT,
+            )
+            and (turn.extraction.preferred_date or turn.extraction.preferred_time)
+            and "which_option" not in turn.decision.missing
+        )
+        if asking_for_a_time and not turn.decision.candidates:
+            self.offered_options = ()
+
         # Record BOTH sides. The reader used to see only the patient's own messages, so
         # it had no idea a question had just been asked -- and read "yes please book it"
         # as a brand-new booking request rather than an answer. A conversation the model
@@ -370,10 +388,12 @@ class Session:
             self.known_slots.clear()
             return
 
-        # The patient said no -- drop the offer rather than leaving it lying around for a
-        # later "yes" to pick up by accident.
+        # The patient said no -- drop the offer and the numbered list. Keeping the list
+        # after "hmm, not really" made the next message ("thursday at 12?") look like
+        # they were still choosing from times they had already rejected.
         if turn.extraction.intent == Intent.DENY:
             self.pending_offer = None
+            self.offered_options = ()
             return
 
         # Otherwise carry forward whatever the policy layer offered this turn. If it

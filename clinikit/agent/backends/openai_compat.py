@@ -37,12 +37,12 @@ from ..clinic import DOCTORS
 from ..schema import Extraction
 from .base import Extractor, ExtractorUnavailable
 
-PROMPT_VERSION = "v6"
+PROMPT_VERSION = "v7"
 CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "llm"
 
 # How long we will spend making a reply sound nicer before giving up and sending the
 # approved wording instead. Reading the message is essential; wording it is not.
-WORDING_BUDGET_SECONDS = 9.0
+# Kept for documentation; write_text now does one timed SDK call and returns.
 
 # Allowance held back for reading messages.
 #
@@ -289,12 +289,12 @@ _EXAMPLES = [
       "existing_appointment_phrase": None, "is_hedged": True,
       "refers_to_previous_visit": False, "reason_for_visit": None,
       "reasoning": "names a doctor and time but defers booking"}),
-    ("cn u mve my apt frm mon to wed pls",
-     {"intent": "reschedule_appointment", "confidence": 0.88, "doctor": None,
-      "preferred_date": "wed", "preferred_time": None,
-      "existing_appointment_phrase": "mon", "is_hedged": False,
+    ("can i do this thursday at 12 pm?",
+     {"intent": "book_appointment", "confidence": 0.9, "doctor": None,
+      "preferred_date": "this thursday", "preferred_time": "12 pm",
+      "existing_appointment_phrase": None, "is_hedged": False,
       "refers_to_previous_visit": False, "reason_for_visit": None,
-      "reasoning": "typos, but clearly moving Monday to Wednesday"}),
+      "reasoning": "asking to come in on a day — not moving an existing appointment"}),
 ]
 
 
@@ -484,71 +484,50 @@ class OpenAICompatibleExtractor(Extractor):
         """
         Plain-language generation, used for rewording replies.
 
-        max_tokens is generous and reasoning effort is set low on purpose. The gpt-oss
-        models think before they answer, and that thinking is charged against the same
-        budget. With a tight limit they used the whole allowance thinking and returned an
-        empty answer -- which looked like the model being broken when it was us starving it.
+        ONE best-effort call. Wording is a luxury: if the fast model cannot do it
+        quickly, the approved template goes out instead. Walking every model used to
+        burn quota and stretch a "nice sentence" into tens of seconds.
         """
-        # Rewording an approved sentence is far easier than reading a messy message, so
-        # the smaller model is used first here. It is roughly twice as fast.
-        models = sorted(self._models, key=lambda m: 0 if "20b" in m else 1)
+        # Prefer the smallest/fastest model on this provider.
+        model = next((m for m in self._models if "20b" in m or "lite" in m.lower()),
+                     self._models[0])
 
-        # A hard ceiling on the whole attempt.
-        #
-        # Without one, three models times two attempts times a seven-second timeout came
-        # to forty-two seconds of trying to make a sentence sound nicer. Wording is a
-        # luxury: if it cannot be done quickly it should not be done at all, and the
-        # approved reply goes out instead. The caller treats a failure here as "use the
-        # template", which is always correct, just plainer.
-        deadline = time.monotonic() + WORDING_BUDGET_SECONDS
+        reserve = 2 if self.provider.requests_per_minute >= 20 else 4
+        if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS,
+                               reserve_requests=reserve):
+            raise ExtractorUnavailable(
+                f"{self.name}: no wording budget left; using the approved reply"
+            )
 
-        last_error: Exception | None = None
-        for model in models:
-            for extra in ({"reasoning_effort": "low"}, {}):
-                if time.monotonic() > deadline:
-                    raise ExtractorUnavailable(
-                        f"{self.name}: wording took longer than "
-                        f"{WORDING_BUDGET_SECONDS}s; using the approved reply"
-                    )
-                # Ask for the wording cost PLUS the reserve, so wording gives up while
-                # there is still room to read the next message. See the note on
-                # EXTRACTION_RESERVE_TOKENS.
-                # Hold back TOKENS (Groq's tight limit) and also REQUESTS (Gemini's).
-                # Gemini allows only 10 calls a minute, so two calls per turn means five
-                # turns before it stops -- and wording must not be what spends the last
-                # one. Reading the next message matters more than wording this reply.
-                # The reserve scales with how tight the provider is. Gemini allows only
-                # ten calls a minute, so spending one on wording costs a fifth of the
-                # minute's capacity -- wording must give way early there. Groq allows
-                # thirty and can afford to be generous.
-                reserve = 2 if self.provider.requests_per_minute >= 20 else 4
-                if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS,
-                                       reserve_requests=reserve):
-                    continue
-                try:
-                    # Rewording is much cheaper than reading: a short prompt, a short answer.
-                    self._note_call(model, 600)
-                    response = self._client.chat.completions.create(
-                        model=model, temperature=0.4, max_tokens=700,
-                        messages=[{"role": "system", "content": system},
-                                  {"role": "user", "content": user}],
-                        **extra,
-                    )
-                    self._record_usage(response)
-                    text = (response.choices[0].message.content or "").strip()
-                    if text:
-                        return text
-                except Exception as exc:  # noqa: BLE001
-                    last_error = exc
-                    if _is_rate_limited(exc):
-                        self._note_refusal(model, exc)
-                        break
-                    # `reasoning_effort` is a gpt-oss extra. If a model rejects it, the
-                    # retry without it is worth one go; any other failure means move on.
-                    if extra and "reasoning" in str(exc).lower():
-                        continue
-                    break
-        raise ExtractorUnavailable(f"{self.name}: {str(last_error)[:120]}") from last_error
+        try:
+            self._note_call(model, 600)
+            # reasoning_effort helps gpt-oss stay short; other models ignore or reject it.
+            try:
+                response = self._client.chat.completions.create(
+                    model=model, temperature=0.4, max_tokens=700,
+                    messages=[{"role": "system", "content": system},
+                              {"role": "user", "content": user}],
+                    reasoning_effort="low",
+                )
+            except Exception as first:  # noqa: BLE001
+                if "reasoning" not in str(first).lower():
+                    raise
+                response = self._client.chat.completions.create(
+                    model=model, temperature=0.4, max_tokens=700,
+                    messages=[{"role": "system", "content": system},
+                              {"role": "user", "content": user}],
+                )
+            self._record_usage(response)
+            text = (response.choices[0].message.content or "").strip()
+            if text:
+                return text
+            raise ExtractorUnavailable(f"{self.name}: empty wording reply")
+        except ExtractorUnavailable:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            if _is_rate_limited(exc):
+                self._note_refusal(model, exc)
+            raise ExtractorUnavailable(f"{self.name}: {str(exc)[:120]}") from exc
 
     # ---- helpers ------------------------------------------------------------
 

@@ -14,6 +14,7 @@ venv/
 # Models & artifacts
 *.joblib
 *.pkl
+ml/figures/.mplconfig/
 
 # OS
 .DS_Store

@@ -1,0 +1,338 @@
+{
+  "data_file": "CliniKit_NoShow_Dataset.csv",
+  "exploration": {
+    "rows": 3000,
+    "columns": 12,
+    "no_shows": 478,
+    "no_show_rate": 0.15933333333333333,
+    "missing_cells": 0,
+    "duplicate_rows": 0,
+    "duplicate_ids": 0,
+    "reminder_rates": {
+      "0": {
+        "size": 639,
+        "mean": 0.2222222222222222
+      },
+      "1": {
+        "size": 2361,
+        "mean": 0.1423125794155019
+      }
+    },
+    "appointment_type_rates": {
+      "New Consultation": {
+        "size": 715,
+        "mean": 0.2013986013986014
+      },
+      "Urgent Visit": {
+        "size": 280,
+        "mean": 0.16785714285714284
+      },
+      "Follow-up": {
+        "size": 1118,
+        "mean": 0.1547406082289803
+      },
+      "Routine Check": {
+        "size": 539,
+        "mean": 0.14285714285714285
+      },
+      "Procedure": {
+        "size": 348,
+        "mean": 0.10632183908045977
+      }
+    },
+    "weekday_rates": {
+      "Friday": {
+        "size": 536,
+        "mean": 0.18470149253731344
+      },
+      "Tuesday": {
+        "size": 553,
+        "mean": 0.1609403254972875
+      },
+      "Wednesday": {
+        "size": 537,
+        "mean": 0.15828677839851024
+      },
+      "Saturday": {
+        "size": 333,
+        "mean": 0.15615615615615616
+      },
+      "Thursday": {
+        "size": 521,
+        "mean": 0.14971209213051823
+      },
+      "Monday": {
+        "size": 520,
+        "mean": 0.14423076923076922
+      }
+    }
+  },
+  "random_state": 42,
+  "test_fraction": 0.2,
+  "cv_folds": 5,
+  "n_train": 2400,
+  "n_test": 600,
+  "model_comparison": [
+    {
+      "model": "logistic_regression",
+      "cv_roc_auc_mean": 0.6938037229206605,
+      "cv_roc_auc_std": 0.033452463775307334,
+      "cv_pr_auc_mean": 0.36771602675801757,
+      "cv_balanced_accuracy_mean": 0.5457110045227177
+    },
+    {
+      "model": "random_forest",
+      "cv_roc_auc_mean": 0.6715179078683257,
+      "cv_roc_auc_std": 0.022113060426729638,
+      "cv_pr_auc_mean": 0.3325004698967654,
+      "cv_balanced_accuracy_mean": 0.6582911238940085
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "cv_roc_auc_mean": 0.6476069522939533,
+      "cv_roc_auc_std": 0.018979643556274316,
+      "cv_pr_auc_mean": 0.2942817943309041,
+      "cv_balanced_accuracy_mean": 0.6242112704992397
+    },
+    {
+      "model": "dummy_baseline",
+      "cv_roc_auc_mean": 0.5,
+      "cv_roc_auc_std": 0.0,
+      "cv_pr_auc_mean": 0.15916666666666665,
+      "cv_balanced_accuracy_mean": 0.5
+    }
+  ],
+  "selected_model": "logistic_regression",
+  "threshold": 0.262569135889813,
+  "threshold_method": "maximum no-show F1 on out-of-fold training predictions",
+  "training_oof_precision": 0.4371069182389937,
+  "training_oof_recall": 0.36387434554973824,
+  "training_oof_f1": 0.3971428571428572,
+  "test_no_show_rate": 0.16,
+  "baseline_accuracy_all_attend": 0.84,
+  "test_accuracy": 0.8066666666666666,
+  "test_balanced_accuracy": 0.6192956349206349,
+  "test_roc_auc": 0.695436507936508,
+  "test_pr_auc": 0.3719994483084367,
+  "test_brier_score": 0.12075992821398605,
+  "test_precision_no_show": 0.38372093023255816,
+  "test_recall_no_show": 0.34375,
+  "test_f1_no_show": 0.3626373626373626,
+  "confusion_matrix": [
+    [
+      451,
+      53
+    ],
+    [
+      63,
+      33
+    ]
+  ],
+  "classification_report": {
+    "attended": {
+      "precision": 0.877431906614786,
+      "recall": 0.8948412698412699,
+      "f1-score": 0.8860510805500982,
+      "support": 504.0
+    },
+    "no_show": {
+      "precision": 0.38372093023255816,
+      "recall": 0.34375,
+      "f1-score": 0.3626373626373626,
+      "support": 96.0
+    },
+    "accuracy": 0.8066666666666666,
+    "macro avg": {
+      "precision": 0.6305764184236721,
+      "recall": 0.6192956349206349,
+      "f1-score": 0.6243442215937304,
+      "support": 600.0
+    },
+    "weighted avg": {
+      "precision": 0.7984381503936294,
+      "recall": 0.8066666666666666,
+      "f1-score": 0.8023048856840606,
+      "support": 600.0
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "previous_no_shows",
+      "auc_drop": 0.1989976025132276,
+      "std": 0.025053566868829865
+    },
+    {
+      "feature": "reminder_sent",
+      "auc_drop": 0.024331390542328107,
+      "std": 0.014159010197357939
+    },
+    {
+      "feature": "appointment_type",
+      "auc_drop": 0.008154555224867799,
+      "std": 0.00758477049518553
+    },
+    {
+      "feature": "days_before_appointment",
+      "auc_drop": 0.00690207506613767,
+      "std": 0.005161378703540477
+    },
+    {
+      "feature": "age",
+      "auc_drop": 0.0037760416666667573,
+      "std": 0.0013642141219907052
+    },
+    {
+      "feature": "new_patient",
+      "auc_drop": 0.0012824487433863608,
+      "std": 0.006415376791612065
+    },
+    {
+      "feature": "past_no_show_rate",
+      "auc_drop": 0.0008370535714286587,
+      "std": 0.002121491343106533
+    },
+    {
+      "feature": "appointment_time",
+      "auc_drop": 0.0006448412698413563,
+      "std": 0.004741110636610223
+    },
+    {
+      "feature": "gender",
+      "auc_drop": 0.00020564649470905527,
+      "std": 0.0003238664709116421
+    },
+    {
+      "feature": "previous_appointments",
+      "auc_drop": -0.004647197420634863,
+      "std": 0.0025214377443230082
+    },
+    {
+      "feature": "weekday",
+      "auc_drop": -0.018800636574074,
+      "std": 0.00786902117722646
+    }
+  ],
+  "top_coefficients": [
+    {
+      "feature": "number__previous_no_shows",
+      "coefficient": 0.7139612202246991
+    },
+    {
+      "feature": "category__appointment_type_Procedure",
+      "coefficient": -0.37028738695369073
+    },
+    {
+      "feature": "category__weekday_Friday",
+      "coefficient": 0.3176729815045068
+    },
+    {
+      "feature": "category__appointment_type_New Consultation",
+      "coefficient": 0.2941616566453389
+    },
+    {
+      "feature": "number__reminder_sent",
+      "coefficient": -0.2835897181661783
+    },
+    {
+      "feature": "category__weekday_Thursday",
+      "coefficient": -0.25997528258035046
+    },
+    {
+      "feature": "category__weekday_Monday",
+      "coefficient": -0.22314293227687138
+    },
+    {
+      "feature": "number__new_patient",
+      "coefficient": 0.18170507385878581
+    },
+    {
+      "feature": "category__appointment_type_Urgent Visit",
+      "coefficient": 0.16621114096622353
+    },
+    {
+      "feature": "category__appointment_time_14:00-16:00",
+      "coefficient": -0.13585408037041788
+    },
+    {
+      "feature": "category__weekday_Tuesday",
+      "coefficient": 0.12207338510899575
+    },
+    {
+      "feature": "category__appointment_time_16:00-18:00",
+      "coefficient": 0.12089020894049957
+    },
+    {
+      "feature": "category__appointment_time_08:00-10:00",
+      "coefficient": -0.11089196342729318
+    },
+    {
+      "feature": "number__days_before_appointment",
+      "coefficient": 0.09373314067609181
+    },
+    {
+      "feature": "category__appointment_type_Routine Check",
+      "coefficient": -0.09304701436242183
+    },
+    {
+      "feature": "category__appointment_time_12:00-14:00",
+      "coefficient": 0.07656971352336847
+    },
+    {
+      "feature": "category__weekday_Wednesday",
+      "coefficient": 0.07252393217655209
+    },
+    {
+      "feature": "category__appointment_time_18:00-20:00",
+      "coefficient": 0.06540724085423075
+    },
+    {
+      "feature": "number__previous_appointments",
+      "coefficient": -0.06381787384683656
+    },
+    {
+      "feature": "number__past_no_show_rate",
+      "coefficient": 0.047180139768544314
+    },
+    {
+      "feature": "number__age",
+      "coefficient": -0.04012274825241685
+    },
+    {
+      "feature": "category__weekday_Saturday",
+      "coefficient": -0.03340439747244363
+    },
+    {
+      "feature": "category__appointment_time_10:00-12:00",
+      "coefficient": -0.020373433059997965
+    },
+    {
+      "feature": "category__gender_Female",
+      "coefficient": -0.009378695641888323
+    },
+    {
+      "feature": "category__gender_Male",
+      "coefficient": 0.005126382102273907
+    },
+    {
+      "feature": "category__appointment_type_Follow-up",
+      "coefficient": -0.001290709835041405
+    }
+  ],
+  "example_predictions": [
+    {
+      "label": "Returning patient, reminder sent, no earlier misses",
+      "no_show_probability": 0.059505191057547854,
+      "flagged": false
+    },
+    {
+      "label": "New consultation, booked well ahead, no reminder",
+      "no_show_probability": 0.3809832210824744,
+      "flagged": true
+    },
+    {
+      "label": "Returning patient with several earlier misses, no reminder",
+      "no_show_probability": 0.8457396216033118,
+      "flagged": true
+    }
+  ]
+}

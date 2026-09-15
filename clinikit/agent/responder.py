@@ -231,7 +231,7 @@ def _inform(decision: Decision, extraction) -> Reply:
         return Reply(
             opening="Here are our opening hours.",
             body=tuple(describe_opening_hours().splitlines()),
-            closing="Would you like to book something?",
+            closing="Anything else I can help with?",
         )
 
     if topic == "which_doctor" and decision.candidates:
@@ -268,8 +268,11 @@ def _availability(decision: Decision, result: ToolResult, extraction) -> Reply:
     # The patient said not to act yet. Say so plainly so they know we listened.
     if decision.guarantee == "G1":
         opening = "Understood — I won't book anything yet."
-    elif decision.guarantee in ("G4", "G5"):
-        opening = decision.reason
+    elif decision.guarantee == "G4":
+        opening = ("That time sits outside clinic hours." if who is None
+                   else f"That time sits outside {who}'s hours.")
+    elif decision.guarantee == "G5":
+        opening = "That slot isn't free."
     elif who:
         opening = f"{who} has these free:"
     else:
@@ -295,7 +298,7 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
         if offer.kind == "create":
             return Reply(
                 opening=f"{offer.summary}.",
-                closing="Shall I lock that in?",
+                closing="Shall I book that for you?",
                 goal="Repeat back the exact doctor and time, and ask them to confirm. "
                      "NOTHING is booked yet - make that unmistakable.",
             )
@@ -384,8 +387,8 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
 
     if "different_time" in missing:
         return Reply(
-            opening="No problem.",
-            closing="What day or time would work better for you?",
+            opening="No problem — none of those then.",
+            closing="What day or time would work better?",
             goal="None of the times we listed suit them. NOTHING was being booked, so do "
                  "not mention booking or cancelling. Just ask what would suit better.",
         )

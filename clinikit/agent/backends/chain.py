@@ -92,13 +92,35 @@ class ChainExtractor(Extractor):
         )
 
     def write_text(self, system: str, user: str) -> str:
-        problems = []
-        for extractor in self._extractors:
+        """
+        Word a reply using the same provider that just read the message, when possible.
+
+        Used to walk the whole chain from Groq every time — even after Groq was exhausted
+        for the day — which wasted seconds and quota on a luxury call.
+        """
+        problems: list[str] = []
+        now = time.monotonic()
+
+        ordered = list(self._extractors)
+        if self.last_used:
+            ordered.sort(key=lambda e: 0 if e.name == self.last_used else 1)
+
+        for extractor in ordered:
+            resting = self._resting_until.get(extractor.name, 0.0)
+            if resting > now:
+                problems.append(
+                    f"{extractor.name}: resting for {int(resting - now)}s"
+                )
+                continue
             try:
                 return extractor.write_text(system, user)
             except ExtractorUnavailable as exc:
-                problems.append(str(exc)[:60])
-        raise ExtractorUnavailable("no provider could write text: " + " | ".join(problems))
+                problems.append(f"{extractor.name}: {str(exc)[:60]}")
+                continue
+
+        raise ExtractorUnavailable(
+            "no provider could write text: " + " | ".join(problems)
+        )
 
     def __repr__(self) -> str:
         return f"<ChainExtractor {' -> '.join(self.members)}>"

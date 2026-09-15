@@ -1,0 +1,3001 @@
+﻿appointment_id,age,gender,appointment_type,days_before_appointment,previous_appointments,previous_no_shows,weekday,appointment_time,reminder_sent,new_patient,no_show
+1,59,Female,Follow-up,12,7,1,Monday,16:00-18:00,0,0,0
+2,92,Male,Follow-up,4,4,2,Monday,08:00-10:00,1,0,1
+3,59,Female,Follow-up,17,0,0,Wednesday,10:00-12:00,0,1,0
+4,66,Female,New Consultation,7,0,0,Tuesday,12:00-14:00,1,1,0
+5,65,Male,Routine Check,17,2,0,Thursday,14:00-16:00,0,0,0
+6,54,Male,Follow-up,13,5,1,Friday,10:00-12:00,0,0,0
+7,2,Male,New Consultation,23,0,0,Tuesday,14:00-16:00,1,1,0
+8,45,Male,New Consultation,18,1,0,Friday,18:00-20:00,1,0,0
+9,44,Female,Follow-up,13,7,0,Tuesday,18:00-20:00,1,0,1
+10,39,Female,Follow-up,19,8,2,Tuesday,14:00-16:00,1,0,0
+11,40,Female,Routine Check,15,23,1,Friday,18:00-20:00,1,0,0
+12,53,Female,Follow-up,13,1,0,Saturday,08:00-10:00,0,0,1
+13,50,Female,Procedure,11,1,0,Monday,08:00-10:00,1,0,0
+14,55,Male,Follow-up,15,0,0,Tuesday,16:00-18:00,0,1,0
+15,42,Female,New Consultation,5,2,1,Wednesday,16:00-18:00,0,0,1
+16,39,Male,Follow-up,7,1,1,Tuesday,08:00-10:00,0,0,0
+17,1,Female,New Consultation,9,5,0,Saturday,08:00-10:00,0,0,1
+18,65,Female,New Consultation,13,0,0,Saturday,16:00-18:00,1,1,0
+19,45,Male,Routine Check,19,10,2,Monday,10:00-12:00,0,0,0
+20,27,Female,Follow-up,9,1,0,Wednesday,12:00-14:00,0,0,0
+21,41,Female,Routine Check,6,1,0,Saturday,14:00-16:00,1,0,0
+22,80,Male,New Consultation,1,2,0,Wednesday,16:00-18:00,0,0,0
+23,16,Male,Follow-up,5,3,0,Wednesday,18:00-20:00,1,0,1
+24,36,Male,Routine Check,17,0,0,Saturday,12:00-14:00,1,1,0
+25,43,Female,Urgent Visit,1,0,0,Tuesday,16:00-18:00,1,1,0
+26,48,Female,New Consultation,4,0,0,Wednesday,16:00-18:00,1,1,0
+27,68,Male,Follow-up,6,0,0,Friday,14:00-16:00,1,1,0
+28,60,Male,Follow-up,4,11,2,Friday,10:00-12:00,1,0,1
+29,34,Female,Routine Check,12,10,1,Wednesday,10:00-12:00,1,0,0
+30,78,Female,New Consultation,2,0,0,Thursday,16:00-18:00,1,1,0
+31,46,Female,New Consultation,6,11,1,Thursday,10:00-12:00,1,0,0
+32,37,Female,Procedure,0,9,3,Tuesday,10:00-12:00,1,0,0
+33,58,Male,Follow-up,0,0,0,Thursday,12:00-14:00,1,1,0
+34,53,Female,Urgent Visit,3,1,0,Thursday,12:00-14:00,1,0,0
+35,52,Female,New Consultation,6,1,0,Monday,18:00-20:00,1,0,0
+36,33,Female,Procedure,12,7,0,Thursday,18:00-20:00,1,0,0
+37,59,Male,New Consultation,10,9,1,Tuesday,12:00-14:00,1,0,0
+38,74,Male,Follow-up,6,0,0,Friday,18:00-20:00,1,1,0
+39,32,Male,Follow-up,7,4,0,Thursday,14:00-16:00,1,0,0
+40,44,Female,New Consultation,22,1,0,Saturday,12:00-14:00,0,0,0
+41,37,Male,Urgent Visit,2,4,0,Wednesday,14:00-16:00,1,0,0
+42,9,Male,Procedure,9,2,1,Tuesday,12:00-14:00,1,0,0
+43,46,Female,Routine Check,3,12,3,Thursday,14:00-16:00,1,0,1
+44,75,Male,Follow-up,1,0,0,Monday,18:00-20:00,1,1,0
+45,37,Female,Follow-up,9,0,0,Wednesday,14:00-16:00,1,1,0
+46,53,Female,Urgent Visit,2,9,3,Wednesday,08:00-10:00,0,0,0
+47,28,Female,New Consultation,20,10,1,Monday,12:00-14:00,1,0,0
+48,1,Male,Procedure,7,11,3,Monday,10:00-12:00,1,0,0
+49,54,Female,Procedure,8,10,0,Friday,12:00-14:00,0,0,0
+50,41,Female,Follow-up,2,0,0,Friday,16:00-18:00,0,1,0
+51,59,Female,Procedure,4,3,1,Wednesday,14:00-16:00,1,0,0
+52,1,Male,Follow-up,3,14,0,Friday,16:00-18:00,0,0,0
+53,36,Female,Procedure,5,8,0,Monday,18:00-20:00,0,0,0
+54,40,Male,Routine Check,8,5,2,Saturday,10:00-12:00,1,0,0
+55,74,Male,Procedure,11,0,0,Saturday,14:00-16:00,1,1,0
+56,72,Male,Follow-up,2,2,0,Thursday,08:00-10:00,1,0,0
+57,26,Female,Urgent Visit,5,5,1,Tuesday,16:00-18:00,1,0,1
+58,28,Female,Follow-up,9,0,0,Saturday,14:00-16:00,1,1,1
+59,33,Female,Routine Check,34,6,0,Tuesday,18:00-20:00,1,0,0
+60,72,Female,Routine Check,12,0,0,Tuesday,18:00-20:00,1,1,0
+61,65,Male,Follow-up,5,0,0,Friday,16:00-18:00,0,1,0
+62,30,Male,Routine Check,8,2,0,Friday,18:00-20:00,0,0,1
+63,24,Female,Procedure,3,2,0,Thursday,10:00-12:00,1,0,0
+64,18,Male,Procedure,7,5,1,Wednesday,08:00-10:00,1,0,0
+65,44,Male,Urgent Visit,3,5,1,Monday,16:00-18:00,1,0,1
+66,74,Female,Procedure,11,5,0,Tuesday,18:00-20:00,0,0,0
+67,51,Male,Follow-up,11,4,0,Saturday,14:00-16:00,1,0,1
+68,26,Female,Routine Check,19,0,0,Wednesday,12:00-14:00,0,1,0
+69,51,Male,New Consultation,26,5,1,Thursday,08:00-10:00,1,0,0
+70,23,Female,Procedure,15,0,0,Saturday,08:00-10:00,1,1,0
+71,32,Female,Follow-up,6,1,0,Tuesday,16:00-18:00,1,0,0
+72,47,Male,Routine Check,5,2,1,Thursday,12:00-14:00,0,0,0
+73,60,Female,Procedure,29,0,0,Wednesday,18:00-20:00,1,1,0
+74,28,Female,Follow-up,25,8,2,Saturday,12:00-14:00,1,0,1
+75,47,Male,Follow-up,1,2,0,Thursday,10:00-12:00,1,0,1
+76,43,Female,Follow-up,4,6,0,Thursday,14:00-16:00,1,0,0
+77,41,Female,New Consultation,19,1,0,Thursday,14:00-16:00,1,0,0
+78,29,Male,Urgent Visit,0,2,1,Friday,10:00-12:00,1,0,0
+79,61,Male,Follow-up,17,3,1,Saturday,12:00-14:00,0,0,0
+80,33,Female,Follow-up,5,1,0,Monday,08:00-10:00,0,0,1
+81,26,Female,New Consultation,10,4,0,Friday,12:00-14:00,1,0,0
+82,48,Male,Routine Check,3,8,0,Tuesday,12:00-14:00,1,0,0
+83,49,Male,Follow-up,32,3,0,Thursday,16:00-18:00,1,0,0
+84,36,Female,Routine Check,10,1,0,Friday,16:00-18:00,1,0,1
+85,25,Male,Follow-up,16,1,0,Tuesday,12:00-14:00,1,0,0
+86,42,Male,Procedure,4,0,0,Thursday,08:00-10:00,1,1,0
+87,63,Male,Routine Check,14,9,0,Thursday,16:00-18:00,1,0,0
+88,41,Male,Routine Check,18,2,0,Monday,10:00-12:00,0,0,0
+89,28,Female,New Consultation,11,1,0,Friday,18:00-20:00,1,0,0
+90,27,Female,Follow-up,6,3,0,Friday,16:00-18:00,1,0,0
+91,37,Female,New Consultation,2,5,1,Friday,14:00-16:00,1,0,1
+92,66,Female,New Consultation,21,4,1,Wednesday,12:00-14:00,1,0,0
+93,41,Female,Follow-up,16,15,3,Friday,14:00-16:00,0,0,1
+94,44,Female,Follow-up,3,7,2,Monday,08:00-10:00,0,0,0
+95,21,Male,New Consultation,21,0,0,Friday,16:00-18:00,1,1,0
+96,24,Female,Follow-up,16,1,0,Wednesday,16:00-18:00,1,0,0
+97,23,Male,Routine Check,6,1,1,Tuesday,10:00-12:00,1,0,0
+98,50,Female,Follow-up,2,3,0,Wednesday,12:00-14:00,0,0,0
+99,88,Female,Routine Check,16,1,0,Tuesday,10:00-12:00,1,0,0
+100,41,Female,Follow-up,4,0,0,Monday,16:00-18:00,1,1,0
+101,29,Female,Follow-up,9,18,3,Monday,18:00-20:00,1,0,0
+102,51,Female,New Consultation,6,0,0,Friday,12:00-14:00,1,1,0
+103,54,Male,New Consultation,13,16,3,Tuesday,12:00-14:00,1,0,0
+104,23,Female,New Consultation,2,1,0,Tuesday,18:00-20:00,1,0,1
+105,53,Female,Routine Check,16,5,2,Friday,18:00-20:00,0,0,1
+106,31,Female,Routine Check,11,6,1,Friday,14:00-16:00,1,0,1
+107,55,Male,Routine Check,4,1,0,Tuesday,16:00-18:00,1,0,0
+108,36,Female,Urgent Visit,1,2,0,Wednesday,16:00-18:00,1,0,0
+109,52,Male,Follow-up,5,15,3,Monday,08:00-10:00,0,0,1
+110,59,Male,Follow-up,15,6,0,Friday,12:00-14:00,1,0,0
+111,58,Female,Procedure,7,4,2,Thursday,18:00-20:00,1,0,0
+112,45,Female,New Consultation,4,1,0,Wednesday,12:00-14:00,1,0,1
+113,25,Female,Routine Check,6,9,0,Friday,18:00-20:00,1,0,0
+114,8,Female,Routine Check,8,0,0,Tuesday,14:00-16:00,1,1,0
+115,55,Female,Routine Check,6,3,1,Thursday,14:00-16:00,1,0,1
+116,65,Female,Follow-up,23,9,3,Friday,08:00-10:00,1,0,0
+117,54,Female,Urgent Visit,7,3,0,Wednesday,16:00-18:00,1,0,0
+118,47,Female,Urgent Visit,2,0,0,Wednesday,14:00-16:00,1,1,0
+119,16,Male,Follow-up,16,1,0,Tuesday,18:00-20:00,0,0,1
+120,34,Male,New Consultation,1,1,0,Wednesday,16:00-18:00,1,0,1
+121,32,Female,Follow-up,17,0,0,Thursday,10:00-12:00,1,1,0
+122,18,Female,Follow-up,14,8,1,Tuesday,12:00-14:00,1,0,0
+123,44,Female,Routine Check,4,3,1,Thursday,16:00-18:00,1,0,0
+124,38,Male,Follow-up,4,5,0,Saturday,12:00-14:00,1,0,0
+125,65,Female,New Consultation,11,8,1,Monday,08:00-10:00,0,0,0
+126,29,Female,Urgent Visit,1,14,4,Wednesday,18:00-20:00,1,0,0
+127,53,Female,Procedure,27,10,1,Saturday,14:00-16:00,1,0,0
+128,25,Male,Procedure,14,6,1,Saturday,16:00-18:00,1,0,0
+129,9,Male,Urgent Visit,1,6,1,Monday,12:00-14:00,1,0,1
+130,67,Male,New Consultation,6,3,0,Wednesday,16:00-18:00,1,0,0
+131,76,Male,Routine Check,12,4,0,Tuesday,10:00-12:00,1,0,0
+132,11,Male,Procedure,15,0,0,Thursday,10:00-12:00,1,1,0
+133,51,Female,Follow-up,31,1,0,Thursday,16:00-18:00,0,0,0
+134,54,Female,Follow-up,15,0,0,Wednesday,16:00-18:00,1,1,1
+135,70,Male,Procedure,16,0,0,Saturday,10:00-12:00,1,1,0
+136,52,Female,Urgent Visit,1,1,0,Wednesday,16:00-18:00,1,0,1
+137,34,Male,Routine Check,19,13,2,Saturday,08:00-10:00,1,0,0
+138,23,Female,New Consultation,8,7,1,Thursday,16:00-18:00,1,0,0
+139,25,Male,New Consultation,10,0,0,Tuesday,16:00-18:00,1,1,1
+140,50,Female,Follow-up,11,0,0,Saturday,14:00-16:00,1,1,0
+141,65,Female,Procedure,4,0,0,Monday,12:00-14:00,1,1,0
+142,76,Male,Routine Check,14,0,0,Thursday,16:00-18:00,1,1,0
+143,25,Female,New Consultation,22,1,0,Tuesday,08:00-10:00,0,0,0
+144,28,Male,Routine Check,31,0,0,Friday,14:00-16:00,1,1,0
+145,19,Male,New Consultation,2,2,0,Saturday,12:00-14:00,0,0,0
+146,35,Male,Follow-up,3,9,3,Monday,10:00-12:00,1,0,1
+147,53,Female,Procedure,2,21,3,Wednesday,14:00-16:00,1,0,0
+148,20,Female,Urgent Visit,1,3,0,Wednesday,10:00-12:00,1,0,0
+149,51,Female,Urgent Visit,5,4,0,Friday,08:00-10:00,0,0,0
+150,19,Female,Urgent Visit,4,0,0,Friday,10:00-12:00,1,1,1
+151,65,Female,Routine Check,11,2,0,Monday,10:00-12:00,1,0,0
+152,48,Female,New Consultation,17,2,1,Monday,14:00-16:00,1,0,0
+153,36,Male,Follow-up,8,3,0,Monday,12:00-14:00,1,0,0
+154,48,Male,Follow-up,8,2,0,Thursday,08:00-10:00,1,0,0
+155,59,Female,Follow-up,5,1,0,Friday,10:00-12:00,1,0,0
+156,46,Female,Procedure,5,7,0,Thursday,08:00-10:00,1,0,0
+157,54,Female,Follow-up,2,7,2,Friday,08:00-10:00,0,0,0
+158,25,Male,Follow-up,6,22,3,Wednesday,14:00-16:00,1,0,1
+159,40,Male,Follow-up,10,1,1,Thursday,08:00-10:00,1,0,0
+160,43,Male,Routine Check,12,15,4,Saturday,18:00-20:00,1,0,0
+161,44,Male,Follow-up,3,4,1,Monday,16:00-18:00,1,0,0
+162,33,Female,Urgent Visit,6,4,0,Thursday,16:00-18:00,1,0,0
+163,55,Female,Procedure,10,2,1,Monday,10:00-12:00,1,0,0
+164,57,Male,New Consultation,5,0,0,Tuesday,16:00-18:00,1,1,0
+165,16,Female,Routine Check,21,6,0,Tuesday,16:00-18:00,1,0,0
+166,48,Male,Procedure,2,0,0,Friday,14:00-16:00,0,1,0
+167,23,Male,Routine Check,12,9,2,Wednesday,14:00-16:00,1,0,0
+168,56,Female,Follow-up,1,10,2,Wednesday,18:00-20:00,0,0,0
+169,57,Male,Follow-up,3,0,0,Friday,16:00-18:00,1,1,0
+170,50,Male,New Consultation,17,8,1,Monday,16:00-18:00,0,0,0
+171,6,Male,Routine Check,12,11,1,Thursday,16:00-18:00,1,0,0
+172,52,Female,Routine Check,11,14,0,Friday,10:00-12:00,0,0,0
+173,58,Female,Follow-up,3,0,0,Friday,14:00-16:00,1,1,0
+174,23,Male,Follow-up,11,0,0,Friday,10:00-12:00,1,1,0
+175,76,Female,Follow-up,2,4,1,Tuesday,14:00-16:00,1,0,0
+176,43,Male,Follow-up,16,0,0,Thursday,12:00-14:00,0,1,0
+177,25,Male,Follow-up,2,1,0,Wednesday,18:00-20:00,0,0,0
+178,53,Male,Follow-up,3,7,1,Tuesday,16:00-18:00,1,0,0
+179,28,Female,New Consultation,4,1,0,Thursday,14:00-16:00,1,0,1
+180,48,Female,Urgent Visit,1,1,0,Tuesday,14:00-16:00,1,0,0
+181,38,Male,Follow-up,5,1,0,Monday,10:00-12:00,0,0,1
+182,51,Male,New Consultation,4,11,2,Monday,12:00-14:00,1,0,0
+183,34,Female,Follow-up,3,0,0,Tuesday,16:00-18:00,1,1,0
+184,56,Female,Follow-up,19,0,0,Wednesday,18:00-20:00,1,1,1
+185,35,Female,Follow-up,12,4,0,Friday,08:00-10:00,0,0,0
+186,54,Female,Procedure,4,2,0,Friday,14:00-16:00,1,0,0
+187,6,Female,Follow-up,7,3,0,Friday,18:00-20:00,1,0,0
+188,43,Female,New Consultation,5,1,0,Monday,16:00-18:00,1,0,0
+189,32,Female,Follow-up,11,0,0,Wednesday,10:00-12:00,0,1,0
+190,35,Female,Routine Check,7,18,1,Saturday,18:00-20:00,1,0,0
+191,22,Female,New Consultation,13,0,0,Tuesday,10:00-12:00,1,1,0
+192,40,Female,Urgent Visit,1,2,0,Saturday,08:00-10:00,1,0,0
+193,42,Female,Urgent Visit,2,2,0,Tuesday,10:00-12:00,0,0,0
+194,38,Female,Routine Check,15,12,3,Thursday,10:00-12:00,1,0,1
+195,56,Female,Routine Check,7,3,1,Thursday,14:00-16:00,0,0,0
+196,67,Male,Routine Check,7,0,0,Thursday,16:00-18:00,1,1,0
+197,11,Male,Follow-up,6,0,0,Thursday,10:00-12:00,1,1,0
+198,45,Female,New Consultation,4,0,0,Friday,08:00-10:00,1,1,0
+199,29,Male,New Consultation,7,0,0,Saturday,10:00-12:00,1,1,0
+200,55,Female,Urgent Visit,2,0,0,Tuesday,08:00-10:00,1,1,0
+201,45,Male,Follow-up,16,4,1,Saturday,16:00-18:00,1,0,0
+202,40,Male,Routine Check,23,1,0,Monday,14:00-16:00,1,0,0
+203,39,Male,Follow-up,20,0,0,Wednesday,10:00-12:00,1,1,0
+204,50,Male,Follow-up,2,2,0,Wednesday,08:00-10:00,1,0,0
+205,41,Female,Procedure,13,0,0,Monday,08:00-10:00,0,1,0
+206,61,Female,Urgent Visit,0,3,0,Friday,12:00-14:00,1,0,0
+207,60,Male,Urgent Visit,0,3,0,Friday,12:00-14:00,1,0,0
+208,31,Male,Routine Check,11,0,0,Friday,14:00-16:00,1,1,0
+209,47,Female,Procedure,0,2,0,Monday,12:00-14:00,1,0,0
+210,47,Female,New Consultation,20,0,0,Tuesday,16:00-18:00,1,1,0
+211,49,Female,Follow-up,7,0,0,Tuesday,10:00-12:00,1,1,0
+212,56,Male,Routine Check,4,1,0,Monday,14:00-16:00,1,0,1
+213,56,Female,Routine Check,19,24,3,Friday,10:00-12:00,1,0,1
+214,55,Male,Follow-up,1,5,1,Thursday,08:00-10:00,0,0,0
+215,37,Male,Urgent Visit,1,9,3,Friday,10:00-12:00,0,0,1
+216,55,Female,Follow-up,42,4,1,Thursday,12:00-14:00,0,0,0
+217,27,Male,New Consultation,13,12,0,Monday,14:00-16:00,1,0,0
+218,63,Male,Procedure,1,4,0,Tuesday,10:00-12:00,1,0,1
+219,44,Male,New Consultation,10,8,1,Wednesday,14:00-16:00,0,0,0
+220,54,Male,Routine Check,10,1,0,Thursday,16:00-18:00,1,0,0
+221,46,Male,Procedure,11,1,1,Wednesday,12:00-14:00,0,0,0
+222,32,Female,Follow-up,3,1,0,Wednesday,08:00-10:00,0,0,0
+223,36,Male,Follow-up,0,4,1,Wednesday,10:00-12:00,1,0,0
+224,30,Female,Urgent Visit,3,1,0,Thursday,14:00-16:00,1,0,0
+225,17,Male,Urgent Visit,3,0,0,Friday,14:00-16:00,1,1,1
+226,32,Male,Urgent Visit,1,7,1,Saturday,14:00-16:00,1,0,0
+227,42,Female,Follow-up,31,0,0,Tuesday,18:00-20:00,1,1,0
+228,61,Female,Follow-up,11,0,0,Wednesday,16:00-18:00,0,1,0
+229,64,Female,Routine Check,15,3,0,Wednesday,16:00-18:00,1,0,0
+230,15,Male,Follow-up,22,7,2,Friday,10:00-12:00,1,0,1
+231,26,Female,Follow-up,10,1,0,Saturday,18:00-20:00,0,0,0
+232,30,Male,Follow-up,9,0,0,Wednesday,16:00-18:00,1,1,0
+233,9,Female,Follow-up,15,29,5,Saturday,14:00-16:00,1,0,0
+234,30,Male,New Consultation,17,1,1,Tuesday,12:00-14:00,1,0,0
+235,34,Female,New Consultation,17,6,1,Friday,16:00-18:00,0,0,0
+236,42,Female,Follow-up,9,8,2,Tuesday,10:00-12:00,1,0,0
+237,42,Male,New Consultation,19,11,1,Thursday,18:00-20:00,0,0,0
+238,18,Female,Follow-up,15,3,1,Friday,16:00-18:00,1,0,1
+239,58,Female,Follow-up,9,3,0,Tuesday,12:00-14:00,0,0,0
+240,26,Male,Urgent Visit,6,9,0,Thursday,18:00-20:00,1,0,0
+241,21,Female,Follow-up,15,0,0,Monday,10:00-12:00,1,1,0
+242,55,Male,Follow-up,9,0,0,Friday,12:00-14:00,1,1,0
+243,69,Female,Follow-up,1,1,1,Wednesday,10:00-12:00,1,0,0
+244,68,Male,New Consultation,9,4,0,Thursday,12:00-14:00,1,0,0
+245,43,Male,Follow-up,5,5,0,Thursday,16:00-18:00,1,0,0
+246,46,Female,Follow-up,5,2,0,Friday,16:00-18:00,1,0,0
+247,54,Female,Follow-up,3,11,1,Monday,16:00-18:00,0,0,0
+248,46,Female,Routine Check,16,1,0,Thursday,16:00-18:00,0,0,1
+249,62,Female,New Consultation,9,12,4,Monday,10:00-12:00,0,0,1
+250,64,Female,Routine Check,13,5,0,Tuesday,16:00-18:00,0,0,1
+251,70,Female,Routine Check,6,0,0,Tuesday,16:00-18:00,1,1,1
+252,32,Female,Routine Check,4,1,0,Friday,16:00-18:00,1,0,0
+253,39,Female,Follow-up,10,0,0,Thursday,12:00-14:00,1,1,0
+254,46,Female,Routine Check,20,9,2,Monday,14:00-16:00,0,0,0
+255,47,Male,New Consultation,4,9,3,Friday,18:00-20:00,0,0,1
+256,58,Female,Follow-up,17,1,0,Friday,18:00-20:00,1,0,0
+257,42,Male,Follow-up,3,2,1,Monday,12:00-14:00,0,0,0
+258,55,Female,Follow-up,20,7,0,Friday,10:00-12:00,1,0,0
+259,37,Male,Procedure,9,0,0,Tuesday,10:00-12:00,1,1,0
+260,17,Female,Urgent Visit,1,1,1,Tuesday,14:00-16:00,1,0,0
+261,42,Male,New Consultation,7,0,0,Monday,12:00-14:00,1,1,0
+262,29,Female,Follow-up,9,2,1,Tuesday,18:00-20:00,1,0,0
+263,62,Male,Procedure,12,11,2,Tuesday,14:00-16:00,1,0,0
+264,7,Male,Routine Check,3,0,0,Wednesday,16:00-18:00,0,1,0
+265,44,Female,Routine Check,10,14,2,Monday,08:00-10:00,1,0,0
+266,13,Female,Follow-up,7,0,0,Tuesday,12:00-14:00,0,1,0
+267,40,Female,Follow-up,6,0,0,Saturday,14:00-16:00,1,1,0
+268,42,Female,Procedure,19,1,0,Wednesday,10:00-12:00,1,0,0
+269,62,Male,Follow-up,20,0,0,Tuesday,08:00-10:00,1,1,0
+270,46,Female,Follow-up,11,11,1,Monday,08:00-10:00,1,0,0
+271,37,Male,New Consultation,13,0,0,Saturday,16:00-18:00,1,1,0
+272,42,Female,Follow-up,2,1,0,Monday,10:00-12:00,1,0,0
+273,39,Male,Follow-up,8,10,2,Friday,10:00-12:00,0,0,0
+274,37,Male,Routine Check,17,4,0,Saturday,12:00-14:00,1,0,0
+275,31,Male,Routine Check,4,0,0,Thursday,08:00-10:00,1,1,0
+276,62,Female,Follow-up,3,4,1,Monday,12:00-14:00,0,0,0
+277,57,Female,Procedure,5,4,1,Tuesday,16:00-18:00,1,0,1
+278,55,Female,Routine Check,4,2,1,Wednesday,14:00-16:00,1,0,0
+279,56,Male,Follow-up,20,7,2,Wednesday,10:00-12:00,0,0,0
+280,27,Male,New Consultation,3,17,3,Monday,08:00-10:00,0,0,1
+281,50,Male,Follow-up,40,4,0,Friday,16:00-18:00,1,0,0
+282,45,Female,New Consultation,19,8,0,Tuesday,16:00-18:00,0,0,0
+283,50,Male,Follow-up,7,1,0,Monday,18:00-20:00,1,0,0
+284,42,Male,Follow-up,11,19,1,Wednesday,10:00-12:00,1,0,1
+285,47,Female,Follow-up,5,0,0,Tuesday,12:00-14:00,1,1,0
+286,56,Female,New Consultation,2,9,0,Saturday,14:00-16:00,0,0,0
+287,49,Male,New Consultation,7,0,0,Tuesday,18:00-20:00,0,1,0
+288,81,Male,Routine Check,32,1,0,Thursday,16:00-18:00,0,0,0
+289,6,Male,Follow-up,7,20,5,Wednesday,16:00-18:00,1,0,1
+290,46,Male,Follow-up,5,25,5,Tuesday,14:00-16:00,1,0,1
+291,38,Male,Follow-up,17,2,0,Tuesday,16:00-18:00,0,0,0
+292,45,Female,Follow-up,2,10,0,Wednesday,16:00-18:00,1,0,0
+293,38,Male,Urgent Visit,1,0,0,Monday,10:00-12:00,1,1,0
+294,51,Male,Routine Check,8,3,0,Tuesday,16:00-18:00,1,0,0
+295,41,Female,Routine Check,1,2,0,Monday,14:00-16:00,1,0,0
+296,36,Male,Routine Check,30,5,0,Friday,10:00-12:00,1,0,0
+297,30,Female,Procedure,17,4,0,Thursday,14:00-16:00,1,0,0
+298,55,Female,Follow-up,3,1,1,Tuesday,18:00-20:00,1,0,0
+299,44,Male,New Consultation,6,0,0,Monday,10:00-12:00,1,1,0
+300,49,Female,Follow-up,9,2,1,Tuesday,18:00-20:00,1,0,0
+301,75,Female,Routine Check,6,0,0,Saturday,08:00-10:00,1,1,0
+302,35,Male,New Consultation,3,1,0,Thursday,10:00-12:00,1,0,0
+303,47,Female,New Consultation,6,20,3,Thursday,12:00-14:00,1,0,0
+304,22,Female,Follow-up,22,5,0,Wednesday,10:00-12:00,1,0,1
+305,38,Female,Urgent Visit,6,3,1,Tuesday,16:00-18:00,1,0,0
+306,64,Female,Follow-up,1,1,0,Monday,16:00-18:00,1,0,0
+307,16,Female,New Consultation,6,7,0,Wednesday,08:00-10:00,1,0,0
+308,21,Male,Routine Check,24,5,1,Monday,16:00-18:00,1,0,0
+309,44,Female,Routine Check,1,3,0,Friday,18:00-20:00,1,0,0
+310,39,Female,Routine Check,7,2,0,Monday,14:00-16:00,1,0,0
+311,64,Female,Follow-up,15,24,3,Wednesday,18:00-20:00,0,0,1
+312,53,Male,Urgent Visit,6,0,0,Thursday,16:00-18:00,1,1,0
+313,44,Female,Follow-up,22,0,0,Tuesday,16:00-18:00,1,1,0
+314,30,Female,Routine Check,2,4,0,Thursday,16:00-18:00,1,0,0
+315,58,Male,New Consultation,3,1,0,Thursday,12:00-14:00,1,0,1
+316,22,Male,Follow-up,6,2,1,Monday,16:00-18:00,0,0,1
+317,18,Male,New Consultation,17,2,0,Monday,16:00-18:00,1,0,0
+318,18,Female,Urgent Visit,1,10,5,Monday,10:00-12:00,0,0,1
+319,39,Female,Routine Check,22,2,0,Friday,12:00-14:00,1,0,0
+320,21,Female,Urgent Visit,3,0,0,Wednesday,18:00-20:00,1,1,1
+321,55,Male,Routine Check,20,1,0,Saturday,18:00-20:00,0,0,0
+322,37,Male,Routine Check,4,0,0,Friday,12:00-14:00,1,1,0
+323,50,Female,Follow-up,2,3,0,Friday,14:00-16:00,1,0,0
+324,39,Female,Follow-up,30,0,0,Saturday,14:00-16:00,1,1,0
+325,38,Female,Routine Check,3,5,1,Monday,10:00-12:00,1,0,0
+326,38,Male,Follow-up,9,4,1,Thursday,10:00-12:00,1,0,1
+327,34,Male,New Consultation,10,6,0,Monday,12:00-14:00,1,0,0
+328,27,Male,New Consultation,31,0,0,Tuesday,12:00-14:00,1,1,1
+329,36,Female,Follow-up,7,0,0,Tuesday,14:00-16:00,1,1,0
+330,38,Male,New Consultation,6,14,0,Thursday,14:00-16:00,0,0,0
+331,58,Female,Urgent Visit,4,4,1,Thursday,16:00-18:00,1,0,0
+332,39,Male,New Consultation,13,4,1,Wednesday,08:00-10:00,1,0,0
+333,56,Male,New Consultation,29,2,0,Thursday,14:00-16:00,0,0,1
+334,34,Female,New Consultation,5,3,0,Monday,16:00-18:00,1,0,0
+335,25,Male,New Consultation,5,1,0,Thursday,08:00-10:00,1,0,0
+336,47,Male,New Consultation,10,0,0,Thursday,14:00-16:00,1,1,0
+337,39,Female,Follow-up,19,6,1,Wednesday,08:00-10:00,1,0,0
+338,46,Female,Routine Check,11,13,1,Wednesday,10:00-12:00,1,0,0
+339,51,Female,Follow-up,11,14,2,Tuesday,14:00-16:00,1,0,0
+340,29,Female,Urgent Visit,4,8,1,Monday,16:00-18:00,0,0,1
+341,46,Female,Follow-up,10,0,0,Tuesday,16:00-18:00,1,1,0
+342,45,Female,New Consultation,6,13,0,Friday,18:00-20:00,0,0,1
+343,31,Female,New Consultation,5,0,0,Friday,16:00-18:00,0,1,1
+344,58,Female,New Consultation,7,13,3,Friday,14:00-16:00,0,0,1
+345,43,Female,Follow-up,8,1,0,Tuesday,14:00-16:00,1,0,0
+346,43,Female,Follow-up,25,4,1,Wednesday,14:00-16:00,0,0,1
+347,39,Male,Follow-up,14,0,0,Monday,18:00-20:00,1,1,0
+348,29,Male,New Consultation,12,1,0,Wednesday,16:00-18:00,1,0,0
+349,36,Female,Procedure,10,3,1,Saturday,08:00-10:00,0,0,1
+350,10,Male,Urgent Visit,7,13,1,Thursday,16:00-18:00,1,0,0
+351,40,Female,New Consultation,28,13,2,Saturday,10:00-12:00,0,0,0
+352,41,Male,Follow-up,25,1,1,Tuesday,16:00-18:00,1,0,0
+353,50,Male,Follow-up,1,19,2,Friday,16:00-18:00,0,0,0
+354,47,Male,New Consultation,1,15,2,Thursday,16:00-18:00,1,0,0
+355,39,Female,Follow-up,30,3,0,Saturday,14:00-16:00,1,0,0
+356,43,Female,Routine Check,16,8,0,Friday,16:00-18:00,1,0,0
+357,37,Female,Routine Check,6,3,1,Monday,14:00-16:00,1,0,0
+358,58,Male,Routine Check,25,2,1,Thursday,12:00-14:00,1,0,1
+359,75,Female,Urgent Visit,2,5,1,Wednesday,12:00-14:00,1,0,0
+360,37,Female,Routine Check,5,5,1,Thursday,10:00-12:00,1,0,0
+361,67,Female,Follow-up,17,15,3,Monday,14:00-16:00,1,0,1
+362,67,Male,Routine Check,26,19,3,Wednesday,14:00-16:00,1,0,1
+363,64,Male,Follow-up,9,4,0,Thursday,14:00-16:00,1,0,0
+364,13,Female,Routine Check,4,0,0,Monday,14:00-16:00,0,1,0
+365,60,Male,New Consultation,52,2,0,Tuesday,14:00-16:00,0,0,1
+366,19,Male,Follow-up,13,2,1,Tuesday,12:00-14:00,1,0,0
+367,43,Female,Procedure,12,5,0,Saturday,18:00-20:00,1,0,0
+368,48,Male,Procedure,6,8,1,Wednesday,14:00-16:00,1,0,0
+369,70,Male,Routine Check,29,8,1,Friday,14:00-16:00,1,0,0
+370,31,Female,Follow-up,4,2,0,Monday,16:00-18:00,1,0,0
+371,48,Male,Follow-up,16,3,1,Thursday,14:00-16:00,1,0,0
+372,41,Female,New Consultation,12,0,0,Tuesday,10:00-12:00,1,1,0
+373,64,Female,Routine Check,11,0,0,Tuesday,14:00-16:00,1,1,1
+374,50,Male,Routine Check,0,14,2,Monday,12:00-14:00,1,0,1
+375,35,Male,New Consultation,20,15,0,Tuesday,08:00-10:00,0,0,0
+376,51,Male,Follow-up,11,0,0,Wednesday,10:00-12:00,1,1,0
+377,52,Female,Follow-up,1,14,1,Thursday,16:00-18:00,1,0,0
+378,44,Female,New Consultation,6,0,0,Saturday,10:00-12:00,1,1,1
+379,26,Female,New Consultation,11,4,0,Saturday,08:00-10:00,0,0,0
+380,73,Male,Follow-up,5,10,2,Friday,16:00-18:00,0,0,1
+381,36,Female,Urgent Visit,6,0,0,Tuesday,10:00-12:00,1,1,0
+382,73,Female,New Consultation,15,2,0,Thursday,12:00-14:00,1,0,0
+383,30,Male,New Consultation,9,0,0,Wednesday,12:00-14:00,1,1,1
+384,23,Female,Routine Check,5,2,1,Wednesday,16:00-18:00,1,0,0
+385,58,Female,Procedure,7,9,2,Friday,08:00-10:00,1,0,0
+386,19,Female,Urgent Visit,4,0,0,Wednesday,10:00-12:00,1,1,0
+387,37,Female,Procedure,18,0,0,Monday,14:00-16:00,1,1,0
+388,46,Male,Routine Check,1,1,1,Tuesday,08:00-10:00,1,0,1
+389,41,Female,Urgent Visit,3,2,0,Monday,10:00-12:00,0,0,0
+390,24,Female,Follow-up,16,10,0,Monday,18:00-20:00,1,0,0
+391,43,Female,Follow-up,11,0,0,Thursday,10:00-12:00,1,1,0
+392,48,Female,Urgent Visit,5,2,0,Monday,14:00-16:00,0,0,0
+393,30,Female,Routine Check,3,4,0,Monday,16:00-18:00,1,0,0
+394,63,Female,Urgent Visit,0,2,1,Monday,14:00-16:00,1,0,1
+395,36,Male,New Consultation,17,11,2,Saturday,14:00-16:00,1,0,0
+396,34,Male,Procedure,4,7,2,Thursday,12:00-14:00,1,0,0
+397,21,Male,New Consultation,5,2,0,Monday,18:00-20:00,1,0,0
+398,45,Male,Follow-up,6,2,0,Thursday,12:00-14:00,1,0,0
+399,40,Female,Follow-up,10,1,0,Monday,18:00-20:00,1,0,0
+400,45,Male,Routine Check,20,2,1,Tuesday,08:00-10:00,1,0,0
+401,16,Female,Routine Check,18,1,0,Friday,18:00-20:00,1,0,0
+402,41,Male,Follow-up,27,5,2,Monday,14:00-16:00,1,0,0
+403,26,Male,New Consultation,27,1,0,Monday,14:00-16:00,1,0,0
+404,20,Female,Follow-up,5,11,2,Tuesday,16:00-18:00,1,0,0
+405,27,Male,Procedure,10,7,1,Tuesday,14:00-16:00,0,0,0
+406,33,Male,Routine Check,11,0,0,Friday,18:00-20:00,1,1,0
+407,1,Female,New Consultation,4,11,1,Friday,12:00-14:00,0,0,1
+408,6,Female,Routine Check,12,1,0,Friday,10:00-12:00,1,0,0
+409,57,Female,New Consultation,12,0,0,Friday,16:00-18:00,1,1,0
+410,77,Female,New Consultation,9,1,0,Friday,16:00-18:00,1,0,0
+411,35,Male,New Consultation,2,1,0,Friday,18:00-20:00,1,0,0
+412,14,Male,Routine Check,2,4,1,Tuesday,12:00-14:00,1,0,0
+413,40,Male,Urgent Visit,7,1,0,Tuesday,08:00-10:00,1,0,0
+414,48,Female,New Consultation,12,9,2,Friday,14:00-16:00,1,0,1
+415,63,Female,Urgent Visit,4,1,0,Monday,10:00-12:00,0,0,0
+416,37,Female,Follow-up,11,7,1,Friday,10:00-12:00,1,0,0
+417,52,Male,Follow-up,8,4,0,Monday,12:00-14:00,1,0,0
+418,10,Male,Urgent Visit,0,8,3,Friday,16:00-18:00,1,0,0
+419,73,Male,Follow-up,3,4,0,Wednesday,14:00-16:00,0,0,0
+420,45,Female,Routine Check,13,1,0,Wednesday,16:00-18:00,1,0,0
+421,45,Female,Follow-up,23,5,1,Thursday,08:00-10:00,1,0,1
+422,30,Male,Routine Check,11,13,2,Saturday,16:00-18:00,0,0,1
+423,22,Female,New Consultation,28,1,0,Friday,16:00-18:00,1,0,0
+424,52,Male,New Consultation,0,0,0,Friday,12:00-14:00,1,1,0
+425,38,Female,Routine Check,17,4,1,Monday,16:00-18:00,1,0,0
+426,53,Female,Follow-up,3,14,0,Wednesday,14:00-16:00,0,0,0
+427,55,Female,Follow-up,13,7,0,Tuesday,16:00-18:00,0,0,0
+428,55,Female,Follow-up,23,4,1,Tuesday,10:00-12:00,1,0,0
+429,43,Male,New Consultation,2,2,0,Monday,12:00-14:00,1,0,0
+430,73,Female,New Consultation,15,15,0,Wednesday,18:00-20:00,1,0,0
+431,28,Female,New Consultation,10,0,0,Monday,08:00-10:00,1,1,0
+432,59,Female,New Consultation,3,3,0,Thursday,14:00-16:00,1,0,1
+433,45,Female,Urgent Visit,4,0,0,Wednesday,16:00-18:00,1,1,0
+434,13,Male,New Consultation,9,0,0,Friday,10:00-12:00,1,1,0
+435,52,Male,Follow-up,19,0,0,Saturday,08:00-10:00,1,1,0
+436,29,Male,Routine Check,10,6,0,Thursday,10:00-12:00,1,0,0
+437,35,Female,Follow-up,12,0,0,Thursday,16:00-18:00,0,1,0
+438,56,Female,Urgent Visit,3,4,0,Saturday,08:00-10:00,1,0,0
+439,38,Male,New Consultation,8,4,1,Monday,16:00-18:00,0,0,1
+440,14,Female,Follow-up,6,5,0,Saturday,14:00-16:00,1,0,0
+441,13,Male,Follow-up,3,2,0,Saturday,16:00-18:00,1,0,0
+442,44,Female,Follow-up,8,7,1,Friday,12:00-14:00,0,0,1
+443,49,Female,Procedure,9,2,0,Tuesday,14:00-16:00,1,0,0
+444,56,Female,Routine Check,9,6,0,Wednesday,16:00-18:00,1,0,0
+445,37,Female,New Consultation,17,3,0,Saturday,14:00-16:00,1,0,0
+446,30,Female,New Consultation,5,3,0,Tuesday,12:00-14:00,1,0,1
+447,41,Female,Follow-up,4,0,0,Wednesday,14:00-16:00,1,1,0
+448,43,Male,Routine Check,1,0,0,Wednesday,14:00-16:00,1,1,0
+449,43,Female,New Consultation,5,2,0,Friday,16:00-18:00,1,0,0
+450,52,Male,New Consultation,12,2,0,Monday,08:00-10:00,1,0,0
+451,50,Female,Follow-up,5,11,1,Friday,10:00-12:00,1,0,1
+452,35,Male,Procedure,9,0,0,Monday,12:00-14:00,1,1,0
+453,14,Male,Follow-up,13,3,0,Tuesday,12:00-14:00,0,0,0
+454,17,Female,New Consultation,12,10,1,Tuesday,16:00-18:00,1,0,0
+455,54,Female,New Consultation,14,0,0,Tuesday,12:00-14:00,0,1,1
+456,59,Female,Routine Check,1,4,0,Thursday,16:00-18:00,1,0,0
+457,42,Male,New Consultation,19,22,4,Wednesday,08:00-10:00,1,0,1
+458,32,Male,Procedure,2,6,0,Monday,18:00-20:00,1,0,0
+459,44,Male,Follow-up,7,0,0,Monday,18:00-20:00,0,1,1
+460,39,Female,Urgent Visit,7,0,0,Monday,18:00-20:00,1,1,0
+461,35,Male,Routine Check,15,0,0,Thursday,10:00-12:00,1,1,1
+462,58,Male,Follow-up,7,3,0,Friday,18:00-20:00,1,0,1
+463,23,Female,Follow-up,17,1,0,Saturday,18:00-20:00,1,0,0
+464,60,Female,New Consultation,6,1,0,Wednesday,16:00-18:00,1,0,0
+465,11,Male,Follow-up,6,0,0,Saturday,18:00-20:00,1,1,0
+466,53,Male,New Consultation,2,0,0,Thursday,12:00-14:00,1,1,0
+467,48,Female,Procedure,8,0,0,Thursday,18:00-20:00,1,1,0
+468,24,Male,Routine Check,2,6,0,Monday,08:00-10:00,0,0,0
+469,40,Female,Routine Check,25,2,0,Monday,12:00-14:00,0,0,0
+470,42,Male,New Consultation,10,0,0,Wednesday,18:00-20:00,0,1,1
+471,50,Female,Procedure,8,7,1,Friday,10:00-12:00,0,0,0
+472,19,Male,Follow-up,3,8,1,Wednesday,14:00-16:00,1,0,0
+473,34,Female,Follow-up,4,0,0,Monday,10:00-12:00,1,1,0
+474,16,Female,New Consultation,3,1,0,Thursday,16:00-18:00,1,0,0
+475,50,Female,Follow-up,10,0,0,Thursday,08:00-10:00,1,1,0
+476,13,Female,Follow-up,9,3,0,Saturday,12:00-14:00,0,0,0
+477,31,Male,New Consultation,3,0,0,Friday,16:00-18:00,1,1,1
+478,44,Male,Follow-up,12,1,0,Thursday,10:00-12:00,1,0,0
+479,61,Female,Routine Check,10,8,0,Thursday,08:00-10:00,1,0,0
+480,24,Female,New Consultation,6,5,1,Monday,12:00-14:00,1,0,0
+481,54,Female,Follow-up,21,4,1,Friday,18:00-20:00,1,0,0
+482,1,Male,Urgent Visit,6,9,2,Friday,18:00-20:00,1,0,0
+483,50,Female,Procedure,3,0,0,Monday,12:00-14:00,1,1,0
+484,67,Female,New Consultation,6,10,1,Monday,14:00-16:00,0,0,1
+485,36,Female,Routine Check,23,1,1,Monday,08:00-10:00,1,0,0
+486,13,Female,Follow-up,8,3,1,Friday,12:00-14:00,1,0,0
+487,33,Female,Procedure,4,14,3,Monday,16:00-18:00,1,0,0
+488,69,Male,New Consultation,21,10,1,Tuesday,18:00-20:00,1,0,0
+489,27,Female,Follow-up,5,5,0,Monday,16:00-18:00,1,0,0
+490,24,Female,Follow-up,1,0,0,Saturday,10:00-12:00,1,1,1
+491,61,Female,Urgent Visit,7,0,0,Monday,16:00-18:00,0,1,0
+492,54,Male,Routine Check,10,7,3,Monday,08:00-10:00,0,0,1
+493,37,Female,Procedure,4,8,2,Friday,10:00-12:00,1,0,0
+494,65,Male,New Consultation,0,7,1,Tuesday,16:00-18:00,1,0,0
+495,37,Male,Follow-up,8,2,0,Saturday,10:00-12:00,1,0,1
+496,54,Female,Urgent Visit,0,0,0,Friday,14:00-16:00,1,1,0
+497,31,Female,Routine Check,5,1,0,Friday,18:00-20:00,1,0,0
+498,42,Female,Procedure,2,8,1,Tuesday,12:00-14:00,1,0,0
+499,65,Female,Procedure,27,1,0,Friday,16:00-18:00,1,0,0
+500,45,Female,Follow-up,9,5,0,Tuesday,08:00-10:00,1,0,0
+501,26,Female,New Consultation,17,1,0,Tuesday,14:00-16:00,1,0,0
+502,47,Male,Urgent Visit,5,0,0,Friday,12:00-14:00,1,1,0
+503,39,Female,Follow-up,10,6,0,Friday,18:00-20:00,1,0,0
+504,29,Female,New Consultation,15,1,0,Monday,16:00-18:00,1,0,0
+505,53,Female,Follow-up,1,0,0,Tuesday,14:00-16:00,1,1,0
+506,46,Male,Procedure,8,2,0,Thursday,18:00-20:00,0,0,0
+507,17,Female,New Consultation,18,30,1,Thursday,10:00-12:00,1,0,0
+508,29,Male,Follow-up,2,17,0,Friday,10:00-12:00,1,0,0
+509,30,Male,Follow-up,2,2,0,Thursday,14:00-16:00,1,0,0
+510,39,Male,Urgent Visit,0,6,2,Tuesday,16:00-18:00,1,0,1
+511,68,Male,Routine Check,12,7,1,Tuesday,18:00-20:00,0,0,0
+512,64,Male,Follow-up,10,11,0,Thursday,16:00-18:00,1,0,0
+513,65,Male,New Consultation,10,5,0,Wednesday,14:00-16:00,1,0,0
+514,11,Female,New Consultation,22,2,1,Monday,10:00-12:00,1,0,0
+515,61,Female,Follow-up,3,0,0,Thursday,12:00-14:00,1,1,0
+516,38,Male,Follow-up,7,1,0,Tuesday,18:00-20:00,1,0,0
+517,28,Male,New Consultation,12,0,0,Wednesday,16:00-18:00,0,1,0
+518,44,Female,Procedure,1,7,0,Wednesday,12:00-14:00,1,0,0
+519,62,Male,New Consultation,10,4,1,Wednesday,08:00-10:00,1,0,0
+520,48,Male,Follow-up,6,1,0,Saturday,08:00-10:00,1,0,0
+521,24,Male,Follow-up,23,4,0,Saturday,16:00-18:00,1,0,0
+522,33,Female,Follow-up,12,5,2,Wednesday,14:00-16:00,1,0,0
+523,47,Female,Routine Check,4,4,0,Friday,14:00-16:00,1,0,0
+524,9,Female,Follow-up,23,5,0,Monday,14:00-16:00,1,0,0
+525,34,Female,Follow-up,5,14,2,Friday,14:00-16:00,1,0,0
+526,49,Female,New Consultation,19,0,0,Tuesday,16:00-18:00,1,1,0
+527,22,Male,New Consultation,22,3,1,Saturday,10:00-12:00,1,0,1
+528,38,Male,New Consultation,26,1,0,Thursday,18:00-20:00,1,0,1
+529,14,Male,Routine Check,13,2,0,Friday,18:00-20:00,1,0,0
+530,38,Female,Procedure,18,13,3,Tuesday,12:00-14:00,1,0,1
+531,48,Male,New Consultation,29,0,0,Monday,18:00-20:00,0,1,0
+532,34,Female,Urgent Visit,0,7,2,Wednesday,10:00-12:00,1,0,0
+533,23,Female,New Consultation,4,14,2,Wednesday,08:00-10:00,1,0,0
+534,33,Female,New Consultation,4,0,0,Friday,10:00-12:00,0,1,0
+535,3,Female,New Consultation,6,0,0,Monday,08:00-10:00,1,1,0
+536,82,Male,Routine Check,18,2,0,Monday,08:00-10:00,1,0,0
+537,31,Female,Follow-up,11,6,0,Thursday,18:00-20:00,1,0,0
+538,20,Female,Follow-up,3,5,1,Saturday,10:00-12:00,1,0,0
+539,64,Female,Follow-up,29,1,0,Monday,12:00-14:00,0,0,0
+540,51,Male,Procedure,6,9,0,Thursday,14:00-16:00,1,0,0
+541,60,Female,Follow-up,15,7,0,Thursday,10:00-12:00,1,0,0
+542,40,Female,New Consultation,16,7,1,Saturday,14:00-16:00,0,0,0
+543,57,Female,Follow-up,5,7,1,Saturday,14:00-16:00,1,0,0
+544,45,Male,New Consultation,6,15,0,Tuesday,14:00-16:00,0,0,0
+545,39,Male,Follow-up,12,1,0,Thursday,10:00-12:00,0,0,1
+546,22,Female,Procedure,13,1,0,Wednesday,12:00-14:00,1,0,0
+547,33,Female,Routine Check,8,6,2,Saturday,16:00-18:00,1,0,1
+548,52,Male,Follow-up,14,22,1,Wednesday,10:00-12:00,1,0,0
+549,15,Female,Routine Check,3,9,0,Saturday,12:00-14:00,1,0,0
+550,49,Female,Follow-up,25,5,1,Wednesday,14:00-16:00,1,0,0
+551,59,Female,New Consultation,8,2,1,Tuesday,14:00-16:00,1,0,0
+552,37,Female,Follow-up,12,3,0,Friday,12:00-14:00,1,0,0
+553,43,Female,Procedure,12,0,0,Thursday,18:00-20:00,1,1,0
+554,35,Female,Follow-up,30,2,0,Saturday,14:00-16:00,1,0,0
+555,70,Male,Follow-up,18,0,0,Wednesday,18:00-20:00,1,1,0
+556,50,Male,Routine Check,18,16,3,Friday,14:00-16:00,1,0,0
+557,79,Male,Follow-up,9,1,0,Tuesday,10:00-12:00,1,0,0
+558,34,Female,New Consultation,26,0,0,Wednesday,10:00-12:00,1,1,1
+559,11,Female,New Consultation,3,5,0,Tuesday,16:00-18:00,1,0,0
+560,49,Male,Routine Check,14,8,0,Tuesday,14:00-16:00,1,0,0
+561,52,Female,Routine Check,18,11,5,Saturday,16:00-18:00,1,0,0
+562,49,Male,Follow-up,5,5,1,Thursday,10:00-12:00,1,0,0
+563,82,Female,Procedure,4,0,0,Tuesday,08:00-10:00,1,1,0
+564,20,Female,Urgent Visit,7,2,0,Thursday,16:00-18:00,0,0,1
+565,40,Male,Follow-up,4,8,3,Monday,10:00-12:00,0,0,0
+566,54,Female,New Consultation,3,1,0,Tuesday,16:00-18:00,0,0,0
+567,61,Male,Urgent Visit,6,1,0,Tuesday,18:00-20:00,1,0,0
+568,42,Male,New Consultation,6,0,0,Monday,14:00-16:00,1,1,0
+569,13,Female,New Consultation,6,17,2,Wednesday,14:00-16:00,0,0,0
+570,54,Male,Follow-up,0,3,0,Saturday,08:00-10:00,0,0,0
+571,35,Female,Procedure,17,4,0,Tuesday,14:00-16:00,0,0,0
+572,39,Male,Follow-up,13,6,0,Wednesday,10:00-12:00,1,0,0
+573,18,Male,New Consultation,6,7,1,Saturday,12:00-14:00,0,0,0
+574,32,Male,Follow-up,17,5,1,Friday,14:00-16:00,1,0,0
+575,20,Female,New Consultation,10,6,1,Monday,12:00-14:00,1,0,0
+576,17,Male,Procedure,3,4,0,Friday,16:00-18:00,0,0,0
+577,9,Female,Follow-up,16,4,0,Wednesday,14:00-16:00,1,0,0
+578,10,Female,New Consultation,6,5,1,Saturday,14:00-16:00,1,0,0
+579,22,Female,Follow-up,12,0,0,Tuesday,10:00-12:00,0,1,1
+580,25,Female,Follow-up,17,1,0,Friday,08:00-10:00,0,0,0
+581,28,Female,Follow-up,8,3,0,Monday,08:00-10:00,1,0,0
+582,28,Female,Urgent Visit,0,3,0,Tuesday,14:00-16:00,1,0,0
+583,67,Female,Follow-up,17,4,1,Wednesday,12:00-14:00,1,0,0
+584,73,Female,Procedure,12,0,0,Thursday,12:00-14:00,1,1,0
+585,1,Female,Follow-up,16,0,0,Wednesday,18:00-20:00,1,1,0
+586,59,Male,New Consultation,9,3,0,Wednesday,14:00-16:00,1,0,0
+587,25,Male,Follow-up,10,0,0,Tuesday,10:00-12:00,1,1,0
+588,46,Male,New Consultation,15,3,0,Thursday,10:00-12:00,0,0,0
+589,45,Female,Follow-up,15,3,0,Monday,14:00-16:00,1,0,0
+590,36,Female,Urgent Visit,6,0,0,Thursday,12:00-14:00,0,1,0
+591,56,Male,Routine Check,6,4,0,Thursday,16:00-18:00,1,0,1
+592,40,Female,Procedure,13,2,0,Friday,12:00-14:00,1,0,0
+593,58,Female,Follow-up,13,1,1,Tuesday,14:00-16:00,0,0,0
+594,38,Female,New Consultation,17,4,0,Thursday,18:00-20:00,1,0,0
+595,69,Female,Routine Check,11,5,1,Friday,08:00-10:00,0,0,1
+596,65,Male,New Consultation,2,3,0,Tuesday,14:00-16:00,1,0,0
+597,55,Male,Follow-up,11,9,2,Wednesday,08:00-10:00,0,0,0
+598,41,Male,Follow-up,5,5,1,Saturday,16:00-18:00,1,0,0
+599,27,Female,Follow-up,31,7,1,Wednesday,10:00-12:00,1,0,0
+600,60,Female,Urgent Visit,5,4,0,Wednesday,08:00-10:00,1,0,0
+601,54,Male,Urgent Visit,1,0,0,Tuesday,12:00-14:00,1,1,0
+602,7,Male,Follow-up,3,6,1,Wednesday,08:00-10:00,0,0,0
+603,45,Female,New Consultation,6,8,0,Monday,16:00-18:00,1,0,0
+604,60,Male,Procedure,10,1,1,Tuesday,14:00-16:00,1,0,1
+605,33,Female,Routine Check,15,2,0,Friday,14:00-16:00,0,0,0
+606,34,Female,Follow-up,5,3,0,Tuesday,08:00-10:00,1,0,0
+607,76,Female,New Consultation,27,10,2,Monday,08:00-10:00,1,0,0
+608,22,Female,New Consultation,16,0,0,Friday,18:00-20:00,1,1,0
+609,45,Male,Routine Check,4,4,0,Thursday,16:00-18:00,1,0,0
+610,58,Male,Follow-up,4,5,0,Thursday,10:00-12:00,1,0,0
+611,42,Female,Procedure,15,4,0,Tuesday,10:00-12:00,1,0,1
+612,32,Female,Urgent Visit,7,5,0,Friday,12:00-14:00,1,0,0
+613,55,Male,Follow-up,14,0,0,Thursday,14:00-16:00,0,1,1
+614,69,Female,Urgent Visit,4,12,3,Monday,10:00-12:00,1,0,1
+615,33,Female,Urgent Visit,4,12,2,Thursday,12:00-14:00,1,0,0
+616,13,Male,Urgent Visit,0,4,0,Monday,10:00-12:00,1,0,1
+617,59,Male,Follow-up,13,0,0,Wednesday,16:00-18:00,1,1,0
+618,69,Male,Follow-up,24,21,1,Monday,16:00-18:00,1,0,0
+619,37,Male,New Consultation,9,6,1,Thursday,14:00-16:00,0,0,0
+620,45,Male,Routine Check,3,2,1,Tuesday,12:00-14:00,1,0,0
+621,34,Female,Routine Check,12,14,3,Friday,18:00-20:00,1,0,1
+622,36,Male,Routine Check,7,14,1,Tuesday,12:00-14:00,1,0,0
+623,49,Male,Follow-up,24,2,0,Saturday,08:00-10:00,1,0,0
+624,47,Female,Procedure,17,4,1,Monday,08:00-10:00,1,0,0
+625,7,Male,Follow-up,13,8,0,Wednesday,12:00-14:00,1,0,0
+626,30,Male,Follow-up,15,0,0,Monday,16:00-18:00,0,1,0
+627,24,Female,Procedure,10,0,0,Wednesday,16:00-18:00,0,1,0
+628,23,Female,New Consultation,5,1,0,Wednesday,14:00-16:00,1,0,0
+629,15,Male,New Consultation,0,11,3,Thursday,16:00-18:00,1,0,1
+630,65,Male,New Consultation,14,11,0,Monday,16:00-18:00,1,0,0
+631,32,Male,Urgent Visit,2,2,1,Wednesday,14:00-16:00,1,0,0
+632,42,Male,Follow-up,6,7,2,Thursday,14:00-16:00,1,0,1
+633,62,Female,Follow-up,8,5,1,Wednesday,10:00-12:00,0,0,0
+634,40,Female,New Consultation,1,4,0,Saturday,08:00-10:00,1,0,0
+635,42,Male,Follow-up,23,0,0,Thursday,10:00-12:00,1,1,0
+636,71,Female,Routine Check,21,3,3,Monday,18:00-20:00,1,0,0
+637,20,Male,New Consultation,1,2,0,Monday,14:00-16:00,1,0,0
+638,37,Female,Follow-up,13,0,0,Tuesday,12:00-14:00,0,1,0
+639,37,Male,Urgent Visit,3,1,0,Thursday,10:00-12:00,1,0,0
+640,52,Male,Urgent Visit,7,17,6,Saturday,08:00-10:00,0,0,1
+641,60,Male,Routine Check,19,9,1,Monday,16:00-18:00,1,0,0
+642,36,Male,Follow-up,1,0,0,Wednesday,16:00-18:00,1,1,0
+643,49,Female,Follow-up,5,4,2,Wednesday,14:00-16:00,0,0,1
+644,60,Male,Follow-up,12,9,1,Thursday,18:00-20:00,1,0,0
+645,61,Female,Follow-up,24,2,0,Wednesday,18:00-20:00,0,0,0
+646,37,Male,New Consultation,2,9,1,Friday,14:00-16:00,1,0,0
+647,1,Male,New Consultation,3,2,0,Friday,12:00-14:00,0,0,0
+648,48,Male,Urgent Visit,7,6,1,Wednesday,16:00-18:00,1,0,1
+649,38,Male,Urgent Visit,3,2,0,Saturday,10:00-12:00,1,0,0
+650,46,Female,New Consultation,3,7,0,Monday,18:00-20:00,1,0,0
+651,40,Male,Routine Check,8,5,0,Monday,14:00-16:00,1,0,0
+652,53,Male,Follow-up,16,0,0,Tuesday,08:00-10:00,1,1,0
+653,39,Male,Routine Check,1,2,0,Tuesday,14:00-16:00,1,0,0
+654,49,Female,Follow-up,4,0,0,Friday,14:00-16:00,1,1,0
+655,33,Female,New Consultation,4,0,0,Saturday,12:00-14:00,1,1,0
+656,49,Male,Follow-up,23,3,0,Tuesday,12:00-14:00,1,0,0
+657,75,Male,Follow-up,4,13,3,Friday,10:00-12:00,1,0,1
+658,22,Female,Follow-up,18,29,6,Thursday,14:00-16:00,1,0,0
+659,36,Female,Routine Check,3,3,0,Wednesday,16:00-18:00,1,0,0
+660,51,Male,Follow-up,17,8,2,Wednesday,16:00-18:00,1,0,1
+661,35,Female,Follow-up,10,0,0,Friday,14:00-16:00,1,1,0
+662,17,Male,New Consultation,6,4,0,Friday,08:00-10:00,1,0,0
+663,44,Female,Follow-up,6,4,0,Wednesday,10:00-12:00,1,0,0
+664,34,Male,Routine Check,4,0,0,Wednesday,08:00-10:00,0,1,0
+665,1,Female,Follow-up,15,1,0,Tuesday,16:00-18:00,1,0,0
+666,71,Male,Follow-up,7,6,1,Tuesday,12:00-14:00,1,0,0
+667,59,Female,New Consultation,29,0,0,Tuesday,14:00-16:00,1,1,1
+668,47,Female,Routine Check,13,0,0,Monday,14:00-16:00,1,1,0
+669,1,Male,Urgent Visit,2,2,1,Thursday,14:00-16:00,1,0,0
+670,34,Female,Follow-up,5,2,0,Saturday,08:00-10:00,1,0,0
+671,32,Male,New Consultation,23,2,0,Friday,14:00-16:00,1,0,0
+672,73,Female,Follow-up,13,13,1,Monday,16:00-18:00,1,0,0
+673,43,Male,Follow-up,14,3,1,Friday,12:00-14:00,1,0,0
+674,29,Female,Follow-up,14,20,1,Tuesday,16:00-18:00,1,0,0
+675,31,Female,New Consultation,6,0,0,Thursday,16:00-18:00,1,1,0
+676,40,Male,Urgent Visit,4,15,5,Tuesday,14:00-16:00,0,0,1
+677,59,Male,Routine Check,8,2,0,Tuesday,08:00-10:00,0,0,0
+678,53,Female,Follow-up,9,5,1,Saturday,18:00-20:00,1,0,0
+679,35,Male,Procedure,10,3,0,Tuesday,18:00-20:00,1,0,0
+680,34,Male,Routine Check,9,9,1,Tuesday,14:00-16:00,1,0,0
+681,41,Female,New Consultation,8,2,0,Saturday,16:00-18:00,1,0,0
+682,55,Male,Follow-up,3,1,0,Tuesday,16:00-18:00,1,0,0
+683,21,Male,New Consultation,1,5,1,Wednesday,10:00-12:00,1,0,0
+684,32,Male,Follow-up,21,17,0,Tuesday,16:00-18:00,1,0,0
+685,35,Female,Follow-up,5,5,2,Tuesday,16:00-18:00,0,0,1
+686,22,Female,New Consultation,0,3,0,Thursday,14:00-16:00,1,0,0
+687,25,Female,Follow-up,9,5,0,Saturday,16:00-18:00,1,0,0
+688,48,Male,Routine Check,14,0,0,Friday,16:00-18:00,1,1,0
+689,43,Female,Procedure,10,2,1,Thursday,10:00-12:00,1,0,0
+690,39,Male,Routine Check,20,14,3,Monday,10:00-12:00,1,0,0
+691,50,Female,Routine Check,1,3,1,Wednesday,12:00-14:00,1,0,0
+692,38,Male,New Consultation,20,0,0,Thursday,16:00-18:00,1,1,0
+693,49,Female,Follow-up,5,0,0,Monday,14:00-16:00,1,1,0
+694,58,Female,New Consultation,8,0,0,Saturday,10:00-12:00,1,1,0
+695,26,Male,Routine Check,5,4,2,Wednesday,18:00-20:00,1,0,1
+696,32,Male,Urgent Visit,3,5,1,Friday,16:00-18:00,1,0,1
+697,39,Female,Routine Check,19,5,1,Thursday,14:00-16:00,0,0,1
+698,32,Female,Routine Check,6,2,1,Friday,10:00-12:00,1,0,0
+699,53,Male,Follow-up,30,11,1,Friday,16:00-18:00,1,0,0
+700,40,Male,Routine Check,5,1,0,Wednesday,10:00-12:00,1,0,0
+701,55,Female,Routine Check,1,11,2,Tuesday,10:00-12:00,1,0,0
+702,57,Male,Follow-up,2,3,0,Wednesday,16:00-18:00,0,0,0
+703,41,Female,New Consultation,13,8,4,Wednesday,14:00-16:00,1,0,1
+704,61,Female,Urgent Visit,4,2,0,Monday,14:00-16:00,1,0,0
+705,25,Female,Follow-up,8,1,0,Wednesday,08:00-10:00,1,0,0
+706,47,Female,Routine Check,8,8,1,Tuesday,08:00-10:00,1,0,0
+707,67,Male,New Consultation,3,4,0,Monday,16:00-18:00,0,0,1
+708,1,Female,Procedure,10,1,0,Tuesday,14:00-16:00,1,0,0
+709,38,Female,Follow-up,12,1,0,Thursday,16:00-18:00,0,0,1
+710,54,Female,Follow-up,3,5,1,Tuesday,14:00-16:00,1,0,0
+711,37,Female,Procedure,21,10,2,Friday,18:00-20:00,1,0,0
+712,19,Female,New Consultation,10,8,3,Friday,10:00-12:00,1,0,1
+713,44,Female,Procedure,6,16,2,Friday,18:00-20:00,1,0,0
+714,56,Female,Follow-up,18,1,0,Friday,08:00-10:00,1,0,1
+715,38,Male,Follow-up,3,6,0,Friday,10:00-12:00,0,0,0
+716,30,Female,Follow-up,10,1,1,Tuesday,12:00-14:00,1,0,0
+717,25,Female,Follow-up,3,2,0,Saturday,18:00-20:00,1,0,0
+718,22,Female,Procedure,8,3,0,Thursday,18:00-20:00,1,0,0
+719,56,Female,Follow-up,19,22,3,Tuesday,08:00-10:00,1,0,1
+720,38,Female,Routine Check,8,0,0,Friday,10:00-12:00,1,1,0
+721,28,Female,Follow-up,8,5,0,Thursday,12:00-14:00,1,0,0
+722,33,Female,Routine Check,3,21,0,Wednesday,16:00-18:00,0,0,0
+723,44,Male,New Consultation,21,4,0,Wednesday,12:00-14:00,1,0,0
+724,83,Male,Procedure,8,0,0,Saturday,12:00-14:00,1,1,0
+725,42,Male,Urgent Visit,2,0,0,Wednesday,14:00-16:00,1,1,0
+726,55,Male,New Consultation,7,0,0,Monday,14:00-16:00,1,1,0
+727,29,Male,Routine Check,15,2,1,Wednesday,16:00-18:00,1,0,0
+728,27,Male,New Consultation,9,6,1,Wednesday,16:00-18:00,1,0,0
+729,15,Male,Procedure,5,3,0,Tuesday,16:00-18:00,1,0,0
+730,66,Female,Follow-up,5,7,2,Monday,08:00-10:00,1,0,1
+731,17,Female,Follow-up,10,3,0,Saturday,10:00-12:00,1,0,1
+732,64,Male,New Consultation,14,0,0,Monday,12:00-14:00,1,1,0
+733,81,Male,Follow-up,2,2,0,Thursday,14:00-16:00,1,0,0
+734,34,Female,Follow-up,20,19,5,Wednesday,16:00-18:00,1,0,0
+735,35,Male,Routine Check,7,0,0,Monday,18:00-20:00,1,1,0
+736,52,Male,New Consultation,7,4,0,Monday,14:00-16:00,1,0,0
+737,18,Male,Urgent Visit,0,18,5,Thursday,12:00-14:00,1,0,0
+738,14,Male,New Consultation,9,0,0,Thursday,08:00-10:00,1,1,1
+739,62,Female,Follow-up,7,5,0,Friday,18:00-20:00,0,0,0
+740,46,Male,Urgent Visit,3,0,0,Monday,14:00-16:00,0,1,0
+741,70,Female,Follow-up,2,4,0,Thursday,18:00-20:00,1,0,0
+742,10,Male,Routine Check,10,8,0,Saturday,08:00-10:00,1,0,0
+743,25,Male,Follow-up,9,3,0,Tuesday,12:00-14:00,1,0,0
+744,32,Male,Urgent Visit,1,3,0,Thursday,16:00-18:00,1,0,0
+745,33,Female,Urgent Visit,3,0,0,Monday,10:00-12:00,1,1,0
+746,34,Female,Procedure,3,4,0,Wednesday,12:00-14:00,0,0,0
+747,70,Male,Follow-up,5,2,0,Saturday,16:00-18:00,0,0,0
+748,24,Female,Follow-up,4,0,0,Tuesday,08:00-10:00,1,1,0
+749,29,Male,New Consultation,18,0,0,Thursday,16:00-18:00,1,1,0
+750,70,Male,Follow-up,19,0,0,Thursday,14:00-16:00,1,1,0
+751,39,Male,Follow-up,10,4,1,Wednesday,16:00-18:00,1,0,0
+752,51,Male,Routine Check,6,5,2,Friday,16:00-18:00,1,0,1
+753,49,Female,Routine Check,1,1,1,Thursday,08:00-10:00,1,0,0
+754,65,Male,Follow-up,9,0,0,Saturday,16:00-18:00,0,1,0
+755,31,Male,New Consultation,1,0,0,Tuesday,12:00-14:00,1,1,1
+756,37,Female,Follow-up,19,4,0,Tuesday,18:00-20:00,0,0,0
+757,57,Male,Urgent Visit,2,0,0,Wednesday,10:00-12:00,1,1,0
+758,39,Male,Follow-up,16,2,0,Wednesday,16:00-18:00,1,0,0
+759,59,Female,Urgent Visit,7,0,0,Tuesday,10:00-12:00,1,1,0
+760,56,Male,Follow-up,3,15,2,Wednesday,16:00-18:00,1,0,0
+761,43,Male,Procedure,8,0,0,Wednesday,12:00-14:00,1,1,1
+762,42,Female,Follow-up,11,2,0,Tuesday,16:00-18:00,1,0,0
+763,36,Male,New Consultation,9,8,0,Wednesday,10:00-12:00,1,0,0
+764,23,Male,Follow-up,5,1,0,Wednesday,08:00-10:00,1,0,0
+765,12,Female,Procedure,10,0,0,Tuesday,08:00-10:00,1,1,0
+766,45,Female,Follow-up,2,2,0,Friday,10:00-12:00,1,0,0
+767,67,Male,Procedure,16,6,1,Wednesday,16:00-18:00,1,0,0
+768,16,Female,Routine Check,26,0,0,Thursday,10:00-12:00,1,1,1
+769,16,Female,Follow-up,9,2,0,Thursday,18:00-20:00,0,0,0
+770,15,Male,Follow-up,3,4,1,Saturday,08:00-10:00,1,0,0
+771,27,Female,New Consultation,4,8,3,Thursday,12:00-14:00,1,0,1
+772,20,Female,New Consultation,6,4,0,Thursday,10:00-12:00,0,0,0
+773,45,Male,New Consultation,16,3,0,Wednesday,16:00-18:00,0,0,0
+774,21,Male,Urgent Visit,3,24,6,Wednesday,16:00-18:00,1,0,0
+775,34,Male,New Consultation,2,10,0,Monday,14:00-16:00,1,0,0
+776,61,Female,New Consultation,8,3,0,Friday,16:00-18:00,1,0,0
+777,17,Female,New Consultation,16,4,1,Tuesday,14:00-16:00,0,0,0
+778,32,Male,Follow-up,12,1,0,Wednesday,08:00-10:00,1,0,0
+779,37,Male,Follow-up,1,2,2,Saturday,14:00-16:00,1,0,0
+780,24,Male,Follow-up,7,2,0,Friday,08:00-10:00,1,0,0
+781,56,Male,Follow-up,9,12,1,Saturday,08:00-10:00,1,0,0
+782,47,Male,Follow-up,10,6,0,Tuesday,10:00-12:00,1,0,0
+783,56,Male,New Consultation,11,1,0,Saturday,16:00-18:00,1,0,0
+784,61,Female,Follow-up,14,5,0,Thursday,16:00-18:00,1,0,0
+785,18,Male,Urgent Visit,1,2,1,Monday,16:00-18:00,0,0,0
+786,47,Female,Follow-up,29,0,0,Friday,14:00-16:00,1,1,0
+787,58,Female,Follow-up,16,9,0,Wednesday,10:00-12:00,0,0,0
+788,39,Male,Follow-up,22,20,3,Monday,08:00-10:00,1,0,1
+789,36,Male,Procedure,7,0,0,Thursday,12:00-14:00,1,1,0
+790,38,Female,Routine Check,10,4,0,Friday,10:00-12:00,1,0,0
+791,76,Female,Follow-up,15,4,0,Saturday,12:00-14:00,1,0,0
+792,41,Male,New Consultation,9,1,0,Wednesday,16:00-18:00,1,0,0
+793,1,Female,New Consultation,2,0,0,Thursday,10:00-12:00,1,1,0
+794,56,Male,Follow-up,0,0,0,Thursday,12:00-14:00,1,1,0
+795,69,Male,Procedure,23,4,1,Thursday,08:00-10:00,1,0,0
+796,49,Female,Follow-up,18,15,1,Saturday,16:00-18:00,0,0,0
+797,20,Female,Follow-up,7,13,1,Tuesday,16:00-18:00,1,0,0
+798,31,Male,Procedure,10,0,0,Thursday,12:00-14:00,1,1,0
+799,47,Female,New Consultation,10,0,0,Wednesday,16:00-18:00,0,1,0
+800,44,Male,Follow-up,3,0,0,Monday,16:00-18:00,0,1,0
+801,50,Male,Follow-up,3,1,0,Thursday,12:00-14:00,0,0,0
+802,50,Female,Follow-up,6,7,1,Friday,14:00-16:00,0,0,1
+803,26,Female,Follow-up,7,4,0,Monday,10:00-12:00,1,0,0
+804,82,Female,New Consultation,9,0,0,Tuesday,10:00-12:00,1,1,0
+805,62,Male,Follow-up,10,8,1,Monday,10:00-12:00,1,0,0
+806,28,Male,Follow-up,21,3,1,Friday,16:00-18:00,1,0,1
+807,27,Male,Procedure,21,0,0,Friday,12:00-14:00,1,1,0
+808,26,Male,Follow-up,18,0,0,Wednesday,18:00-20:00,1,1,0
+809,39,Female,Urgent Visit,4,1,0,Saturday,16:00-18:00,1,0,0
+810,24,Female,Routine Check,16,0,0,Wednesday,14:00-16:00,1,1,0
+811,55,Female,Routine Check,2,14,2,Friday,18:00-20:00,0,0,1
+812,47,Female,Follow-up,2,2,0,Saturday,16:00-18:00,1,0,0
+813,30,Female,Routine Check,6,1,1,Wednesday,12:00-14:00,0,0,0
+814,67,Male,Follow-up,18,2,1,Tuesday,18:00-20:00,1,0,0
+815,56,Female,New Consultation,9,0,0,Tuesday,16:00-18:00,1,1,1
+816,69,Male,Procedure,15,3,0,Thursday,16:00-18:00,1,0,0
+817,49,Female,New Consultation,4,4,1,Tuesday,10:00-12:00,1,0,0
+818,73,Male,Procedure,39,0,0,Thursday,12:00-14:00,1,1,0
+819,18,Male,Follow-up,22,5,0,Monday,18:00-20:00,0,0,0
+820,48,Female,Urgent Visit,5,2,0,Tuesday,08:00-10:00,1,0,0
+821,25,Male,Follow-up,6,6,0,Wednesday,08:00-10:00,0,0,0
+822,57,Male,New Consultation,6,21,3,Saturday,16:00-18:00,1,0,0
+823,21,Female,Routine Check,12,1,0,Tuesday,16:00-18:00,0,0,0
+824,71,Female,Follow-up,2,0,0,Saturday,08:00-10:00,1,1,0
+825,53,Male,Procedure,6,4,0,Friday,12:00-14:00,1,0,0
+826,55,Female,Routine Check,8,1,0,Thursday,08:00-10:00,1,0,0
+827,12,Male,Routine Check,6,4,1,Wednesday,10:00-12:00,1,0,0
+828,31,Female,Routine Check,12,0,0,Monday,10:00-12:00,0,1,0
+829,60,Male,Follow-up,5,12,1,Monday,08:00-10:00,1,0,0
+830,34,Male,Follow-up,7,7,1,Thursday,10:00-12:00,0,0,0
+831,48,Male,Routine Check,5,9,1,Saturday,14:00-16:00,1,0,0
+832,46,Female,Routine Check,1,9,5,Saturday,10:00-12:00,0,0,1
+833,70,Female,Follow-up,12,1,0,Tuesday,10:00-12:00,1,0,0
+834,24,Female,New Consultation,6,8,0,Tuesday,10:00-12:00,1,0,0
+835,70,Female,Follow-up,13,0,0,Friday,14:00-16:00,1,1,0
+836,56,Female,Follow-up,14,9,0,Thursday,14:00-16:00,0,0,0
+837,22,Female,Follow-up,0,0,0,Wednesday,08:00-10:00,1,1,0
+838,58,Female,Urgent Visit,5,0,0,Friday,10:00-12:00,1,1,0
+839,55,Female,Routine Check,2,0,0,Wednesday,10:00-12:00,1,1,0
+840,50,Female,Routine Check,18,10,3,Friday,10:00-12:00,1,0,0
+841,32,Female,New Consultation,27,0,0,Saturday,18:00-20:00,1,1,1
+842,26,Male,Routine Check,12,0,0,Tuesday,16:00-18:00,0,1,1
+843,49,Female,New Consultation,7,19,2,Monday,12:00-14:00,1,0,0
+844,32,Male,New Consultation,4,1,0,Wednesday,18:00-20:00,0,0,1
+845,50,Male,Routine Check,2,5,0,Friday,14:00-16:00,1,0,0
+846,34,Male,Procedure,3,1,0,Saturday,12:00-14:00,1,0,0
+847,53,Male,Follow-up,15,5,1,Tuesday,10:00-12:00,1,0,0
+848,44,Female,Follow-up,6,0,0,Tuesday,18:00-20:00,0,1,0
+849,60,Female,Follow-up,5,1,0,Thursday,10:00-12:00,0,0,0
+850,45,Male,Follow-up,16,12,1,Monday,18:00-20:00,1,0,0
+851,23,Female,Follow-up,23,1,0,Thursday,14:00-16:00,0,0,1
+852,43,Male,Follow-up,7,6,0,Tuesday,16:00-18:00,1,0,0
+853,56,Male,Procedure,14,7,1,Wednesday,10:00-12:00,1,0,0
+854,56,Male,New Consultation,10,9,2,Tuesday,14:00-16:00,1,0,0
+855,30,Male,Follow-up,4,2,0,Tuesday,08:00-10:00,1,0,0
+856,39,Female,New Consultation,1,2,0,Monday,10:00-12:00,1,0,0
+857,42,Male,Urgent Visit,1,1,0,Wednesday,14:00-16:00,1,0,0
+858,12,Female,Follow-up,13,3,0,Monday,16:00-18:00,1,0,0
+859,42,Male,New Consultation,0,2,0,Friday,14:00-16:00,1,0,0
+860,41,Female,Urgent Visit,2,3,0,Thursday,14:00-16:00,1,0,0
+861,31,Male,Follow-up,2,0,0,Thursday,18:00-20:00,1,1,0
+862,10,Male,Urgent Visit,3,0,0,Tuesday,12:00-14:00,1,1,0
+863,50,Male,Follow-up,9,0,0,Thursday,18:00-20:00,1,1,0
+864,4,Female,Follow-up,9,11,3,Friday,16:00-18:00,1,0,1
+865,47,Male,Follow-up,3,1,0,Tuesday,16:00-18:00,1,0,0
+866,28,Male,Follow-up,16,2,0,Wednesday,16:00-18:00,1,0,1
+867,36,Female,Procedure,16,21,1,Tuesday,12:00-14:00,1,0,0
+868,51,Male,Follow-up,39,5,0,Monday,18:00-20:00,0,0,0
+869,44,Male,Follow-up,2,3,0,Thursday,16:00-18:00,1,0,0
+870,23,Male,Follow-up,11,12,3,Thursday,14:00-16:00,1,0,0
+871,34,Female,Routine Check,2,5,4,Wednesday,12:00-14:00,1,0,1
+872,60,Female,Procedure,10,2,1,Thursday,12:00-14:00,1,0,0
+873,76,Male,Procedure,3,4,0,Saturday,16:00-18:00,1,0,0
+874,41,Male,Follow-up,15,2,0,Wednesday,16:00-18:00,1,0,0
+875,48,Female,Urgent Visit,6,6,0,Friday,18:00-20:00,1,0,0
+876,5,Female,Follow-up,9,0,0,Tuesday,10:00-12:00,0,1,1
+877,55,Female,Follow-up,5,10,1,Friday,08:00-10:00,0,0,0
+878,11,Female,Follow-up,15,9,0,Friday,08:00-10:00,0,0,1
+879,67,Female,Follow-up,13,0,0,Wednesday,16:00-18:00,1,1,0
+880,55,Female,Follow-up,1,3,0,Wednesday,16:00-18:00,1,0,0
+881,54,Female,Follow-up,14,17,2,Thursday,18:00-20:00,1,0,0
+882,38,Female,Follow-up,4,16,1,Tuesday,08:00-10:00,1,0,1
+883,65,Male,New Consultation,6,2,1,Wednesday,10:00-12:00,1,0,0
+884,44,Male,Procedure,8,2,1,Monday,08:00-10:00,1,0,0
+885,62,Female,Urgent Visit,2,1,0,Tuesday,16:00-18:00,1,0,0
+886,26,Female,Routine Check,2,10,2,Monday,16:00-18:00,1,0,1
+887,59,Female,Follow-up,2,7,1,Monday,16:00-18:00,1,0,0
+888,47,Female,Follow-up,13,1,1,Monday,08:00-10:00,1,0,0
+889,25,Female,New Consultation,8,2,0,Thursday,08:00-10:00,1,0,0
+890,21,Female,Urgent Visit,0,2,0,Monday,16:00-18:00,1,0,0
+891,51,Male,Follow-up,15,2,0,Saturday,10:00-12:00,1,0,0
+892,39,Female,Follow-up,12,15,2,Wednesday,14:00-16:00,1,0,1
+893,68,Female,New Consultation,7,1,1,Tuesday,14:00-16:00,0,0,1
+894,30,Female,New Consultation,13,0,0,Friday,10:00-12:00,1,1,0
+895,1,Male,New Consultation,15,0,0,Friday,16:00-18:00,0,1,0
+896,26,Female,New Consultation,6,0,0,Wednesday,10:00-12:00,1,1,0
+897,51,Female,Urgent Visit,2,0,0,Wednesday,18:00-20:00,0,1,0
+898,44,Female,Follow-up,18,0,0,Thursday,08:00-10:00,1,1,0
+899,47,Female,Procedure,7,2,0,Friday,14:00-16:00,1,0,0
+900,62,Male,Procedure,9,12,1,Saturday,14:00-16:00,0,0,1
+901,48,Male,Follow-up,3,5,0,Thursday,14:00-16:00,1,0,0
+902,51,Female,New Consultation,4,7,0,Wednesday,16:00-18:00,0,0,0
+903,53,Male,Follow-up,16,5,1,Wednesday,10:00-12:00,1,0,0
+904,53,Female,Routine Check,12,2,0,Monday,16:00-18:00,1,0,0
+905,42,Male,Procedure,15,2,0,Monday,16:00-18:00,1,0,0
+906,41,Male,New Consultation,5,1,0,Friday,08:00-10:00,1,0,0
+907,52,Female,New Consultation,9,4,1,Thursday,14:00-16:00,1,0,0
+908,29,Female,Follow-up,12,0,0,Friday,16:00-18:00,0,1,0
+909,59,Female,Follow-up,3,0,0,Friday,08:00-10:00,1,1,1
+910,41,Male,New Consultation,1,0,0,Tuesday,18:00-20:00,1,1,0
+911,64,Male,Urgent Visit,1,5,0,Tuesday,16:00-18:00,1,0,0
+912,52,Female,New Consultation,0,6,2,Wednesday,08:00-10:00,1,0,0
+913,66,Male,Follow-up,23,11,2,Saturday,18:00-20:00,0,0,0
+914,58,Male,Follow-up,5,12,1,Friday,10:00-12:00,1,0,0
+915,23,Male,Procedure,21,14,0,Thursday,08:00-10:00,1,0,0
+916,33,Female,New Consultation,12,7,0,Saturday,08:00-10:00,1,0,1
+917,43,Female,Follow-up,9,0,0,Thursday,16:00-18:00,0,1,0
+918,50,Female,Follow-up,6,5,1,Friday,16:00-18:00,1,0,1
+919,46,Female,New Consultation,36,0,0,Tuesday,14:00-16:00,0,1,1
+920,56,Male,Follow-up,4,5,1,Friday,10:00-12:00,1,0,0
+921,34,Female,Routine Check,5,0,0,Friday,18:00-20:00,1,1,0
+922,52,Female,New Consultation,6,0,0,Wednesday,08:00-10:00,0,1,0
+923,40,Female,Urgent Visit,5,4,1,Saturday,14:00-16:00,1,0,0
+924,11,Female,New Consultation,0,1,0,Friday,12:00-14:00,1,0,0
+925,56,Male,Follow-up,5,0,0,Friday,10:00-12:00,1,1,0
+926,57,Female,Follow-up,5,2,0,Monday,14:00-16:00,1,0,0
+927,14,Female,New Consultation,8,3,1,Friday,14:00-16:00,1,0,0
+928,50,Female,New Consultation,1,7,3,Friday,16:00-18:00,1,0,1
+929,47,Female,Routine Check,7,1,0,Wednesday,16:00-18:00,0,0,1
+930,40,Male,Urgent Visit,1,0,0,Wednesday,08:00-10:00,1,1,0
+931,29,Female,Follow-up,4,8,0,Tuesday,14:00-16:00,1,0,0
+932,26,Female,Routine Check,2,4,1,Friday,14:00-16:00,0,0,0
+933,33,Female,Routine Check,7,0,0,Friday,08:00-10:00,0,1,0
+934,51,Female,Procedure,9,3,0,Tuesday,10:00-12:00,0,0,0
+935,72,Male,Routine Check,11,9,1,Thursday,18:00-20:00,1,0,0
+936,52,Male,Follow-up,3,5,2,Saturday,16:00-18:00,1,0,1
+937,71,Male,Follow-up,11,4,1,Tuesday,12:00-14:00,1,0,0
+938,70,Male,Follow-up,20,2,1,Saturday,10:00-12:00,1,0,0
+939,51,Female,New Consultation,4,0,0,Friday,14:00-16:00,1,1,0
+940,65,Male,Follow-up,4,0,0,Monday,14:00-16:00,1,1,0
+941,2,Male,Follow-up,3,10,1,Friday,14:00-16:00,1,0,0
+942,48,Female,Follow-up,4,12,0,Monday,08:00-10:00,0,0,0
+943,19,Male,Routine Check,12,5,0,Wednesday,08:00-10:00,1,0,0
+944,38,Male,New Consultation,8,2,0,Wednesday,10:00-12:00,1,0,0
+945,63,Male,Procedure,2,0,0,Wednesday,08:00-10:00,0,1,0
+946,18,Male,Routine Check,6,1,0,Thursday,18:00-20:00,1,0,0
+947,27,Male,New Consultation,4,5,1,Monday,08:00-10:00,1,0,0
+948,64,Female,New Consultation,9,9,0,Tuesday,14:00-16:00,1,0,0
+949,44,Female,Follow-up,9,0,0,Saturday,08:00-10:00,1,1,0
+950,45,Female,Routine Check,11,3,2,Thursday,16:00-18:00,0,0,0
+951,49,Female,Follow-up,0,5,0,Wednesday,14:00-16:00,1,0,0
+952,40,Female,Procedure,3,14,1,Thursday,16:00-18:00,1,0,0
+953,28,Male,Follow-up,10,5,1,Monday,10:00-12:00,1,0,0
+954,34,Male,Routine Check,15,13,0,Monday,14:00-16:00,1,0,0
+955,54,Male,Follow-up,1,0,0,Monday,08:00-10:00,1,1,0
+956,30,Female,Follow-up,9,16,1,Wednesday,16:00-18:00,1,0,0
+957,25,Female,Routine Check,23,4,0,Friday,14:00-16:00,1,0,0
+958,54,Male,Urgent Visit,2,1,0,Monday,12:00-14:00,1,0,0
+959,64,Female,New Consultation,2,30,5,Monday,14:00-16:00,0,0,0
+960,64,Male,Procedure,37,2,0,Saturday,08:00-10:00,0,0,0
+961,24,Female,Follow-up,1,0,0,Thursday,10:00-12:00,1,1,0
+962,40,Male,Procedure,4,1,0,Tuesday,16:00-18:00,0,0,0
+963,42,Female,Follow-up,14,7,0,Thursday,12:00-14:00,1,0,0
+964,26,Female,Procedure,15,0,0,Monday,18:00-20:00,1,1,0
+965,67,Female,Follow-up,12,9,1,Friday,12:00-14:00,1,0,0
+966,13,Female,Routine Check,15,8,1,Wednesday,10:00-12:00,0,0,0
+967,30,Female,New Consultation,8,2,0,Thursday,12:00-14:00,1,0,0
+968,15,Male,Routine Check,3,17,1,Friday,16:00-18:00,1,0,1
+969,32,Female,Follow-up,14,0,0,Wednesday,10:00-12:00,1,1,0
+970,90,Male,Routine Check,12,0,0,Saturday,16:00-18:00,1,1,0
+971,36,Female,Routine Check,16,4,1,Monday,16:00-18:00,1,0,0
+972,53,Male,Follow-up,5,1,1,Saturday,16:00-18:00,1,0,0
+973,65,Female,Procedure,23,0,0,Friday,12:00-14:00,1,1,0
+974,44,Female,Follow-up,1,0,0,Friday,12:00-14:00,1,1,0
+975,34,Male,Routine Check,9,13,1,Monday,10:00-12:00,1,0,0
+976,52,Female,New Consultation,14,10,3,Friday,12:00-14:00,1,0,1
+977,85,Female,New Consultation,8,2,0,Tuesday,08:00-10:00,1,0,0
+978,7,Male,Routine Check,15,4,0,Monday,14:00-16:00,1,0,0
+979,20,Female,Routine Check,3,6,1,Friday,10:00-12:00,1,0,0
+980,32,Male,Follow-up,14,1,0,Tuesday,18:00-20:00,0,0,0
+981,45,Female,New Consultation,42,0,0,Monday,14:00-16:00,0,1,1
+982,35,Male,New Consultation,5,30,4,Saturday,14:00-16:00,1,0,1
+983,73,Female,Urgent Visit,3,1,0,Tuesday,16:00-18:00,1,0,0
+984,49,Female,Routine Check,24,10,0,Thursday,08:00-10:00,1,0,0
+985,21,Female,Follow-up,1,0,0,Monday,12:00-14:00,0,1,0
+986,27,Female,New Consultation,11,0,0,Thursday,12:00-14:00,0,1,0
+987,47,Male,New Consultation,23,1,0,Friday,14:00-16:00,1,0,1
+988,33,Female,New Consultation,35,0,0,Monday,18:00-20:00,1,1,0
+989,8,Male,Follow-up,1,0,0,Thursday,16:00-18:00,1,1,0
+990,21,Female,New Consultation,13,1,0,Thursday,10:00-12:00,1,0,0
+991,45,Female,Follow-up,18,5,1,Friday,10:00-12:00,1,0,0
+992,54,Male,Follow-up,21,0,0,Friday,14:00-16:00,1,1,1
+993,55,Female,Urgent Visit,2,8,1,Thursday,16:00-18:00,1,0,0
+994,34,Male,Routine Check,0,4,0,Saturday,10:00-12:00,1,0,0
+995,72,Male,New Consultation,9,13,3,Wednesday,16:00-18:00,1,0,0
+996,29,Female,New Consultation,5,0,0,Thursday,14:00-16:00,1,1,0
+997,18,Female,Follow-up,39,1,0,Friday,10:00-12:00,1,0,0
+998,23,Male,New Consultation,10,11,1,Monday,10:00-12:00,1,0,0
+999,32,Female,Follow-up,28,18,2,Monday,16:00-18:00,1,0,0
+1000,40,Male,Routine Check,12,11,0,Monday,12:00-14:00,1,0,0
+1001,34,Male,Follow-up,6,4,1,Wednesday,18:00-20:00,1,0,1
+1002,30,Male,Procedure,9,8,1,Thursday,16:00-18:00,1,0,0
+1003,53,Female,Procedure,4,4,0,Friday,10:00-12:00,1,0,0
+1004,22,Male,Follow-up,3,6,1,Tuesday,10:00-12:00,1,0,0
+1005,40,Female,New Consultation,8,0,0,Wednesday,16:00-18:00,0,1,0
+1006,38,Female,Routine Check,6,0,0,Thursday,08:00-10:00,1,1,0
+1007,40,Female,Routine Check,7,2,2,Monday,10:00-12:00,1,0,1
+1008,53,Male,Urgent Visit,6,0,0,Thursday,10:00-12:00,0,1,0
+1009,26,Male,New Consultation,1,0,0,Friday,14:00-16:00,0,1,0
+1010,66,Female,Routine Check,16,0,0,Friday,16:00-18:00,1,1,0
+1011,2,Female,New Consultation,12,1,0,Monday,12:00-14:00,0,0,0
+1012,10,Female,Follow-up,6,7,1,Thursday,10:00-12:00,1,0,0
+1013,38,Male,New Consultation,6,10,1,Tuesday,18:00-20:00,1,0,1
+1014,16,Female,New Consultation,3,10,2,Thursday,18:00-20:00,1,0,1
+1015,60,Male,Procedure,11,7,0,Friday,14:00-16:00,1,0,0
+1016,43,Female,Routine Check,5,9,1,Monday,14:00-16:00,1,0,0
+1017,21,Female,New Consultation,7,19,0,Monday,10:00-12:00,1,0,1
+1018,49,Female,Follow-up,5,0,0,Saturday,18:00-20:00,1,1,0
+1019,24,Male,Follow-up,12,3,0,Tuesday,14:00-16:00,1,0,0
+1020,30,Female,Procedure,1,18,3,Wednesday,14:00-16:00,0,0,0
+1021,43,Female,Procedure,3,0,0,Friday,16:00-18:00,1,1,0
+1022,36,Male,Procedure,11,5,1,Monday,16:00-18:00,1,0,0
+1023,59,Male,Follow-up,14,4,0,Tuesday,16:00-18:00,1,0,0
+1024,33,Male,Routine Check,4,10,2,Friday,10:00-12:00,0,0,0
+1025,31,Female,Follow-up,7,2,0,Tuesday,10:00-12:00,1,0,0
+1026,45,Female,Follow-up,5,30,6,Thursday,18:00-20:00,1,0,0
+1027,35,Male,New Consultation,12,2,0,Monday,12:00-14:00,1,0,0
+1028,44,Male,Follow-up,1,3,0,Tuesday,12:00-14:00,1,0,0
+1029,53,Male,Follow-up,5,9,0,Thursday,14:00-16:00,1,0,0
+1030,77,Female,Procedure,6,2,0,Saturday,16:00-18:00,1,0,0
+1031,35,Female,New Consultation,23,1,1,Tuesday,10:00-12:00,1,0,0
+1032,32,Male,Procedure,13,0,0,Monday,12:00-14:00,1,1,0
+1033,66,Female,Routine Check,11,2,0,Friday,14:00-16:00,0,0,0
+1034,1,Male,Follow-up,27,4,1,Friday,18:00-20:00,1,0,0
+1035,11,Female,Urgent Visit,7,6,1,Tuesday,16:00-18:00,0,0,0
+1036,34,Male,New Consultation,6,6,1,Tuesday,18:00-20:00,1,0,0
+1037,55,Male,Procedure,5,11,0,Thursday,14:00-16:00,0,0,0
+1038,76,Female,New Consultation,27,14,3,Tuesday,12:00-14:00,1,0,1
+1039,39,Male,Follow-up,9,1,0,Friday,08:00-10:00,1,0,0
+1040,69,Female,Routine Check,6,3,0,Saturday,18:00-20:00,1,0,0
+1041,60,Female,Routine Check,22,0,0,Monday,10:00-12:00,1,1,0
+1042,25,Female,Routine Check,13,1,0,Tuesday,10:00-12:00,0,0,0
+1043,53,Female,Follow-up,33,3,0,Tuesday,14:00-16:00,1,0,0
+1044,38,Female,New Consultation,14,9,1,Thursday,18:00-20:00,1,0,0
+1045,60,Male,Follow-up,19,2,1,Wednesday,14:00-16:00,1,0,0
+1046,52,Male,Routine Check,7,1,0,Friday,16:00-18:00,1,0,0
+1047,65,Female,Routine Check,2,5,0,Tuesday,12:00-14:00,1,0,0
+1048,35,Female,New Consultation,8,4,0,Friday,16:00-18:00,1,0,0
+1049,49,Female,Follow-up,43,18,3,Thursday,10:00-12:00,0,0,1
+1050,29,Male,New Consultation,33,8,0,Friday,10:00-12:00,1,0,0
+1051,38,Female,New Consultation,4,0,0,Wednesday,18:00-20:00,1,1,0
+1052,36,Female,New Consultation,12,1,0,Thursday,08:00-10:00,1,0,0
+1053,22,Female,Follow-up,13,4,0,Thursday,10:00-12:00,1,0,0
+1054,39,Female,Follow-up,6,0,0,Thursday,16:00-18:00,1,1,0
+1055,71,Female,Follow-up,5,4,0,Friday,12:00-14:00,1,0,0
+1056,61,Male,Routine Check,12,4,0,Friday,16:00-18:00,1,0,1
+1057,20,Female,Procedure,5,12,0,Tuesday,08:00-10:00,0,0,0
+1058,58,Female,Routine Check,0,0,0,Saturday,10:00-12:00,1,1,1
+1059,49,Female,Procedure,6,2,1,Saturday,08:00-10:00,1,0,0
+1060,76,Female,Routine Check,16,5,0,Friday,12:00-14:00,1,0,0
+1061,48,Female,Follow-up,8,0,0,Tuesday,14:00-16:00,1,1,1
+1062,55,Female,Follow-up,16,2,0,Monday,16:00-18:00,1,0,0
+1063,16,Female,Follow-up,10,1,0,Friday,18:00-20:00,1,0,0
+1064,31,Male,Follow-up,18,9,0,Wednesday,10:00-12:00,0,0,0
+1065,16,Female,New Consultation,3,0,0,Tuesday,16:00-18:00,0,1,0
+1066,40,Female,Follow-up,7,5,1,Thursday,12:00-14:00,0,0,0
+1067,44,Female,New Consultation,3,5,0,Tuesday,10:00-12:00,0,0,1
+1068,59,Female,Procedure,8,3,0,Wednesday,14:00-16:00,1,0,0
+1069,60,Male,Procedure,2,0,0,Wednesday,12:00-14:00,1,1,1
+1070,38,Male,Routine Check,7,9,0,Monday,12:00-14:00,1,0,0
+1071,71,Male,Procedure,4,4,2,Monday,08:00-10:00,1,0,0
+1072,38,Female,Urgent Visit,0,1,0,Friday,10:00-12:00,1,0,0
+1073,1,Female,New Consultation,2,0,0,Tuesday,16:00-18:00,1,1,0
+1074,51,Female,Follow-up,2,2,0,Tuesday,10:00-12:00,1,0,0
+1075,48,Male,Follow-up,21,4,0,Thursday,16:00-18:00,1,0,0
+1076,25,Female,Follow-up,14,3,1,Tuesday,18:00-20:00,1,0,0
+1077,51,Female,Follow-up,4,6,0,Friday,14:00-16:00,0,0,0
+1078,14,Female,Routine Check,0,2,0,Saturday,14:00-16:00,1,0,0
+1079,20,Female,Urgent Visit,6,5,1,Saturday,16:00-18:00,1,0,0
+1080,28,Female,New Consultation,12,3,1,Thursday,16:00-18:00,1,0,0
+1081,30,Male,Follow-up,19,7,2,Monday,14:00-16:00,1,0,0
+1082,21,Male,Follow-up,3,0,0,Thursday,14:00-16:00,1,1,0
+1083,68,Female,Routine Check,8,2,0,Friday,18:00-20:00,1,0,0
+1084,42,Female,New Consultation,27,1,0,Monday,16:00-18:00,1,0,0
+1085,31,Male,Routine Check,2,2,0,Friday,14:00-16:00,1,0,0
+1086,28,Female,Follow-up,13,4,0,Tuesday,16:00-18:00,1,0,0
+1087,14,Female,Routine Check,11,1,0,Friday,12:00-14:00,1,0,0
+1088,35,Female,New Consultation,8,8,2,Monday,14:00-16:00,1,0,1
+1089,36,Female,Procedure,3,1,0,Friday,18:00-20:00,1,0,0
+1090,38,Male,Follow-up,1,8,1,Wednesday,10:00-12:00,1,0,0
+1091,40,Male,Follow-up,15,14,5,Friday,08:00-10:00,1,0,1
+1092,31,Female,New Consultation,12,0,0,Friday,14:00-16:00,0,1,0
+1093,30,Male,Follow-up,7,13,2,Friday,10:00-12:00,0,0,0
+1094,23,Male,New Consultation,10,6,0,Thursday,10:00-12:00,1,0,0
+1095,35,Male,Urgent Visit,0,1,0,Tuesday,14:00-16:00,1,0,0
+1096,3,Female,Follow-up,8,0,0,Monday,10:00-12:00,0,1,0
+1097,92,Male,New Consultation,2,0,0,Friday,08:00-10:00,1,1,0
+1098,15,Male,Routine Check,3,6,1,Monday,12:00-14:00,1,0,0
+1099,47,Male,Routine Check,7,12,1,Saturday,14:00-16:00,1,0,0
+1100,28,Male,Follow-up,6,7,2,Monday,10:00-12:00,1,0,0
+1101,36,Male,Routine Check,7,4,0,Wednesday,18:00-20:00,0,0,0
+1102,83,Male,Procedure,18,0,0,Wednesday,18:00-20:00,0,1,0
+1103,53,Male,Urgent Visit,5,5,1,Wednesday,16:00-18:00,0,0,0
+1104,51,Female,New Consultation,17,10,2,Friday,14:00-16:00,0,0,1
+1105,11,Female,Procedure,5,1,1,Monday,16:00-18:00,1,0,0
+1106,38,Male,Procedure,13,8,1,Wednesday,12:00-14:00,1,0,0
+1107,52,Female,New Consultation,5,3,0,Tuesday,12:00-14:00,1,0,0
+1108,43,Male,New Consultation,6,4,0,Monday,12:00-14:00,1,0,0
+1109,38,Female,Routine Check,14,12,1,Monday,18:00-20:00,1,0,0
+1110,3,Male,Follow-up,8,7,2,Friday,10:00-12:00,0,0,0
+1111,28,Female,Routine Check,20,0,0,Friday,14:00-16:00,1,1,0
+1112,24,Female,New Consultation,3,0,0,Tuesday,16:00-18:00,1,1,0
+1113,92,Male,New Consultation,11,0,0,Thursday,16:00-18:00,0,1,0
+1114,25,Female,Routine Check,15,0,0,Tuesday,10:00-12:00,1,1,0
+1115,39,Female,Follow-up,7,0,0,Monday,16:00-18:00,1,1,0
+1116,42,Female,Urgent Visit,0,3,0,Saturday,08:00-10:00,1,0,0
+1117,53,Female,Follow-up,13,8,1,Monday,12:00-14:00,0,0,0
+1118,40,Male,Procedure,2,4,1,Wednesday,18:00-20:00,1,0,0
+1119,42,Male,New Consultation,23,3,0,Friday,10:00-12:00,1,0,0
+1120,42,Female,Follow-up,10,12,3,Tuesday,12:00-14:00,1,0,1
+1121,19,Male,Follow-up,3,1,0,Saturday,16:00-18:00,1,0,0
+1122,1,Female,Follow-up,28,9,0,Thursday,16:00-18:00,0,0,0
+1123,34,Female,Procedure,16,2,0,Monday,14:00-16:00,1,0,0
+1124,41,Male,New Consultation,9,2,0,Monday,16:00-18:00,1,0,0
+1125,70,Male,Follow-up,13,16,0,Monday,14:00-16:00,1,0,0
+1126,46,Male,Follow-up,12,9,0,Thursday,16:00-18:00,0,0,0
+1127,54,Male,New Consultation,4,15,2,Wednesday,18:00-20:00,1,0,0
+1128,63,Male,Routine Check,47,3,1,Saturday,10:00-12:00,1,0,0
+1129,59,Female,Routine Check,16,14,1,Tuesday,16:00-18:00,1,0,0
+1130,51,Male,Follow-up,6,3,0,Friday,10:00-12:00,1,0,0
+1131,6,Male,Follow-up,8,1,0,Saturday,16:00-18:00,1,0,0
+1132,36,Male,Procedure,20,2,0,Monday,16:00-18:00,1,0,0
+1133,13,Female,Routine Check,2,1,0,Monday,12:00-14:00,1,0,0
+1134,46,Female,Follow-up,12,0,0,Monday,16:00-18:00,1,1,1
+1135,51,Male,New Consultation,6,22,3,Tuesday,10:00-12:00,1,0,1
+1136,28,Male,Urgent Visit,2,3,0,Thursday,08:00-10:00,1,0,0
+1137,30,Male,Follow-up,9,2,1,Thursday,12:00-14:00,0,0,0
+1138,32,Male,New Consultation,28,0,0,Tuesday,08:00-10:00,1,1,0
+1139,87,Male,Follow-up,12,26,2,Friday,16:00-18:00,1,0,1
+1140,61,Female,New Consultation,4,7,1,Friday,10:00-12:00,1,0,1
+1141,52,Female,Follow-up,5,0,0,Friday,10:00-12:00,1,1,0
+1142,30,Male,Follow-up,9,0,0,Friday,14:00-16:00,1,1,0
+1143,69,Female,Follow-up,12,7,0,Saturday,18:00-20:00,0,0,0
+1144,28,Male,Procedure,6,30,4,Wednesday,14:00-16:00,1,0,1
+1145,69,Male,Follow-up,18,8,1,Monday,10:00-12:00,1,0,0
+1146,3,Female,Follow-up,14,3,2,Monday,18:00-20:00,1,0,1
+1147,52,Male,New Consultation,15,12,0,Saturday,08:00-10:00,1,0,0
+1148,56,Female,Follow-up,16,2,0,Wednesday,10:00-12:00,1,0,0
+1149,47,Female,Follow-up,6,3,2,Tuesday,18:00-20:00,1,0,0
+1150,29,Male,Follow-up,11,0,0,Wednesday,14:00-16:00,1,1,0
+1151,53,Male,Routine Check,10,24,3,Tuesday,12:00-14:00,1,0,0
+1152,52,Female,Follow-up,16,7,1,Monday,14:00-16:00,1,0,0
+1153,76,Male,Routine Check,12,4,0,Tuesday,14:00-16:00,1,0,0
+1154,37,Male,New Consultation,22,2,0,Saturday,10:00-12:00,1,0,0
+1155,32,Male,Routine Check,9,1,0,Wednesday,14:00-16:00,0,0,0
+1156,47,Female,New Consultation,10,0,0,Monday,16:00-18:00,1,1,0
+1157,46,Male,Follow-up,19,1,0,Monday,16:00-18:00,1,0,0
+1158,27,Female,New Consultation,14,0,0,Thursday,16:00-18:00,1,1,0
+1159,44,Male,New Consultation,8,7,2,Tuesday,12:00-14:00,0,0,1
+1160,19,Male,New Consultation,11,5,1,Tuesday,08:00-10:00,1,0,0
+1161,66,Female,New Consultation,8,5,0,Saturday,10:00-12:00,0,0,0
+1162,49,Male,Follow-up,13,13,0,Friday,16:00-18:00,1,0,0
+1163,17,Female,Follow-up,23,0,0,Monday,08:00-10:00,1,1,0
+1164,46,Female,Routine Check,10,0,0,Monday,12:00-14:00,0,1,0
+1165,26,Female,Procedure,7,0,0,Friday,16:00-18:00,1,1,1
+1166,35,Male,Follow-up,3,0,0,Saturday,10:00-12:00,1,1,1
+1167,56,Male,Routine Check,23,5,1,Wednesday,18:00-20:00,1,0,0
+1168,29,Female,Follow-up,14,2,0,Tuesday,08:00-10:00,1,0,0
+1169,49,Male,Urgent Visit,7,0,0,Thursday,18:00-20:00,1,1,0
+1170,61,Female,Procedure,7,1,0,Wednesday,16:00-18:00,1,0,0
+1171,32,Male,New Consultation,2,1,0,Thursday,14:00-16:00,1,0,0
+1172,51,Female,Procedure,9,1,1,Wednesday,08:00-10:00,1,0,0
+1173,48,Female,New Consultation,3,0,0,Monday,14:00-16:00,1,1,0
+1174,47,Female,Follow-up,36,9,0,Saturday,18:00-20:00,1,0,0
+1175,57,Female,Procedure,4,3,0,Wednesday,12:00-14:00,1,0,0
+1176,44,Female,Routine Check,18,0,0,Tuesday,10:00-12:00,1,1,1
+1177,12,Female,Follow-up,11,3,0,Monday,14:00-16:00,1,0,0
+1178,47,Female,Follow-up,3,20,3,Monday,14:00-16:00,1,0,0
+1179,51,Female,Follow-up,4,6,0,Wednesday,16:00-18:00,1,0,0
+1180,52,Male,New Consultation,18,1,0,Saturday,12:00-14:00,1,0,0
+1181,67,Male,New Consultation,21,3,1,Tuesday,14:00-16:00,1,0,0
+1182,28,Female,Urgent Visit,4,9,5,Saturday,18:00-20:00,1,0,0
+1183,74,Male,New Consultation,16,27,6,Thursday,10:00-12:00,1,0,0
+1184,29,Female,New Consultation,10,4,0,Wednesday,14:00-16:00,1,0,0
+1185,4,Male,Routine Check,8,1,0,Monday,12:00-14:00,1,0,1
+1186,40,Female,Follow-up,8,19,2,Tuesday,16:00-18:00,1,0,1
+1187,37,Female,Follow-up,3,4,0,Thursday,10:00-12:00,1,0,0
+1188,3,Male,New Consultation,3,8,2,Tuesday,08:00-10:00,1,0,1
+1189,87,Female,New Consultation,21,2,1,Thursday,18:00-20:00,0,0,0
+1190,44,Male,Follow-up,11,5,0,Wednesday,16:00-18:00,1,0,0
+1191,76,Male,Follow-up,9,0,0,Saturday,10:00-12:00,1,1,0
+1192,49,Female,Follow-up,7,17,3,Monday,08:00-10:00,1,0,0
+1193,36,Female,Follow-up,3,3,0,Tuesday,14:00-16:00,1,0,0
+1194,12,Male,Follow-up,15,1,0,Friday,14:00-16:00,0,0,1
+1195,51,Male,Urgent Visit,2,0,0,Thursday,10:00-12:00,1,1,0
+1196,27,Female,Procedure,10,0,0,Tuesday,10:00-12:00,0,1,0
+1197,23,Male,Routine Check,18,0,0,Monday,10:00-12:00,1,1,0
+1198,38,Female,Follow-up,25,9,2,Wednesday,08:00-10:00,1,0,1
+1199,40,Male,Follow-up,10,4,1,Tuesday,10:00-12:00,1,0,0
+1200,53,Female,New Consultation,33,8,0,Monday,12:00-14:00,1,0,1
+1201,54,Female,New Consultation,4,1,1,Thursday,12:00-14:00,1,0,0
+1202,27,Female,New Consultation,13,1,0,Friday,16:00-18:00,1,0,0
+1203,10,Female,Follow-up,3,13,3,Monday,14:00-16:00,1,0,0
+1204,47,Female,Routine Check,8,0,0,Tuesday,18:00-20:00,1,1,0
+1205,23,Female,Routine Check,8,0,0,Friday,16:00-18:00,0,1,0
+1206,51,Male,Follow-up,13,0,0,Monday,08:00-10:00,1,1,0
+1207,3,Female,Follow-up,17,1,1,Saturday,10:00-12:00,0,0,0
+1208,37,Female,Procedure,3,0,0,Thursday,12:00-14:00,1,1,0
+1209,52,Female,New Consultation,12,0,0,Wednesday,16:00-18:00,1,1,0
+1210,28,Male,Routine Check,5,4,0,Friday,18:00-20:00,0,0,0
+1211,70,Female,Follow-up,7,2,0,Friday,12:00-14:00,0,0,0
+1212,3,Female,New Consultation,17,0,0,Tuesday,16:00-18:00,1,1,0
+1213,4,Male,New Consultation,20,14,1,Thursday,14:00-16:00,1,0,0
+1214,52,Female,Follow-up,6,4,1,Friday,14:00-16:00,1,0,0
+1215,24,Male,New Consultation,13,0,0,Wednesday,14:00-16:00,1,1,0
+1216,39,Male,Procedure,38,1,0,Monday,12:00-14:00,1,0,0
+1217,22,Female,Follow-up,9,0,0,Saturday,10:00-12:00,1,1,1
+1218,76,Male,New Consultation,3,0,0,Thursday,10:00-12:00,1,1,0
+1219,64,Female,Follow-up,8,4,0,Friday,14:00-16:00,1,0,0
+1220,78,Male,Routine Check,5,0,0,Wednesday,18:00-20:00,1,1,0
+1221,77,Male,Follow-up,12,6,1,Tuesday,14:00-16:00,0,0,0
+1222,42,Male,New Consultation,11,2,0,Tuesday,14:00-16:00,1,0,0
+1223,38,Male,Routine Check,6,3,0,Friday,10:00-12:00,1,0,0
+1224,31,Female,New Consultation,13,7,1,Tuesday,18:00-20:00,1,0,0
+1225,30,Male,Routine Check,11,1,0,Wednesday,08:00-10:00,1,0,0
+1226,12,Female,Routine Check,7,9,0,Monday,16:00-18:00,1,0,0
+1227,32,Female,Follow-up,15,4,0,Monday,16:00-18:00,1,0,0
+1228,55,Female,Follow-up,12,1,1,Thursday,08:00-10:00,1,0,0
+1229,62,Male,New Consultation,7,11,0,Monday,14:00-16:00,1,0,0
+1230,33,Female,New Consultation,16,8,1,Monday,10:00-12:00,1,0,0
+1231,35,Male,New Consultation,8,1,0,Saturday,14:00-16:00,1,0,0
+1232,27,Male,New Consultation,19,6,0,Wednesday,14:00-16:00,1,0,0
+1233,46,Female,Follow-up,2,5,2,Wednesday,14:00-16:00,1,0,0
+1234,27,Female,Urgent Visit,1,0,0,Thursday,18:00-20:00,1,1,0
+1235,22,Female,New Consultation,7,0,0,Saturday,08:00-10:00,1,1,0
+1236,45,Female,Routine Check,7,0,0,Friday,18:00-20:00,1,1,0
+1237,39,Male,Follow-up,5,2,1,Monday,18:00-20:00,1,0,0
+1238,43,Male,Urgent Visit,7,4,0,Thursday,16:00-18:00,1,0,0
+1239,5,Male,New Consultation,12,3,1,Wednesday,18:00-20:00,1,0,0
+1240,61,Male,New Consultation,3,0,0,Tuesday,16:00-18:00,0,1,1
+1241,43,Male,New Consultation,5,9,0,Wednesday,08:00-10:00,1,0,0
+1242,73,Female,Procedure,2,8,0,Wednesday,10:00-12:00,1,0,0
+1243,65,Female,New Consultation,20,1,0,Monday,10:00-12:00,1,0,0
+1244,35,Male,Procedure,6,4,0,Wednesday,10:00-12:00,1,0,0
+1245,26,Female,Procedure,50,6,1,Monday,16:00-18:00,1,0,0
+1246,22,Female,Follow-up,2,8,1,Monday,12:00-14:00,1,0,1
+1247,60,Male,Follow-up,3,0,0,Wednesday,12:00-14:00,1,1,0
+1248,23,Female,New Consultation,13,0,0,Wednesday,16:00-18:00,1,1,0
+1249,22,Male,Procedure,8,1,0,Saturday,18:00-20:00,1,0,0
+1250,25,Female,New Consultation,20,14,3,Monday,12:00-14:00,0,0,1
+1251,64,Male,Routine Check,6,0,0,Monday,14:00-16:00,1,1,0
+1252,68,Male,Follow-up,25,3,0,Friday,10:00-12:00,0,0,0
+1253,58,Female,Follow-up,10,0,0,Wednesday,16:00-18:00,0,1,0
+1254,36,Female,Procedure,9,2,0,Monday,10:00-12:00,1,0,0
+1255,44,Female,New Consultation,3,0,0,Thursday,18:00-20:00,1,1,0
+1256,32,Male,Routine Check,6,0,0,Thursday,16:00-18:00,0,1,0
+1257,50,Male,Follow-up,8,1,0,Monday,16:00-18:00,1,0,0
+1258,52,Female,New Consultation,7,7,1,Tuesday,14:00-16:00,1,0,0
+1259,76,Male,Procedure,2,2,1,Friday,12:00-14:00,0,0,0
+1260,23,Female,Routine Check,9,2,0,Thursday,12:00-14:00,0,0,0
+1261,25,Male,Follow-up,16,0,0,Friday,14:00-16:00,1,1,0
+1262,48,Female,Routine Check,5,1,0,Monday,16:00-18:00,1,0,0
+1263,9,Male,Routine Check,11,3,0,Tuesday,16:00-18:00,1,0,0
+1264,13,Female,Follow-up,1,2,0,Tuesday,12:00-14:00,1,0,0
+1265,31,Female,Follow-up,3,5,1,Thursday,12:00-14:00,0,0,0
+1266,21,Female,Follow-up,19,4,0,Saturday,16:00-18:00,1,0,0
+1267,19,Male,Follow-up,2,9,1,Tuesday,08:00-10:00,1,0,0
+1268,5,Male,New Consultation,12,0,0,Wednesday,08:00-10:00,1,1,0
+1269,43,Female,New Consultation,6,8,1,Friday,18:00-20:00,1,0,0
+1270,1,Male,New Consultation,12,0,0,Wednesday,16:00-18:00,0,1,0
+1271,55,Female,Follow-up,4,2,0,Wednesday,16:00-18:00,1,0,0
+1272,38,Male,Routine Check,11,1,1,Thursday,10:00-12:00,1,0,1
+1273,39,Female,New Consultation,15,7,1,Monday,16:00-18:00,1,0,0
+1274,28,Female,Follow-up,1,6,0,Thursday,14:00-16:00,0,0,0
+1275,19,Female,Routine Check,5,8,0,Tuesday,12:00-14:00,0,0,0
+1276,49,Female,New Consultation,16,0,0,Saturday,10:00-12:00,1,1,0
+1277,61,Female,New Consultation,3,10,0,Saturday,16:00-18:00,1,0,0
+1278,65,Male,Follow-up,26,1,0,Friday,14:00-16:00,1,0,0
+1279,59,Female,Routine Check,15,10,0,Monday,14:00-16:00,1,0,0
+1280,15,Male,Procedure,0,1,0,Saturday,08:00-10:00,1,0,0
+1281,92,Male,Follow-up,20,0,0,Wednesday,16:00-18:00,0,1,0
+1282,68,Male,Procedure,1,0,0,Friday,14:00-16:00,1,1,0
+1283,24,Male,New Consultation,25,11,0,Friday,10:00-12:00,0,0,1
+1284,42,Female,Procedure,12,11,1,Wednesday,10:00-12:00,1,0,0
+1285,38,Male,Procedure,8,1,0,Thursday,10:00-12:00,1,0,0
+1286,60,Female,Follow-up,4,0,0,Wednesday,14:00-16:00,0,1,1
+1287,71,Female,Follow-up,16,2,0,Tuesday,14:00-16:00,0,0,0
+1288,58,Female,Follow-up,4,1,0,Friday,18:00-20:00,1,0,0
+1289,60,Male,New Consultation,13,2,0,Friday,10:00-12:00,1,0,0
+1290,41,Female,Routine Check,4,8,1,Saturday,08:00-10:00,1,0,0
+1291,1,Female,Follow-up,3,8,1,Tuesday,10:00-12:00,1,0,0
+1292,52,Male,Routine Check,5,2,0,Friday,08:00-10:00,0,0,1
+1293,65,Male,Procedure,9,11,5,Tuesday,10:00-12:00,1,0,0
+1294,15,Female,New Consultation,3,9,2,Thursday,12:00-14:00,1,0,0
+1295,25,Male,Routine Check,5,1,0,Friday,18:00-20:00,1,0,0
+1296,56,Female,Follow-up,2,0,0,Friday,14:00-16:00,1,1,0
+1297,38,Female,Urgent Visit,1,6,1,Friday,16:00-18:00,0,0,0
+1298,41,Male,New Consultation,3,7,1,Saturday,10:00-12:00,1,0,0
+1299,50,Female,New Consultation,27,5,0,Wednesday,12:00-14:00,1,0,0
+1300,39,Male,Follow-up,3,4,0,Thursday,10:00-12:00,1,0,0
+1301,40,Male,Follow-up,11,2,0,Tuesday,14:00-16:00,1,0,0
+1302,63,Male,New Consultation,8,4,0,Friday,08:00-10:00,0,0,0
+1303,41,Female,Urgent Visit,1,1,0,Thursday,10:00-12:00,1,0,0
+1304,32,Female,Routine Check,27,7,1,Tuesday,16:00-18:00,1,0,0
+1305,36,Male,Routine Check,6,0,0,Monday,16:00-18:00,1,1,1
+1306,63,Male,Follow-up,12,2,0,Tuesday,16:00-18:00,0,0,1
+1307,32,Female,New Consultation,4,13,2,Tuesday,10:00-12:00,1,0,0
+1308,42,Male,Follow-up,1,4,0,Monday,08:00-10:00,1,0,0
+1309,25,Female,Routine Check,48,3,0,Tuesday,12:00-14:00,1,0,0
+1310,63,Female,Follow-up,7,9,3,Monday,08:00-10:00,1,0,0
+1311,40,Male,Follow-up,1,3,0,Friday,14:00-16:00,1,0,0
+1312,56,Female,Routine Check,6,3,0,Wednesday,16:00-18:00,1,0,0
+1313,55,Female,New Consultation,3,1,0,Friday,10:00-12:00,0,0,0
+1314,39,Female,Procedure,24,8,1,Monday,16:00-18:00,1,0,1
+1315,63,Female,Follow-up,6,3,0,Thursday,16:00-18:00,0,0,0
+1316,71,Female,Routine Check,3,14,4,Thursday,12:00-14:00,1,0,0
+1317,47,Male,Follow-up,3,7,0,Tuesday,16:00-18:00,0,0,0
+1318,21,Male,Follow-up,8,9,1,Friday,10:00-12:00,1,0,0
+1319,48,Female,Routine Check,9,5,0,Wednesday,12:00-14:00,1,0,0
+1320,31,Male,Routine Check,16,3,0,Friday,14:00-16:00,1,0,0
+1321,8,Female,Follow-up,7,0,0,Friday,16:00-18:00,1,1,1
+1322,21,Male,Urgent Visit,3,0,0,Tuesday,12:00-14:00,1,1,0
+1323,65,Male,Procedure,15,0,0,Friday,10:00-12:00,1,1,0
+1324,73,Male,Routine Check,8,9,0,Tuesday,14:00-16:00,1,0,0
+1325,39,Male,Procedure,2,0,0,Wednesday,12:00-14:00,0,1,0
+1326,11,Male,Follow-up,1,0,0,Thursday,10:00-12:00,1,1,1
+1327,37,Male,Procedure,5,5,0,Friday,08:00-10:00,0,0,0
+1328,34,Male,Follow-up,9,6,1,Wednesday,08:00-10:00,1,0,0
+1329,11,Female,New Consultation,10,5,0,Thursday,14:00-16:00,0,0,0
+1330,46,Male,Follow-up,17,9,1,Monday,16:00-18:00,1,0,1
+1331,71,Female,Follow-up,10,13,1,Wednesday,16:00-18:00,0,0,0
+1332,17,Female,Routine Check,5,2,0,Wednesday,10:00-12:00,1,0,0
+1333,43,Male,New Consultation,31,11,0,Saturday,10:00-12:00,1,0,1
+1334,45,Male,Follow-up,14,5,0,Tuesday,12:00-14:00,1,0,0
+1335,30,Male,New Consultation,19,5,1,Friday,12:00-14:00,1,0,0
+1336,49,Female,Follow-up,7,5,1,Monday,12:00-14:00,1,0,0
+1337,36,Female,Routine Check,17,2,0,Thursday,10:00-12:00,1,0,0
+1338,32,Female,Urgent Visit,1,14,2,Tuesday,16:00-18:00,0,0,1
+1339,21,Male,Procedure,14,1,0,Tuesday,12:00-14:00,1,0,0
+1340,33,Female,Follow-up,27,7,1,Thursday,14:00-16:00,0,0,0
+1341,74,Female,Routine Check,4,0,0,Monday,08:00-10:00,1,1,0
+1342,14,Male,Routine Check,10,2,0,Thursday,18:00-20:00,0,0,0
+1343,74,Female,Procedure,24,2,0,Tuesday,16:00-18:00,1,0,0
+1344,83,Female,New Consultation,2,2,0,Wednesday,10:00-12:00,1,0,0
+1345,43,Male,New Consultation,4,9,4,Monday,12:00-14:00,1,0,1
+1346,79,Female,Follow-up,29,0,0,Thursday,16:00-18:00,1,1,0
+1347,53,Male,Follow-up,14,0,0,Friday,10:00-12:00,0,1,0
+1348,34,Female,New Consultation,20,10,0,Thursday,12:00-14:00,1,0,0
+1349,16,Female,Follow-up,8,1,0,Monday,10:00-12:00,0,0,0
+1350,33,Female,Follow-up,16,3,1,Thursday,10:00-12:00,1,0,0
+1351,42,Male,Urgent Visit,0,2,0,Monday,12:00-14:00,0,0,0
+1352,43,Male,New Consultation,24,3,1,Wednesday,10:00-12:00,1,0,0
+1353,26,Male,Follow-up,22,7,0,Monday,14:00-16:00,1,0,0
+1354,21,Male,Follow-up,6,7,3,Thursday,14:00-16:00,1,0,1
+1355,56,Male,Urgent Visit,0,1,1,Thursday,14:00-16:00,0,0,0
+1356,59,Female,New Consultation,26,0,0,Wednesday,12:00-14:00,1,1,1
+1357,48,Female,Routine Check,6,9,0,Wednesday,12:00-14:00,1,0,0
+1358,77,Male,Routine Check,20,0,0,Tuesday,14:00-16:00,1,1,0
+1359,34,Male,Follow-up,0,8,1,Monday,14:00-16:00,1,0,0
+1360,32,Male,Urgent Visit,1,3,0,Wednesday,08:00-10:00,1,0,1
+1361,63,Male,Follow-up,18,6,2,Tuesday,10:00-12:00,1,0,0
+1362,31,Male,Follow-up,1,5,2,Monday,10:00-12:00,1,0,0
+1363,55,Male,Procedure,23,17,2,Friday,12:00-14:00,1,0,0
+1364,59,Female,New Consultation,3,9,2,Monday,16:00-18:00,0,0,1
+1365,49,Male,Procedure,3,0,0,Monday,16:00-18:00,1,1,0
+1366,22,Female,Procedure,11,0,0,Monday,08:00-10:00,1,1,0
+1367,10,Male,Procedure,19,0,0,Saturday,14:00-16:00,0,1,0
+1368,35,Female,Procedure,23,1,1,Thursday,14:00-16:00,1,0,0
+1369,20,Male,New Consultation,9,11,2,Saturday,14:00-16:00,1,0,0
+1370,21,Female,Follow-up,9,0,0,Tuesday,08:00-10:00,1,1,0
+1371,31,Male,Follow-up,0,11,2,Tuesday,16:00-18:00,1,0,0
+1372,17,Male,Procedure,6,3,2,Thursday,16:00-18:00,1,0,1
+1373,58,Female,Follow-up,8,4,0,Thursday,16:00-18:00,0,0,0
+1374,39,Male,Urgent Visit,3,2,1,Thursday,12:00-14:00,1,0,1
+1375,39,Female,New Consultation,3,0,0,Thursday,14:00-16:00,1,1,0
+1376,67,Female,Routine Check,2,20,2,Friday,18:00-20:00,1,0,0
+1377,58,Female,New Consultation,8,0,0,Tuesday,08:00-10:00,0,1,0
+1378,36,Female,Follow-up,1,8,0,Monday,08:00-10:00,1,0,0
+1379,16,Female,Routine Check,9,0,0,Monday,12:00-14:00,0,1,1
+1380,50,Female,Routine Check,3,3,0,Friday,14:00-16:00,1,0,0
+1381,58,Female,Procedure,9,0,0,Friday,18:00-20:00,1,1,1
+1382,30,Female,Follow-up,6,0,0,Saturday,18:00-20:00,1,1,0
+1383,49,Female,Routine Check,4,10,1,Thursday,10:00-12:00,1,0,0
+1384,56,Male,New Consultation,38,1,0,Monday,16:00-18:00,1,0,0
+1385,58,Male,Follow-up,20,4,0,Tuesday,10:00-12:00,1,0,0
+1386,40,Male,New Consultation,14,2,0,Tuesday,12:00-14:00,0,0,0
+1387,37,Male,Routine Check,5,1,0,Saturday,16:00-18:00,0,0,0
+1388,54,Female,Procedure,10,30,6,Thursday,14:00-16:00,0,0,1
+1389,3,Female,Follow-up,12,2,0,Monday,16:00-18:00,1,0,0
+1390,32,Female,Follow-up,17,0,0,Monday,14:00-16:00,1,1,0
+1391,38,Male,Follow-up,20,2,0,Thursday,16:00-18:00,1,0,0
+1392,28,Male,Follow-up,6,2,0,Friday,14:00-16:00,1,0,0
+1393,57,Female,Follow-up,2,5,0,Saturday,08:00-10:00,1,0,0
+1394,33,Male,New Consultation,15,0,0,Thursday,18:00-20:00,1,1,0
+1395,29,Female,Follow-up,12,6,0,Wednesday,12:00-14:00,0,0,0
+1396,45,Male,New Consultation,10,8,3,Friday,16:00-18:00,1,0,1
+1397,40,Female,Urgent Visit,4,1,0,Monday,14:00-16:00,1,0,0
+1398,31,Male,Follow-up,5,0,0,Saturday,16:00-18:00,1,1,0
+1399,30,Male,Follow-up,3,0,0,Wednesday,14:00-16:00,1,1,0
+1400,39,Male,Follow-up,7,2,0,Friday,10:00-12:00,1,0,0
+1401,20,Male,Procedure,5,4,0,Wednesday,08:00-10:00,1,0,0
+1402,43,Male,Procedure,10,5,0,Thursday,10:00-12:00,1,0,0
+1403,85,Female,Routine Check,19,3,0,Monday,08:00-10:00,0,0,0
+1404,34,Male,Follow-up,12,2,0,Friday,16:00-18:00,1,0,0
+1405,38,Female,Follow-up,13,3,1,Tuesday,16:00-18:00,1,0,0
+1406,52,Female,New Consultation,6,3,0,Friday,08:00-10:00,1,0,0
+1407,60,Male,New Consultation,4,0,0,Saturday,12:00-14:00,1,1,0
+1408,41,Female,Routine Check,1,6,0,Saturday,08:00-10:00,1,0,1
+1409,28,Male,Procedure,18,3,0,Tuesday,18:00-20:00,1,0,0
+1410,13,Male,New Consultation,5,9,1,Saturday,12:00-14:00,1,0,0
+1411,53,Female,Follow-up,7,7,0,Wednesday,18:00-20:00,0,0,0
+1412,60,Female,Procedure,5,0,0,Monday,08:00-10:00,1,1,0
+1413,47,Female,New Consultation,6,3,0,Wednesday,08:00-10:00,1,0,1
+1414,53,Female,Follow-up,7,10,1,Tuesday,08:00-10:00,0,0,1
+1415,38,Male,Follow-up,6,2,0,Wednesday,18:00-20:00,0,0,0
+1416,49,Female,Follow-up,25,10,1,Thursday,18:00-20:00,1,0,0
+1417,30,Male,Procedure,12,3,0,Friday,12:00-14:00,1,0,0
+1418,26,Female,Follow-up,15,9,1,Tuesday,18:00-20:00,0,0,0
+1419,38,Female,Routine Check,7,8,3,Monday,14:00-16:00,1,0,0
+1420,31,Female,Follow-up,18,3,0,Thursday,12:00-14:00,1,0,0
+1421,44,Female,Routine Check,14,1,0,Tuesday,18:00-20:00,1,0,0
+1422,45,Female,Routine Check,4,4,1,Tuesday,12:00-14:00,0,0,0
+1423,29,Female,New Consultation,4,6,2,Thursday,08:00-10:00,1,0,0
+1424,45,Female,New Consultation,4,0,0,Wednesday,14:00-16:00,1,1,0
+1425,20,Female,Follow-up,20,6,0,Thursday,16:00-18:00,1,0,1
+1426,38,Female,Urgent Visit,5,4,0,Monday,16:00-18:00,1,0,0
+1427,32,Female,Routine Check,13,2,1,Monday,16:00-18:00,1,0,0
+1428,51,Female,Follow-up,3,0,0,Friday,18:00-20:00,1,1,0
+1429,20,Female,New Consultation,24,2,0,Tuesday,14:00-16:00,0,0,0
+1430,71,Male,Procedure,14,0,0,Monday,08:00-10:00,1,1,0
+1431,23,Male,Routine Check,15,0,0,Friday,18:00-20:00,1,1,0
+1432,28,Female,New Consultation,8,3,0,Tuesday,10:00-12:00,1,0,0
+1433,27,Male,Follow-up,18,1,0,Tuesday,16:00-18:00,1,0,0
+1434,21,Male,Routine Check,11,4,0,Monday,12:00-14:00,1,0,0
+1435,13,Male,New Consultation,14,5,1,Wednesday,16:00-18:00,1,0,0
+1436,63,Male,Routine Check,24,2,0,Wednesday,14:00-16:00,1,0,0
+1437,35,Female,Follow-up,11,26,2,Wednesday,10:00-12:00,1,0,0
+1438,5,Female,New Consultation,13,16,2,Thursday,12:00-14:00,1,0,0
+1439,68,Male,Follow-up,8,3,1,Wednesday,10:00-12:00,1,0,1
+1440,35,Male,Routine Check,10,1,0,Monday,10:00-12:00,1,0,0
+1441,11,Male,Urgent Visit,5,5,1,Monday,10:00-12:00,0,0,0
+1442,63,Female,Follow-up,10,2,2,Thursday,12:00-14:00,1,0,0
+1443,53,Female,Follow-up,15,13,2,Monday,18:00-20:00,0,0,0
+1444,38,Female,Procedure,11,2,0,Friday,16:00-18:00,1,0,0
+1445,47,Male,Routine Check,17,4,0,Thursday,14:00-16:00,1,0,0
+1446,3,Female,Follow-up,22,3,0,Wednesday,14:00-16:00,1,0,0
+1447,1,Male,Routine Check,9,2,0,Tuesday,10:00-12:00,1,0,0
+1448,54,Female,Follow-up,24,5,1,Tuesday,16:00-18:00,0,0,0
+1449,46,Female,New Consultation,8,3,0,Monday,12:00-14:00,1,0,0
+1450,56,Male,New Consultation,14,19,3,Thursday,14:00-16:00,1,0,1
+1451,48,Female,Follow-up,28,14,2,Friday,18:00-20:00,1,0,0
+1452,35,Female,Routine Check,14,19,5,Thursday,10:00-12:00,1,0,1
+1453,37,Female,Urgent Visit,3,14,1,Wednesday,12:00-14:00,1,0,0
+1454,48,Male,Follow-up,10,2,0,Thursday,10:00-12:00,1,0,0
+1455,6,Male,Procedure,6,8,1,Wednesday,14:00-16:00,1,0,0
+1456,28,Male,Procedure,8,0,0,Monday,14:00-16:00,1,1,1
+1457,57,Male,Routine Check,14,0,0,Thursday,12:00-14:00,1,1,0
+1458,28,Male,Procedure,4,0,0,Monday,10:00-12:00,0,1,0
+1459,78,Female,New Consultation,21,3,0,Tuesday,12:00-14:00,1,0,0
+1460,24,Male,Routine Check,22,11,4,Wednesday,10:00-12:00,1,0,1
+1461,41,Female,Routine Check,4,2,0,Wednesday,14:00-16:00,1,0,0
+1462,64,Female,Follow-up,11,11,0,Friday,10:00-12:00,0,0,0
+1463,68,Female,Follow-up,19,15,4,Tuesday,14:00-16:00,1,0,1
+1464,50,Female,Routine Check,31,2,1,Monday,16:00-18:00,1,0,0
+1465,82,Female,Routine Check,6,0,0,Thursday,10:00-12:00,1,1,0
+1466,65,Female,New Consultation,24,2,0,Monday,12:00-14:00,1,0,1
+1467,32,Female,Follow-up,8,5,1,Tuesday,18:00-20:00,1,0,0
+1468,53,Female,Urgent Visit,0,0,0,Saturday,16:00-18:00,0,1,0
+1469,11,Female,Urgent Visit,7,2,0,Saturday,12:00-14:00,1,0,0
+1470,54,Male,New Consultation,23,10,2,Wednesday,16:00-18:00,1,0,0
+1471,36,Male,New Consultation,10,1,0,Saturday,10:00-12:00,1,0,0
+1472,50,Female,New Consultation,4,7,3,Friday,10:00-12:00,1,0,1
+1473,45,Male,Procedure,11,2,1,Thursday,14:00-16:00,1,0,0
+1474,18,Female,Follow-up,9,12,1,Thursday,16:00-18:00,1,0,0
+1475,21,Male,Procedure,0,0,0,Saturday,10:00-12:00,0,1,0
+1476,31,Female,Follow-up,13,2,0,Thursday,08:00-10:00,1,0,0
+1477,34,Male,New Consultation,4,13,2,Friday,18:00-20:00,1,0,0
+1478,67,Male,Urgent Visit,1,9,1,Tuesday,10:00-12:00,1,0,0
+1479,51,Female,New Consultation,3,1,0,Friday,16:00-18:00,0,0,0
+1480,76,Female,Urgent Visit,6,2,0,Thursday,16:00-18:00,1,0,0
+1481,2,Male,Urgent Visit,2,17,3,Monday,14:00-16:00,1,0,0
+1482,30,Male,Procedure,8,5,2,Friday,10:00-12:00,1,0,0
+1483,24,Female,Routine Check,9,14,0,Wednesday,12:00-14:00,1,0,0
+1484,34,Male,Routine Check,16,3,1,Tuesday,14:00-16:00,1,0,0
+1485,17,Female,Follow-up,4,5,0,Friday,08:00-10:00,1,0,0
+1486,29,Male,Urgent Visit,0,6,1,Friday,14:00-16:00,1,0,0
+1487,52,Male,New Consultation,10,4,1,Monday,10:00-12:00,1,0,0
+1488,33,Female,Urgent Visit,0,4,0,Thursday,14:00-16:00,1,0,0
+1489,58,Female,Routine Check,17,6,0,Thursday,16:00-18:00,1,0,0
+1490,35,Female,Routine Check,16,6,1,Friday,12:00-14:00,1,0,0
+1491,42,Female,Follow-up,14,4,0,Wednesday,16:00-18:00,0,0,1
+1492,20,Male,New Consultation,5,0,0,Friday,18:00-20:00,0,1,0
+1493,33,Male,Routine Check,7,0,0,Monday,18:00-20:00,0,1,0
+1494,68,Male,Urgent Visit,5,0,0,Tuesday,10:00-12:00,1,1,0
+1495,24,Male,New Consultation,9,2,0,Wednesday,08:00-10:00,1,0,1
+1496,61,Female,Follow-up,1,0,0,Wednesday,10:00-12:00,0,1,1
+1497,52,Male,Follow-up,7,2,0,Thursday,14:00-16:00,1,0,0
+1498,36,Female,Follow-up,6,2,0,Wednesday,10:00-12:00,1,0,0
+1499,35,Male,Follow-up,8,0,0,Monday,10:00-12:00,1,1,0
+1500,61,Male,New Consultation,2,6,0,Wednesday,16:00-18:00,0,0,0
+1501,45,Female,New Consultation,23,15,2,Thursday,10:00-12:00,1,0,0
+1502,34,Male,New Consultation,2,4,0,Monday,12:00-14:00,1,0,0
+1503,46,Male,Follow-up,4,3,0,Friday,16:00-18:00,1,0,1
+1504,63,Female,Routine Check,7,0,0,Friday,18:00-20:00,1,1,0
+1505,56,Female,Urgent Visit,7,0,0,Thursday,18:00-20:00,1,1,0
+1506,66,Male,Procedure,3,11,1,Tuesday,18:00-20:00,0,0,0
+1507,17,Male,New Consultation,4,2,0,Thursday,08:00-10:00,0,0,0
+1508,55,Female,Procedure,6,2,0,Monday,12:00-14:00,1,0,0
+1509,42,Female,Follow-up,3,15,3,Monday,12:00-14:00,1,0,0
+1510,61,Male,Urgent Visit,6,15,4,Friday,08:00-10:00,1,0,1
+1511,27,Male,Follow-up,14,7,1,Monday,10:00-12:00,1,0,0
+1512,54,Female,Follow-up,12,1,0,Friday,12:00-14:00,1,0,0
+1513,16,Female,Follow-up,24,3,1,Monday,16:00-18:00,0,0,0
+1514,52,Female,Routine Check,17,2,0,Tuesday,08:00-10:00,1,0,0
+1515,43,Male,Routine Check,19,1,1,Tuesday,16:00-18:00,1,0,0
+1516,36,Female,Follow-up,5,1,0,Friday,14:00-16:00,1,0,0
+1517,56,Male,New Consultation,14,11,2,Wednesday,16:00-18:00,1,0,0
+1518,67,Female,Routine Check,7,8,0,Monday,14:00-16:00,0,0,0
+1519,41,Male,New Consultation,7,2,1,Thursday,08:00-10:00,0,0,1
+1520,27,Female,Urgent Visit,1,9,2,Thursday,08:00-10:00,1,0,0
+1521,33,Male,Procedure,4,12,3,Monday,14:00-16:00,1,0,0
+1522,19,Female,New Consultation,8,4,2,Tuesday,16:00-18:00,1,0,1
+1523,46,Male,Follow-up,9,6,1,Wednesday,16:00-18:00,1,0,0
+1524,35,Male,Follow-up,5,2,0,Tuesday,10:00-12:00,1,0,0
+1525,25,Female,Routine Check,6,1,0,Tuesday,10:00-12:00,0,0,0
+1526,57,Female,New Consultation,4,5,4,Monday,08:00-10:00,1,0,0
+1527,26,Female,Follow-up,8,4,1,Wednesday,10:00-12:00,1,0,1
+1528,54,Male,Procedure,19,0,0,Friday,12:00-14:00,1,1,1
+1529,21,Male,New Consultation,8,5,1,Friday,12:00-14:00,0,0,1
+1530,51,Female,New Consultation,3,4,1,Tuesday,14:00-16:00,0,0,1
+1531,31,Female,New Consultation,10,0,0,Saturday,16:00-18:00,1,1,0
+1532,25,Female,Routine Check,3,2,0,Friday,08:00-10:00,1,0,0
+1533,54,Male,Follow-up,4,15,0,Thursday,14:00-16:00,1,0,1
+1534,34,Male,New Consultation,10,0,0,Friday,18:00-20:00,1,1,0
+1535,49,Female,New Consultation,8,0,0,Monday,16:00-18:00,1,1,0
+1536,73,Female,Urgent Visit,2,7,0,Thursday,12:00-14:00,1,0,1
+1537,54,Male,Procedure,16,15,1,Saturday,10:00-12:00,1,0,0
+1538,20,Female,New Consultation,2,0,0,Tuesday,10:00-12:00,0,1,0
+1539,31,Female,Routine Check,19,1,0,Friday,12:00-14:00,0,0,0
+1540,26,Female,Follow-up,10,6,1,Monday,14:00-16:00,1,0,1
+1541,43,Male,Procedure,2,5,0,Friday,08:00-10:00,1,0,0
+1542,65,Female,Follow-up,16,3,0,Monday,10:00-12:00,1,0,0
+1543,46,Female,Procedure,3,2,0,Saturday,16:00-18:00,1,0,0
+1544,50,Male,Follow-up,16,6,1,Thursday,16:00-18:00,1,0,1
+1545,52,Female,Urgent Visit,2,11,2,Thursday,14:00-16:00,1,0,0
+1546,40,Male,New Consultation,24,8,0,Thursday,18:00-20:00,0,0,0
+1547,39,Female,Follow-up,1,4,0,Wednesday,16:00-18:00,1,0,0
+1548,31,Female,Follow-up,4,14,3,Monday,14:00-16:00,1,0,0
+1549,64,Female,Urgent Visit,5,3,0,Wednesday,12:00-14:00,0,0,0
+1550,59,Female,Follow-up,10,13,4,Thursday,16:00-18:00,0,0,0
+1551,32,Female,Follow-up,2,25,4,Monday,16:00-18:00,0,0,1
+1552,36,Female,Procedure,15,2,0,Tuesday,10:00-12:00,1,0,0
+1553,19,Male,Routine Check,10,2,0,Friday,10:00-12:00,1,0,0
+1554,53,Female,New Consultation,11,2,0,Wednesday,08:00-10:00,1,0,0
+1555,43,Male,Urgent Visit,3,2,0,Thursday,12:00-14:00,1,0,0
+1556,56,Female,Follow-up,2,0,0,Wednesday,10:00-12:00,1,1,0
+1557,74,Female,New Consultation,8,7,0,Tuesday,08:00-10:00,1,0,0
+1558,45,Female,Follow-up,27,10,1,Friday,16:00-18:00,1,0,0
+1559,49,Male,Follow-up,4,0,0,Saturday,10:00-12:00,0,1,0
+1560,26,Female,New Consultation,2,0,0,Friday,18:00-20:00,1,1,0
+1561,67,Male,Follow-up,13,7,1,Saturday,08:00-10:00,1,0,1
+1562,37,Female,Follow-up,0,15,1,Thursday,10:00-12:00,1,0,0
+1563,51,Female,Follow-up,9,1,0,Wednesday,16:00-18:00,1,0,0
+1564,34,Male,Routine Check,3,3,0,Friday,10:00-12:00,1,0,0
+1565,9,Female,Urgent Visit,5,9,2,Wednesday,08:00-10:00,1,0,0
+1566,30,Male,Urgent Visit,1,1,0,Monday,14:00-16:00,1,0,0
+1567,50,Female,New Consultation,4,1,1,Wednesday,12:00-14:00,1,0,0
+1568,62,Female,Follow-up,3,5,1,Wednesday,16:00-18:00,0,0,0
+1569,36,Male,Urgent Visit,0,18,3,Thursday,08:00-10:00,1,0,0
+1570,59,Female,Routine Check,15,3,0,Saturday,10:00-12:00,1,0,0
+1571,40,Female,Follow-up,11,22,1,Saturday,14:00-16:00,1,0,0
+1572,62,Male,Procedure,11,9,1,Monday,10:00-12:00,0,0,0
+1573,39,Female,Routine Check,17,3,1,Wednesday,10:00-12:00,1,0,0
+1574,49,Female,Follow-up,6,5,1,Thursday,16:00-18:00,1,0,0
+1575,21,Male,Follow-up,41,22,2,Wednesday,18:00-20:00,1,0,1
+1576,58,Male,New Consultation,34,0,0,Friday,08:00-10:00,1,1,0
+1577,67,Female,Follow-up,4,0,0,Wednesday,08:00-10:00,1,1,0
+1578,25,Male,New Consultation,11,1,0,Tuesday,16:00-18:00,1,0,1
+1579,49,Female,Routine Check,7,2,0,Wednesday,16:00-18:00,1,0,0
+1580,23,Male,New Consultation,30,2,0,Tuesday,08:00-10:00,1,0,0
+1581,34,Male,Urgent Visit,0,4,0,Friday,16:00-18:00,1,0,0
+1582,54,Male,Follow-up,10,6,0,Friday,16:00-18:00,1,0,0
+1583,31,Male,New Consultation,5,0,0,Monday,16:00-18:00,1,1,0
+1584,33,Male,Follow-up,9,2,0,Wednesday,14:00-16:00,1,0,0
+1585,42,Male,New Consultation,2,0,0,Thursday,12:00-14:00,1,1,0
+1586,22,Male,Follow-up,3,4,0,Thursday,14:00-16:00,1,0,0
+1587,67,Female,Follow-up,2,6,1,Saturday,16:00-18:00,1,0,0
+1588,27,Male,Procedure,4,8,0,Thursday,16:00-18:00,1,0,0
+1589,59,Male,Procedure,3,4,1,Tuesday,16:00-18:00,1,0,0
+1590,78,Female,Follow-up,14,0,0,Friday,16:00-18:00,1,1,1
+1591,40,Male,Urgent Visit,4,19,0,Thursday,10:00-12:00,1,0,0
+1592,36,Male,Follow-up,17,3,0,Tuesday,18:00-20:00,1,0,0
+1593,24,Female,Urgent Visit,7,0,0,Friday,18:00-20:00,1,1,1
+1594,48,Male,Urgent Visit,1,0,0,Saturday,10:00-12:00,1,1,0
+1595,52,Male,Follow-up,5,30,6,Friday,10:00-12:00,1,0,1
+1596,32,Female,New Consultation,8,0,0,Saturday,16:00-18:00,0,1,0
+1597,24,Female,New Consultation,5,2,0,Tuesday,10:00-12:00,0,0,0
+1598,19,Male,Urgent Visit,3,0,0,Friday,14:00-16:00,1,1,0
+1599,41,Male,Procedure,3,0,0,Thursday,10:00-12:00,1,1,0
+1600,38,Female,Routine Check,15,7,1,Tuesday,14:00-16:00,1,0,0
+1601,49,Male,Procedure,9,2,0,Monday,18:00-20:00,1,0,0
+1602,41,Female,Procedure,13,3,0,Saturday,08:00-10:00,1,0,0
+1603,52,Male,Routine Check,3,1,0,Wednesday,16:00-18:00,0,0,0
+1604,46,Female,New Consultation,10,9,1,Monday,16:00-18:00,1,0,0
+1605,30,Female,Procedure,5,23,4,Thursday,18:00-20:00,1,0,1
+1606,76,Male,Urgent Visit,5,1,1,Saturday,10:00-12:00,1,0,0
+1607,52,Female,Urgent Visit,5,4,0,Saturday,12:00-14:00,1,0,0
+1608,70,Male,Follow-up,2,3,0,Saturday,08:00-10:00,1,0,0
+1609,38,Male,Follow-up,0,0,0,Wednesday,14:00-16:00,1,1,0
+1610,29,Male,New Consultation,32,5,0,Monday,18:00-20:00,1,0,0
+1611,47,Female,New Consultation,10,9,1,Friday,16:00-18:00,1,0,0
+1612,47,Female,New Consultation,7,1,0,Wednesday,16:00-18:00,1,0,0
+1613,40,Female,Routine Check,13,0,0,Friday,16:00-18:00,1,1,0
+1614,50,Male,New Consultation,6,9,0,Thursday,14:00-16:00,1,0,0
+1615,62,Male,Urgent Visit,1,11,1,Wednesday,18:00-20:00,1,0,0
+1616,21,Male,Urgent Visit,1,5,0,Thursday,12:00-14:00,0,0,1
+1617,28,Female,Follow-up,19,0,0,Saturday,08:00-10:00,1,1,0
+1618,39,Male,Follow-up,5,2,0,Thursday,16:00-18:00,1,0,0
+1619,37,Female,Follow-up,20,4,0,Wednesday,14:00-16:00,1,0,0
+1620,53,Female,Routine Check,14,0,0,Friday,10:00-12:00,1,1,0
+1621,54,Female,Routine Check,10,0,0,Monday,14:00-16:00,1,1,1
+1622,42,Male,New Consultation,5,2,1,Friday,08:00-10:00,1,0,0
+1623,50,Female,Routine Check,7,0,0,Tuesday,14:00-16:00,1,1,0
+1624,62,Female,Routine Check,6,13,2,Tuesday,10:00-12:00,0,0,1
+1625,37,Male,New Consultation,11,7,1,Friday,12:00-14:00,0,0,1
+1626,39,Female,New Consultation,14,5,0,Tuesday,08:00-10:00,1,0,0
+1627,72,Female,Routine Check,15,3,0,Thursday,18:00-20:00,1,0,0
+1628,49,Female,Follow-up,11,1,0,Friday,10:00-12:00,1,0,0
+1629,56,Female,New Consultation,9,13,1,Tuesday,14:00-16:00,1,0,0
+1630,24,Male,Urgent Visit,4,2,0,Saturday,08:00-10:00,1,0,0
+1631,17,Female,Urgent Visit,0,3,0,Monday,14:00-16:00,1,0,1
+1632,48,Female,Routine Check,14,6,0,Wednesday,14:00-16:00,0,0,0
+1633,52,Female,New Consultation,2,0,0,Thursday,12:00-14:00,1,1,0
+1634,8,Female,Routine Check,12,0,0,Friday,10:00-12:00,0,1,0
+1635,37,Male,Follow-up,4,5,1,Tuesday,18:00-20:00,1,0,0
+1636,18,Female,New Consultation,22,0,0,Thursday,16:00-18:00,1,1,0
+1637,38,Female,Follow-up,37,18,1,Tuesday,08:00-10:00,1,0,0
+1638,53,Female,New Consultation,1,3,1,Wednesday,16:00-18:00,0,0,1
+1639,60,Female,Follow-up,23,6,0,Tuesday,08:00-10:00,1,0,0
+1640,51,Male,Routine Check,33,0,0,Saturday,10:00-12:00,1,1,0
+1641,56,Female,Procedure,16,5,1,Wednesday,08:00-10:00,1,0,1
+1642,60,Female,Follow-up,19,1,0,Thursday,10:00-12:00,1,0,0
+1643,38,Male,New Consultation,1,5,0,Tuesday,16:00-18:00,1,0,0
+1644,12,Female,Follow-up,23,0,0,Friday,14:00-16:00,1,1,1
+1645,47,Female,Urgent Visit,6,3,2,Thursday,08:00-10:00,1,0,1
+1646,30,Female,Routine Check,3,5,0,Thursday,14:00-16:00,0,0,0
+1647,68,Female,New Consultation,37,4,0,Monday,18:00-20:00,0,0,0
+1648,41,Male,Urgent Visit,0,0,0,Friday,16:00-18:00,1,1,0
+1649,43,Female,New Consultation,32,2,0,Thursday,08:00-10:00,1,0,0
+1650,49,Male,Routine Check,17,4,1,Monday,16:00-18:00,0,0,0
+1651,38,Male,Routine Check,20,9,0,Wednesday,08:00-10:00,1,0,0
+1652,74,Female,Follow-up,6,16,1,Wednesday,12:00-14:00,1,0,0
+1653,68,Male,Follow-up,13,2,0,Tuesday,12:00-14:00,1,0,0
+1654,65,Female,Follow-up,7,5,0,Tuesday,14:00-16:00,1,0,1
+1655,55,Female,Routine Check,7,8,1,Saturday,10:00-12:00,1,0,0
+1656,31,Female,Routine Check,9,4,1,Monday,12:00-14:00,1,0,0
+1657,33,Male,Procedure,8,0,0,Wednesday,16:00-18:00,1,1,0
+1658,66,Male,Follow-up,4,3,0,Monday,08:00-10:00,1,0,0
+1659,25,Female,Urgent Visit,2,8,0,Thursday,12:00-14:00,1,0,0
+1660,39,Female,Procedure,16,0,0,Tuesday,18:00-20:00,1,1,0
+1661,33,Male,Routine Check,6,5,1,Tuesday,10:00-12:00,1,0,0
+1662,28,Male,Routine Check,12,1,0,Monday,10:00-12:00,0,0,0
+1663,38,Female,Follow-up,15,10,1,Tuesday,14:00-16:00,1,0,1
+1664,65,Female,Routine Check,4,0,0,Friday,16:00-18:00,1,1,0
+1665,21,Male,Follow-up,8,0,0,Thursday,16:00-18:00,0,1,0
+1666,23,Male,Follow-up,17,16,3,Monday,12:00-14:00,0,0,1
+1667,13,Male,Routine Check,36,1,1,Monday,16:00-18:00,1,0,0
+1668,27,Female,New Consultation,17,0,0,Monday,08:00-10:00,1,1,0
+1669,2,Male,New Consultation,14,1,0,Friday,16:00-18:00,1,0,0
+1670,64,Male,Procedure,11,6,1,Wednesday,12:00-14:00,1,0,0
+1671,23,Male,Follow-up,22,1,0,Saturday,10:00-12:00,1,0,1
+1672,55,Female,New Consultation,2,14,0,Thursday,16:00-18:00,0,0,0
+1673,39,Male,Routine Check,16,11,2,Tuesday,14:00-16:00,1,0,1
+1674,56,Female,Follow-up,5,20,6,Wednesday,18:00-20:00,1,0,1
+1675,23,Male,Follow-up,0,0,0,Wednesday,16:00-18:00,1,1,0
+1676,32,Male,Follow-up,10,0,0,Saturday,14:00-16:00,1,1,0
+1677,74,Male,Procedure,19,3,0,Tuesday,18:00-20:00,1,0,0
+1678,13,Female,Follow-up,5,2,0,Wednesday,14:00-16:00,1,0,0
+1679,32,Male,Follow-up,7,1,0,Monday,08:00-10:00,1,0,0
+1680,52,Male,New Consultation,15,19,5,Thursday,14:00-16:00,0,0,1
+1681,47,Male,Routine Check,21,0,0,Monday,10:00-12:00,1,1,0
+1682,20,Male,New Consultation,16,1,0,Tuesday,16:00-18:00,1,0,1
+1683,29,Female,Routine Check,23,0,0,Monday,10:00-12:00,1,1,0
+1684,38,Female,New Consultation,15,22,2,Saturday,10:00-12:00,1,0,1
+1685,48,Female,Follow-up,4,11,0,Friday,16:00-18:00,1,0,1
+1686,11,Female,Routine Check,10,7,0,Wednesday,16:00-18:00,1,0,0
+1687,32,Male,Routine Check,20,0,0,Tuesday,16:00-18:00,1,1,1
+1688,71,Female,New Consultation,37,6,1,Monday,18:00-20:00,1,0,0
+1689,25,Female,New Consultation,16,6,0,Monday,10:00-12:00,1,0,0
+1690,69,Male,Procedure,12,13,1,Thursday,14:00-16:00,0,0,0
+1691,32,Female,Urgent Visit,2,2,0,Saturday,16:00-18:00,0,0,0
+1692,53,Female,Follow-up,11,1,0,Thursday,08:00-10:00,1,0,0
+1693,55,Female,Routine Check,0,1,0,Saturday,12:00-14:00,1,0,0
+1694,28,Male,Procedure,3,2,0,Saturday,08:00-10:00,0,0,0
+1695,51,Female,Follow-up,25,0,0,Friday,14:00-16:00,0,1,0
+1696,38,Male,New Consultation,1,7,2,Wednesday,16:00-18:00,1,0,0
+1697,46,Male,Follow-up,8,12,1,Thursday,14:00-16:00,1,0,1
+1698,26,Female,New Consultation,6,3,1,Friday,14:00-16:00,1,0,0
+1699,34,Female,New Consultation,18,8,0,Monday,18:00-20:00,1,0,0
+1700,68,Male,New Consultation,9,1,0,Thursday,14:00-16:00,0,0,0
+1701,69,Male,Procedure,5,3,0,Wednesday,08:00-10:00,1,0,0
+1702,54,Female,Urgent Visit,5,6,1,Wednesday,08:00-10:00,1,0,0
+1703,36,Male,Follow-up,8,6,1,Tuesday,14:00-16:00,1,0,0
+1704,41,Male,Follow-up,13,12,1,Friday,16:00-18:00,1,0,0
+1705,47,Female,New Consultation,18,0,0,Wednesday,16:00-18:00,1,1,0
+1706,1,Male,Follow-up,10,19,2,Thursday,14:00-16:00,1,0,0
+1707,44,Male,Procedure,6,5,0,Friday,10:00-12:00,1,0,0
+1708,30,Female,Procedure,3,14,4,Tuesday,14:00-16:00,1,0,1
+1709,55,Male,Routine Check,18,5,0,Thursday,08:00-10:00,0,0,0
+1710,45,Male,Follow-up,14,7,0,Wednesday,14:00-16:00,1,0,0
+1711,71,Male,Urgent Visit,1,0,0,Saturday,08:00-10:00,1,1,0
+1712,41,Female,Procedure,7,1,0,Friday,16:00-18:00,1,0,0
+1713,47,Male,Follow-up,11,1,1,Wednesday,14:00-16:00,1,0,0
+1714,59,Male,Follow-up,5,4,1,Thursday,10:00-12:00,1,0,0
+1715,21,Male,Routine Check,7,9,0,Friday,10:00-12:00,1,0,0
+1716,59,Male,Urgent Visit,5,5,1,Monday,14:00-16:00,1,0,0
+1717,66,Female,New Consultation,16,0,0,Tuesday,10:00-12:00,1,1,0
+1718,50,Male,Routine Check,16,0,0,Thursday,18:00-20:00,1,1,0
+1719,15,Male,Follow-up,13,11,1,Monday,14:00-16:00,1,0,0
+1720,57,Female,Follow-up,12,1,0,Monday,10:00-12:00,1,0,0
+1721,57,Male,Follow-up,3,1,0,Tuesday,10:00-12:00,1,0,0
+1722,43,Female,New Consultation,19,0,0,Wednesday,08:00-10:00,1,1,0
+1723,39,Female,Follow-up,4,1,0,Saturday,16:00-18:00,1,0,0
+1724,45,Female,Follow-up,11,7,1,Saturday,12:00-14:00,1,0,0
+1725,31,Female,New Consultation,3,0,0,Wednesday,12:00-14:00,1,1,0
+1726,46,Male,Routine Check,7,6,1,Friday,08:00-10:00,1,0,0
+1727,38,Male,New Consultation,4,6,0,Friday,16:00-18:00,1,0,0
+1728,58,Female,Follow-up,12,14,0,Friday,14:00-16:00,1,0,0
+1729,62,Female,Follow-up,9,5,0,Monday,14:00-16:00,1,0,0
+1730,29,Male,Follow-up,17,15,4,Tuesday,12:00-14:00,0,0,1
+1731,34,Female,Follow-up,2,2,1,Wednesday,10:00-12:00,1,0,0
+1732,26,Female,Follow-up,13,5,0,Thursday,16:00-18:00,0,0,0
+1733,63,Female,New Consultation,11,1,0,Friday,12:00-14:00,0,0,0
+1734,32,Female,New Consultation,15,6,2,Thursday,16:00-18:00,0,0,0
+1735,49,Female,Follow-up,6,16,1,Friday,14:00-16:00,1,0,0
+1736,51,Female,New Consultation,3,5,0,Wednesday,14:00-16:00,1,0,0
+1737,5,Female,Follow-up,8,2,0,Friday,12:00-14:00,1,0,0
+1738,31,Male,Urgent Visit,1,3,0,Friday,12:00-14:00,0,0,0
+1739,75,Male,Follow-up,4,1,0,Friday,10:00-12:00,1,0,0
+1740,86,Male,Procedure,16,4,0,Tuesday,16:00-18:00,1,0,0
+1741,23,Male,New Consultation,14,3,0,Wednesday,12:00-14:00,1,0,0
+1742,36,Female,Procedure,10,6,1,Wednesday,08:00-10:00,1,0,1
+1743,12,Female,Follow-up,12,8,1,Friday,14:00-16:00,1,0,0
+1744,49,Female,New Consultation,14,0,0,Monday,12:00-14:00,1,1,0
+1745,69,Female,Routine Check,5,0,0,Tuesday,16:00-18:00,1,1,0
+1746,40,Male,New Consultation,5,0,0,Thursday,10:00-12:00,1,1,0
+1747,28,Male,Procedure,3,4,0,Monday,10:00-12:00,0,0,0
+1748,53,Female,Procedure,4,0,0,Monday,12:00-14:00,1,1,0
+1749,45,Female,Urgent Visit,3,0,0,Saturday,14:00-16:00,0,1,0
+1750,28,Female,Routine Check,4,0,0,Friday,16:00-18:00,1,1,0
+1751,36,Male,Follow-up,5,1,1,Wednesday,16:00-18:00,1,0,0
+1752,40,Male,New Consultation,12,0,0,Monday,10:00-12:00,0,1,0
+1753,46,Female,Follow-up,18,0,0,Wednesday,10:00-12:00,1,1,0
+1754,34,Male,New Consultation,10,5,0,Tuesday,10:00-12:00,1,0,0
+1755,30,Female,New Consultation,6,3,2,Friday,08:00-10:00,1,0,0
+1756,35,Male,Follow-up,8,9,1,Tuesday,16:00-18:00,0,0,0
+1757,23,Male,Follow-up,9,21,2,Friday,10:00-12:00,1,0,1
+1758,31,Female,Routine Check,9,9,1,Friday,16:00-18:00,1,0,0
+1759,39,Male,Routine Check,9,2,1,Tuesday,08:00-10:00,1,0,0
+1760,44,Female,Procedure,7,1,0,Friday,14:00-16:00,1,0,0
+1761,31,Female,Urgent Visit,2,3,0,Wednesday,08:00-10:00,1,0,0
+1762,56,Female,New Consultation,4,3,1,Tuesday,16:00-18:00,1,0,0
+1763,33,Male,Routine Check,2,4,0,Wednesday,10:00-12:00,1,0,0
+1764,29,Female,Follow-up,5,1,0,Friday,12:00-14:00,0,0,0
+1765,55,Male,Urgent Visit,2,1,0,Tuesday,12:00-14:00,1,0,0
+1766,73,Female,Urgent Visit,3,8,0,Saturday,16:00-18:00,1,0,0
+1767,43,Male,Follow-up,2,5,0,Tuesday,10:00-12:00,1,0,0
+1768,40,Female,Follow-up,2,2,0,Wednesday,16:00-18:00,1,0,0
+1769,49,Female,Routine Check,10,7,0,Wednesday,10:00-12:00,1,0,0
+1770,20,Female,New Consultation,3,10,3,Monday,12:00-14:00,1,0,1
+1771,23,Male,Urgent Visit,2,11,1,Saturday,16:00-18:00,1,0,0
+1772,32,Female,Follow-up,5,6,0,Monday,14:00-16:00,0,0,0
+1773,43,Male,Follow-up,4,4,1,Wednesday,10:00-12:00,1,0,0
+1774,21,Female,Procedure,14,7,1,Wednesday,16:00-18:00,1,0,0
+1775,52,Male,Follow-up,15,1,0,Monday,10:00-12:00,0,0,0
+1776,75,Female,Follow-up,1,4,2,Monday,14:00-16:00,1,0,1
+1777,60,Male,Routine Check,2,6,1,Saturday,10:00-12:00,1,0,0
+1778,40,Female,Routine Check,18,1,0,Thursday,10:00-12:00,1,0,1
+1779,37,Female,Follow-up,3,7,3,Thursday,14:00-16:00,1,0,0
+1780,59,Male,Procedure,5,7,0,Wednesday,16:00-18:00,1,0,1
+1781,35,Female,Follow-up,16,1,0,Friday,10:00-12:00,1,0,0
+1782,72,Female,Follow-up,12,4,0,Tuesday,18:00-20:00,1,0,0
+1783,36,Female,New Consultation,11,0,0,Monday,12:00-14:00,1,1,0
+1784,32,Male,Follow-up,12,6,3,Tuesday,12:00-14:00,1,0,1
+1785,42,Male,New Consultation,17,1,0,Wednesday,16:00-18:00,1,0,0
+1786,31,Male,New Consultation,8,4,2,Thursday,12:00-14:00,0,0,1
+1787,68,Male,Follow-up,16,3,0,Wednesday,14:00-16:00,1,0,0
+1788,61,Male,Follow-up,4,1,1,Monday,10:00-12:00,1,0,0
+1789,55,Male,Routine Check,5,5,1,Thursday,10:00-12:00,1,0,0
+1790,22,Female,Follow-up,5,2,1,Wednesday,18:00-20:00,0,0,1
+1791,52,Female,Routine Check,4,3,0,Thursday,10:00-12:00,1,0,0
+1792,68,Female,Follow-up,13,1,0,Saturday,14:00-16:00,1,0,0
+1793,14,Male,Urgent Visit,4,0,0,Tuesday,10:00-12:00,0,1,0
+1794,50,Female,Follow-up,6,3,0,Wednesday,16:00-18:00,1,0,0
+1795,1,Female,Follow-up,9,1,0,Friday,08:00-10:00,1,0,0
+1796,59,Female,Procedure,2,2,0,Saturday,18:00-20:00,0,0,0
+1797,59,Male,Urgent Visit,4,0,0,Thursday,16:00-18:00,0,1,0
+1798,29,Female,Follow-up,8,7,1,Thursday,14:00-16:00,1,0,1
+1799,46,Female,New Consultation,11,3,0,Wednesday,12:00-14:00,1,0,1
+1800,36,Female,Follow-up,4,9,1,Wednesday,16:00-18:00,1,0,0
+1801,34,Male,New Consultation,19,12,6,Monday,10:00-12:00,1,0,0
+1802,45,Female,Follow-up,4,3,0,Saturday,10:00-12:00,1,0,0
+1803,47,Male,Follow-up,8,4,0,Wednesday,14:00-16:00,1,0,0
+1804,34,Female,Urgent Visit,3,2,0,Tuesday,16:00-18:00,1,0,0
+1805,48,Male,Follow-up,7,1,0,Tuesday,10:00-12:00,0,0,0
+1806,35,Male,New Consultation,8,2,1,Tuesday,10:00-12:00,1,0,0
+1807,51,Female,Procedure,12,6,1,Friday,12:00-14:00,1,0,0
+1808,49,Female,New Consultation,2,7,0,Monday,14:00-16:00,1,0,0
+1809,71,Female,Urgent Visit,0,3,1,Thursday,16:00-18:00,0,0,0
+1810,1,Female,New Consultation,3,8,0,Thursday,10:00-12:00,1,0,0
+1811,48,Female,Follow-up,34,2,1,Tuesday,10:00-12:00,1,0,0
+1812,28,Male,New Consultation,4,6,0,Tuesday,10:00-12:00,1,0,0
+1813,33,Male,Follow-up,9,3,0,Tuesday,08:00-10:00,0,0,0
+1814,58,Male,Urgent Visit,1,6,1,Saturday,10:00-12:00,1,0,0
+1815,53,Male,New Consultation,6,1,0,Tuesday,16:00-18:00,1,0,0
+1816,60,Male,Procedure,8,4,1,Saturday,16:00-18:00,1,0,0
+1817,60,Female,Routine Check,24,2,0,Wednesday,16:00-18:00,1,0,0
+1818,35,Female,Routine Check,3,1,0,Saturday,16:00-18:00,1,0,0
+1819,14,Female,Follow-up,15,1,0,Thursday,18:00-20:00,1,0,0
+1820,37,Male,Follow-up,1,1,1,Wednesday,18:00-20:00,1,0,0
+1821,64,Male,New Consultation,6,3,1,Wednesday,10:00-12:00,1,0,0
+1822,23,Male,New Consultation,7,2,0,Thursday,16:00-18:00,1,0,0
+1823,30,Male,Follow-up,14,0,0,Thursday,14:00-16:00,1,1,0
+1824,39,Female,Routine Check,3,2,1,Tuesday,16:00-18:00,1,0,0
+1825,58,Female,Follow-up,21,4,0,Thursday,10:00-12:00,1,0,0
+1826,33,Female,New Consultation,9,6,1,Tuesday,08:00-10:00,1,0,0
+1827,41,Male,Routine Check,5,4,0,Thursday,10:00-12:00,1,0,0
+1828,34,Male,New Consultation,9,0,0,Tuesday,16:00-18:00,0,1,1
+1829,58,Female,New Consultation,9,2,0,Thursday,08:00-10:00,1,0,0
+1830,32,Male,Follow-up,11,0,0,Monday,16:00-18:00,1,1,0
+1831,45,Female,New Consultation,9,9,3,Wednesday,10:00-12:00,1,0,1
+1832,62,Female,Urgent Visit,7,10,0,Saturday,08:00-10:00,1,0,0
+1833,2,Male,Follow-up,2,2,0,Monday,10:00-12:00,1,0,0
+1834,64,Male,Routine Check,8,0,0,Tuesday,16:00-18:00,0,1,0
+1835,47,Female,Procedure,7,2,0,Monday,12:00-14:00,1,0,0
+1836,54,Male,New Consultation,10,0,0,Tuesday,12:00-14:00,0,1,0
+1837,70,Male,Follow-up,19,3,1,Tuesday,12:00-14:00,1,0,0
+1838,51,Female,Follow-up,4,6,0,Monday,16:00-18:00,0,0,0
+1839,51,Female,Procedure,9,7,1,Thursday,18:00-20:00,1,0,0
+1840,44,Female,Procedure,7,2,0,Monday,10:00-12:00,1,0,0
+1841,34,Female,Follow-up,13,3,0,Thursday,10:00-12:00,0,0,0
+1842,51,Male,Follow-up,14,4,2,Monday,10:00-12:00,0,0,0
+1843,67,Male,Urgent Visit,2,1,1,Thursday,16:00-18:00,1,0,0
+1844,27,Female,New Consultation,3,2,0,Monday,16:00-18:00,1,0,0
+1845,56,Female,Urgent Visit,6,0,0,Friday,10:00-12:00,1,1,0
+1846,17,Female,New Consultation,11,6,0,Friday,14:00-16:00,1,0,0
+1847,60,Female,Procedure,3,1,0,Tuesday,14:00-16:00,1,0,0
+1848,68,Female,Follow-up,4,2,1,Wednesday,10:00-12:00,1,0,0
+1849,28,Male,Urgent Visit,5,7,2,Wednesday,16:00-18:00,1,0,1
+1850,45,Female,Follow-up,21,4,1,Wednesday,16:00-18:00,1,0,1
+1851,42,Male,Routine Check,3,1,0,Friday,14:00-16:00,1,0,0
+1852,49,Male,New Consultation,5,5,1,Tuesday,14:00-16:00,1,0,1
+1853,12,Female,New Consultation,20,13,0,Saturday,18:00-20:00,0,0,1
+1854,51,Male,Follow-up,6,10,1,Wednesday,16:00-18:00,0,0,1
+1855,55,Male,New Consultation,9,0,0,Tuesday,08:00-10:00,1,1,0
+1856,81,Male,Routine Check,11,1,0,Thursday,10:00-12:00,1,0,0
+1857,8,Female,Routine Check,5,6,0,Monday,10:00-12:00,1,0,0
+1858,59,Male,Routine Check,1,0,0,Monday,16:00-18:00,1,1,0
+1859,92,Male,Urgent Visit,7,0,0,Friday,12:00-14:00,1,1,0
+1860,63,Female,Follow-up,10,5,2,Saturday,14:00-16:00,1,0,1
+1861,29,Female,Follow-up,4,4,0,Thursday,08:00-10:00,1,0,0
+1862,79,Female,Routine Check,14,4,1,Thursday,18:00-20:00,1,0,0
+1863,37,Female,Follow-up,16,7,1,Wednesday,12:00-14:00,1,0,0
+1864,46,Male,Urgent Visit,6,1,0,Friday,10:00-12:00,1,0,0
+1865,37,Male,Routine Check,10,6,2,Monday,08:00-10:00,0,0,1
+1866,36,Female,Urgent Visit,0,8,2,Friday,10:00-12:00,0,0,1
+1867,28,Female,New Consultation,15,1,0,Wednesday,08:00-10:00,0,0,0
+1868,19,Female,Follow-up,4,14,1,Tuesday,14:00-16:00,1,0,0
+1869,42,Female,Follow-up,3,9,2,Thursday,12:00-14:00,1,0,0
+1870,40,Male,Routine Check,4,9,0,Thursday,18:00-20:00,0,0,1
+1871,36,Male,New Consultation,13,1,0,Monday,14:00-16:00,1,0,0
+1872,53,Female,New Consultation,6,10,0,Wednesday,08:00-10:00,0,0,0
+1873,92,Male,New Consultation,24,12,2,Wednesday,14:00-16:00,0,0,0
+1874,25,Male,Urgent Visit,3,2,0,Tuesday,16:00-18:00,1,0,1
+1875,80,Male,New Consultation,7,0,0,Tuesday,16:00-18:00,1,1,1
+1876,80,Female,Follow-up,2,1,0,Tuesday,14:00-16:00,0,0,0
+1877,56,Male,Urgent Visit,5,8,2,Thursday,08:00-10:00,1,0,0
+1878,92,Female,Procedure,4,2,1,Wednesday,14:00-16:00,1,0,0
+1879,49,Female,New Consultation,25,13,2,Thursday,10:00-12:00,0,0,1
+1880,73,Female,New Consultation,6,3,1,Tuesday,08:00-10:00,1,0,0
+1881,33,Female,Urgent Visit,1,1,0,Tuesday,16:00-18:00,1,0,0
+1882,31,Female,Routine Check,0,2,0,Wednesday,08:00-10:00,1,0,0
+1883,58,Female,Follow-up,10,7,1,Friday,14:00-16:00,1,0,0
+1884,6,Male,Procedure,7,4,0,Tuesday,12:00-14:00,0,0,0
+1885,31,Male,Procedure,7,0,0,Saturday,14:00-16:00,1,1,0
+1886,79,Male,Follow-up,2,0,0,Tuesday,14:00-16:00,1,1,0
+1887,5,Female,Procedure,30,9,3,Wednesday,14:00-16:00,0,0,1
+1888,48,Female,Follow-up,11,12,1,Tuesday,08:00-10:00,0,0,0
+1889,39,Female,Follow-up,24,4,0,Wednesday,16:00-18:00,1,0,0
+1890,53,Male,Follow-up,3,11,3,Wednesday,16:00-18:00,1,0,1
+1891,35,Female,Follow-up,24,0,0,Monday,10:00-12:00,1,1,0
+1892,45,Female,New Consultation,5,7,2,Wednesday,12:00-14:00,1,0,1
+1893,56,Male,Routine Check,8,6,1,Saturday,08:00-10:00,1,0,0
+1894,28,Male,New Consultation,32,2,0,Monday,10:00-12:00,1,0,0
+1895,31,Female,Follow-up,9,10,2,Wednesday,12:00-14:00,1,0,1
+1896,90,Male,Routine Check,5,16,4,Tuesday,08:00-10:00,1,0,0
+1897,67,Male,Urgent Visit,1,10,2,Thursday,16:00-18:00,1,0,0
+1898,31,Male,New Consultation,6,3,1,Wednesday,10:00-12:00,1,0,0
+1899,37,Male,Routine Check,8,5,0,Saturday,12:00-14:00,1,0,0
+1900,13,Female,Procedure,4,1,0,Wednesday,18:00-20:00,1,0,0
+1901,9,Female,New Consultation,4,6,2,Tuesday,14:00-16:00,1,0,0
+1902,69,Male,Routine Check,6,10,2,Wednesday,16:00-18:00,0,0,0
+1903,59,Male,Follow-up,10,9,0,Wednesday,16:00-18:00,0,0,0
+1904,69,Male,Follow-up,7,11,0,Wednesday,18:00-20:00,1,0,0
+1905,29,Male,Routine Check,59,0,0,Tuesday,18:00-20:00,1,1,0
+1906,46,Female,Follow-up,10,23,5,Monday,14:00-16:00,1,0,0
+1907,4,Male,Follow-up,0,5,0,Saturday,16:00-18:00,0,0,0
+1908,66,Female,Urgent Visit,0,1,0,Thursday,14:00-16:00,0,0,0
+1909,82,Male,New Consultation,32,1,0,Monday,10:00-12:00,1,0,0
+1910,10,Male,Routine Check,4,5,1,Friday,16:00-18:00,1,0,0
+1911,27,Female,Procedure,11,8,0,Friday,16:00-18:00,1,0,0
+1912,48,Female,Urgent Visit,5,0,0,Wednesday,12:00-14:00,1,1,0
+1913,48,Male,Follow-up,2,2,0,Tuesday,16:00-18:00,1,0,0
+1914,37,Female,Routine Check,13,2,0,Saturday,16:00-18:00,1,0,0
+1915,53,Female,Procedure,4,1,0,Tuesday,10:00-12:00,1,0,0
+1916,36,Male,Routine Check,17,3,0,Friday,18:00-20:00,0,0,0
+1917,39,Female,Routine Check,8,0,0,Thursday,16:00-18:00,1,1,0
+1918,63,Female,Follow-up,3,5,2,Tuesday,08:00-10:00,1,0,1
+1919,69,Female,New Consultation,15,0,0,Tuesday,16:00-18:00,0,1,0
+1920,33,Female,Follow-up,21,0,0,Monday,18:00-20:00,1,1,0
+1921,88,Female,Follow-up,19,8,2,Saturday,18:00-20:00,1,0,0
+1922,46,Male,Urgent Visit,0,3,1,Thursday,16:00-18:00,1,0,0
+1923,36,Male,Routine Check,29,5,1,Saturday,18:00-20:00,0,0,0
+1924,46,Male,New Consultation,11,0,0,Monday,16:00-18:00,1,1,0
+1925,76,Female,Follow-up,2,1,0,Friday,10:00-12:00,1,0,0
+1926,52,Male,New Consultation,3,0,0,Thursday,14:00-16:00,1,1,0
+1927,53,Female,Procedure,13,3,0,Friday,12:00-14:00,0,0,0
+1928,20,Female,Procedure,7,0,0,Monday,10:00-12:00,1,1,0
+1929,47,Female,Routine Check,20,1,0,Friday,12:00-14:00,1,0,0
+1930,55,Female,Procedure,2,6,1,Thursday,14:00-16:00,1,0,0
+1931,48,Male,Follow-up,11,0,0,Thursday,18:00-20:00,1,1,0
+1932,37,Male,Follow-up,47,2,0,Monday,18:00-20:00,1,0,0
+1933,41,Female,Urgent Visit,2,1,0,Thursday,14:00-16:00,1,0,0
+1934,38,Female,Follow-up,17,8,0,Thursday,18:00-20:00,1,0,1
+1935,50,Female,Follow-up,2,4,0,Thursday,08:00-10:00,0,0,0
+1936,39,Female,Routine Check,22,0,0,Monday,12:00-14:00,1,1,0
+1937,14,Male,Follow-up,7,16,0,Saturday,10:00-12:00,1,0,0
+1938,24,Female,Urgent Visit,6,0,0,Thursday,12:00-14:00,1,1,0
+1939,27,Female,Follow-up,7,6,0,Tuesday,08:00-10:00,1,0,0
+1940,51,Male,Follow-up,14,0,0,Thursday,18:00-20:00,1,1,0
+1941,52,Female,Follow-up,8,2,0,Saturday,08:00-10:00,0,0,0
+1942,41,Female,Routine Check,14,8,1,Tuesday,14:00-16:00,0,0,0
+1943,57,Male,Urgent Visit,1,0,0,Saturday,10:00-12:00,1,1,0
+1944,28,Male,New Consultation,13,0,0,Monday,16:00-18:00,1,1,0
+1945,46,Female,New Consultation,4,1,1,Saturday,18:00-20:00,1,0,0
+1946,78,Female,Procedure,5,3,1,Wednesday,14:00-16:00,1,0,0
+1947,42,Female,New Consultation,1,7,1,Monday,10:00-12:00,1,0,0
+1948,42,Female,Follow-up,14,14,1,Saturday,08:00-10:00,0,0,0
+1949,20,Male,Procedure,5,10,3,Tuesday,18:00-20:00,1,0,0
+1950,39,Female,New Consultation,5,0,0,Thursday,14:00-16:00,0,1,0
+1951,30,Male,Follow-up,32,1,0,Thursday,14:00-16:00,1,0,0
+1952,75,Male,Follow-up,41,1,0,Tuesday,14:00-16:00,1,0,0
+1953,64,Female,Urgent Visit,1,30,3,Wednesday,16:00-18:00,1,0,1
+1954,67,Female,Routine Check,5,17,1,Friday,08:00-10:00,0,0,0
+1955,44,Female,Follow-up,26,27,3,Saturday,08:00-10:00,1,0,0
+1956,21,Female,Follow-up,11,17,1,Saturday,16:00-18:00,1,0,0
+1957,41,Female,Routine Check,7,1,0,Thursday,14:00-16:00,1,0,0
+1958,48,Male,New Consultation,8,22,3,Friday,14:00-16:00,0,0,1
+1959,64,Female,New Consultation,6,7,1,Tuesday,10:00-12:00,0,0,0
+1960,61,Male,Routine Check,6,8,1,Friday,14:00-16:00,0,0,0
+1961,32,Male,Routine Check,3,9,2,Saturday,18:00-20:00,1,0,1
+1962,63,Male,Routine Check,7,3,1,Tuesday,08:00-10:00,1,0,0
+1963,40,Male,Procedure,9,0,0,Saturday,12:00-14:00,1,1,0
+1964,83,Female,Urgent Visit,2,9,3,Monday,08:00-10:00,1,0,0
+1965,40,Female,Follow-up,6,0,0,Wednesday,18:00-20:00,1,1,0
+1966,76,Female,New Consultation,14,0,0,Thursday,18:00-20:00,1,1,0
+1967,48,Female,Routine Check,13,27,0,Thursday,08:00-10:00,1,0,0
+1968,43,Male,Follow-up,4,2,1,Saturday,16:00-18:00,1,0,0
+1969,43,Male,Routine Check,16,3,1,Thursday,08:00-10:00,1,0,0
+1970,60,Female,Routine Check,6,1,1,Wednesday,08:00-10:00,1,0,0
+1971,43,Male,Routine Check,26,8,1,Wednesday,10:00-12:00,1,0,0
+1972,3,Male,Urgent Visit,5,2,0,Wednesday,16:00-18:00,1,0,0
+1973,39,Male,Procedure,18,1,0,Monday,10:00-12:00,0,0,0
+1974,35,Female,Follow-up,22,4,0,Friday,18:00-20:00,1,0,0
+1975,9,Female,New Consultation,11,7,0,Monday,10:00-12:00,0,0,0
+1976,57,Female,Routine Check,6,13,1,Wednesday,16:00-18:00,1,0,0
+1977,32,Female,New Consultation,5,0,0,Friday,10:00-12:00,1,1,0
+1978,47,Male,Routine Check,2,1,0,Friday,16:00-18:00,1,0,0
+1979,32,Female,Routine Check,16,3,0,Wednesday,10:00-12:00,1,0,0
+1980,56,Female,Follow-up,12,6,2,Tuesday,14:00-16:00,0,0,1
+1981,38,Male,Routine Check,3,4,0,Wednesday,16:00-18:00,1,0,0
+1982,27,Male,Follow-up,15,1,0,Wednesday,14:00-16:00,0,0,0
+1983,27,Male,Follow-up,6,5,1,Thursday,12:00-14:00,1,0,0
+1984,50,Female,Follow-up,16,1,1,Monday,10:00-12:00,0,0,0
+1985,66,Female,Follow-up,4,3,1,Tuesday,16:00-18:00,1,0,0
+1986,14,Female,New Consultation,7,4,1,Monday,18:00-20:00,1,0,0
+1987,22,Female,Follow-up,3,3,0,Wednesday,16:00-18:00,1,0,0
+1988,30,Male,Procedure,31,11,1,Tuesday,18:00-20:00,1,0,0
+1989,63,Male,Routine Check,11,0,0,Wednesday,08:00-10:00,1,1,0
+1990,17,Female,Follow-up,4,4,0,Tuesday,16:00-18:00,1,0,0
+1991,50,Male,Urgent Visit,1,6,0,Tuesday,12:00-14:00,0,0,1
+1992,34,Male,Routine Check,2,9,0,Saturday,16:00-18:00,1,0,1
+1993,64,Male,Urgent Visit,2,9,0,Friday,12:00-14:00,1,0,0
+1994,43,Female,Follow-up,16,8,0,Friday,12:00-14:00,0,0,0
+1995,30,Male,Routine Check,6,0,0,Tuesday,10:00-12:00,1,1,0
+1996,58,Male,Procedure,13,0,0,Thursday,14:00-16:00,1,1,0
+1997,30,Male,Procedure,4,0,0,Friday,16:00-18:00,0,1,0
+1998,47,Female,New Consultation,12,2,1,Tuesday,14:00-16:00,1,0,0
+1999,34,Female,Routine Check,4,0,0,Saturday,12:00-14:00,1,1,0
+2000,53,Female,Follow-up,11,5,1,Thursday,14:00-16:00,1,0,0
+2001,46,Female,Routine Check,4,9,1,Saturday,08:00-10:00,0,0,0
+2002,32,Male,Follow-up,3,6,1,Saturday,16:00-18:00,1,0,0
+2003,37,Male,New Consultation,14,1,0,Friday,08:00-10:00,1,0,0
+2004,38,Female,New Consultation,8,10,1,Wednesday,10:00-12:00,0,0,0
+2005,60,Female,Follow-up,2,0,0,Friday,16:00-18:00,1,1,1
+2006,42,Female,New Consultation,2,1,0,Tuesday,14:00-16:00,1,0,0
+2007,26,Male,Procedure,9,0,0,Tuesday,12:00-14:00,0,1,0
+2008,57,Female,Urgent Visit,1,24,3,Saturday,12:00-14:00,1,0,1
+2009,18,Female,New Consultation,28,2,0,Thursday,16:00-18:00,1,0,0
+2010,70,Male,New Consultation,8,17,5,Thursday,12:00-14:00,1,0,1
+2011,52,Female,Routine Check,20,0,0,Friday,10:00-12:00,0,1,0
+2012,27,Male,New Consultation,14,3,0,Friday,08:00-10:00,1,0,0
+2013,53,Female,Routine Check,24,0,0,Wednesday,12:00-14:00,1,1,0
+2014,25,Male,Routine Check,2,3,0,Thursday,18:00-20:00,1,0,0
+2015,40,Female,Follow-up,7,17,0,Friday,10:00-12:00,1,0,0
+2016,54,Female,Follow-up,16,0,0,Thursday,12:00-14:00,1,1,0
+2017,42,Male,Follow-up,16,12,2,Wednesday,10:00-12:00,1,0,1
+2018,47,Male,Routine Check,6,0,0,Monday,14:00-16:00,1,1,0
+2019,32,Female,New Consultation,29,0,0,Tuesday,16:00-18:00,1,1,0
+2020,48,Female,Follow-up,6,30,4,Saturday,16:00-18:00,1,0,1
+2021,63,Male,New Consultation,10,1,0,Friday,14:00-16:00,0,0,0
+2022,33,Female,Procedure,16,2,0,Saturday,10:00-12:00,1,0,0
+2023,33,Female,New Consultation,13,16,1,Thursday,10:00-12:00,1,0,1
+2024,30,Male,Urgent Visit,5,5,0,Tuesday,14:00-16:00,1,0,0
+2025,41,Male,New Consultation,0,0,0,Wednesday,18:00-20:00,1,1,0
+2026,35,Male,Routine Check,5,2,0,Thursday,14:00-16:00,1,0,0
+2027,45,Male,Follow-up,9,1,0,Monday,08:00-10:00,1,0,0
+2028,14,Male,Routine Check,0,5,0,Monday,10:00-12:00,1,0,0
+2029,35,Male,Routine Check,13,5,1,Tuesday,16:00-18:00,0,0,0
+2030,35,Male,Follow-up,9,0,0,Friday,12:00-14:00,1,1,0
+2031,1,Female,Follow-up,15,3,1,Friday,14:00-16:00,1,0,0
+2032,53,Male,New Consultation,10,1,0,Monday,16:00-18:00,1,0,0
+2033,40,Female,Follow-up,4,2,0,Thursday,08:00-10:00,1,0,0
+2034,66,Female,Urgent Visit,2,14,3,Tuesday,18:00-20:00,1,0,1
+2035,58,Female,Routine Check,2,0,0,Friday,10:00-12:00,0,1,0
+2036,9,Male,New Consultation,13,13,2,Monday,10:00-12:00,1,0,0
+2037,41,Male,New Consultation,14,0,0,Saturday,10:00-12:00,1,1,0
+2038,47,Female,Procedure,9,0,0,Wednesday,08:00-10:00,1,1,0
+2039,21,Male,Urgent Visit,0,23,3,Tuesday,16:00-18:00,1,0,1
+2040,54,Male,New Consultation,16,2,2,Tuesday,16:00-18:00,1,0,1
+2041,40,Female,New Consultation,6,3,1,Wednesday,12:00-14:00,1,0,0
+2042,56,Female,Follow-up,8,14,1,Thursday,18:00-20:00,1,0,0
+2043,63,Female,Follow-up,7,2,0,Friday,16:00-18:00,1,0,0
+2044,41,Female,Procedure,24,9,4,Tuesday,12:00-14:00,1,0,0
+2045,54,Male,Follow-up,7,1,0,Monday,12:00-14:00,0,0,0
+2046,52,Female,Follow-up,2,0,0,Monday,12:00-14:00,1,1,1
+2047,33,Male,Procedure,18,0,0,Thursday,16:00-18:00,1,1,0
+2048,34,Female,Routine Check,38,2,1,Thursday,12:00-14:00,1,0,0
+2049,13,Male,Urgent Visit,2,0,0,Saturday,10:00-12:00,1,1,0
+2050,31,Male,Routine Check,2,0,0,Monday,18:00-20:00,1,1,0
+2051,68,Male,Procedure,5,4,1,Saturday,14:00-16:00,1,0,0
+2052,45,Female,Follow-up,10,10,1,Friday,12:00-14:00,1,0,0
+2053,23,Female,Urgent Visit,6,7,1,Thursday,14:00-16:00,1,0,0
+2054,30,Female,New Consultation,13,23,2,Monday,16:00-18:00,1,0,0
+2055,72,Female,Routine Check,15,4,0,Wednesday,14:00-16:00,0,0,0
+2056,39,Female,Follow-up,3,2,2,Saturday,16:00-18:00,1,0,0
+2057,32,Male,New Consultation,4,5,1,Thursday,18:00-20:00,1,0,0
+2058,43,Female,Follow-up,26,6,0,Wednesday,10:00-12:00,0,0,0
+2059,13,Female,Follow-up,6,0,0,Tuesday,16:00-18:00,1,1,0
+2060,39,Male,Follow-up,18,0,0,Monday,12:00-14:00,1,1,1
+2061,42,Male,Procedure,10,7,1,Saturday,14:00-16:00,1,0,0
+2062,39,Female,Follow-up,19,3,0,Wednesday,14:00-16:00,1,0,0
+2063,35,Female,Follow-up,7,10,0,Monday,10:00-12:00,1,0,0
+2064,42,Male,Routine Check,6,17,0,Thursday,16:00-18:00,1,0,0
+2065,45,Female,Follow-up,7,1,0,Tuesday,10:00-12:00,1,0,0
+2066,43,Male,Follow-up,12,0,0,Friday,14:00-16:00,1,1,0
+2067,21,Female,Procedure,10,7,3,Wednesday,10:00-12:00,1,0,0
+2068,37,Female,Follow-up,5,6,1,Thursday,16:00-18:00,1,0,0
+2069,27,Female,Urgent Visit,0,5,0,Thursday,16:00-18:00,0,0,0
+2070,26,Female,Routine Check,6,8,0,Tuesday,12:00-14:00,1,0,0
+2071,42,Female,New Consultation,9,1,0,Thursday,16:00-18:00,1,0,0
+2072,77,Female,Procedure,5,13,4,Monday,12:00-14:00,1,0,0
+2073,21,Male,New Consultation,5,1,0,Tuesday,08:00-10:00,0,0,0
+2074,27,Female,Follow-up,1,0,0,Friday,10:00-12:00,1,1,0
+2075,33,Female,Urgent Visit,2,0,0,Wednesday,12:00-14:00,1,1,0
+2076,45,Female,Procedure,12,0,0,Wednesday,18:00-20:00,1,1,1
+2077,55,Female,Follow-up,21,0,0,Tuesday,18:00-20:00,0,1,0
+2078,42,Female,New Consultation,3,0,0,Wednesday,08:00-10:00,1,1,0
+2079,48,Male,New Consultation,10,3,0,Monday,10:00-12:00,1,0,0
+2080,38,Female,Routine Check,2,2,0,Monday,16:00-18:00,1,0,0
+2081,36,Female,New Consultation,20,9,2,Thursday,10:00-12:00,1,0,1
+2082,28,Female,New Consultation,3,0,0,Wednesday,14:00-16:00,1,1,0
+2083,33,Female,Follow-up,5,1,0,Wednesday,10:00-12:00,1,0,0
+2084,39,Male,Follow-up,8,13,4,Wednesday,14:00-16:00,0,0,1
+2085,4,Female,Urgent Visit,0,7,0,Monday,14:00-16:00,1,0,0
+2086,39,Male,New Consultation,18,8,1,Thursday,10:00-12:00,0,0,1
+2087,36,Male,Follow-up,4,1,0,Tuesday,16:00-18:00,1,0,0
+2088,52,Male,New Consultation,5,5,0,Friday,10:00-12:00,1,0,0
+2089,53,Female,Follow-up,14,25,0,Thursday,10:00-12:00,1,0,0
+2090,11,Male,Routine Check,12,0,0,Saturday,08:00-10:00,1,1,0
+2091,41,Female,Follow-up,8,2,0,Wednesday,08:00-10:00,0,0,0
+2092,20,Female,Follow-up,26,2,0,Tuesday,14:00-16:00,1,0,0
+2093,31,Male,Routine Check,11,12,1,Monday,14:00-16:00,1,0,0
+2094,39,Female,Follow-up,6,22,4,Wednesday,08:00-10:00,1,0,0
+2095,52,Female,New Consultation,16,10,1,Tuesday,10:00-12:00,1,0,1
+2096,72,Male,New Consultation,6,5,1,Wednesday,16:00-18:00,1,0,0
+2097,37,Male,Follow-up,9,3,1,Tuesday,08:00-10:00,1,0,0
+2098,47,Female,Follow-up,17,12,3,Tuesday,10:00-12:00,1,0,0
+2099,87,Male,Routine Check,13,1,1,Tuesday,18:00-20:00,1,0,0
+2100,34,Male,Routine Check,28,11,1,Monday,10:00-12:00,1,0,0
+2101,60,Male,Follow-up,39,5,0,Monday,08:00-10:00,1,0,0
+2102,69,Male,Routine Check,3,5,1,Friday,14:00-16:00,1,0,1
+2103,29,Female,Follow-up,8,3,2,Thursday,14:00-16:00,1,0,1
+2104,35,Female,Follow-up,3,26,1,Thursday,12:00-14:00,1,0,1
+2105,27,Male,Follow-up,10,0,0,Friday,16:00-18:00,1,1,0
+2106,47,Male,Procedure,16,1,0,Saturday,08:00-10:00,1,0,0
+2107,37,Female,New Consultation,53,15,3,Monday,08:00-10:00,1,0,1
+2108,41,Female,Follow-up,4,0,0,Thursday,14:00-16:00,1,1,0
+2109,28,Female,New Consultation,14,5,2,Monday,08:00-10:00,0,0,0
+2110,21,Male,New Consultation,16,0,0,Saturday,12:00-14:00,1,1,1
+2111,28,Male,New Consultation,10,2,0,Monday,12:00-14:00,1,0,0
+2112,21,Female,Follow-up,12,8,3,Wednesday,10:00-12:00,0,0,0
+2113,46,Female,Routine Check,7,8,0,Wednesday,14:00-16:00,1,0,0
+2114,69,Male,Follow-up,14,0,0,Friday,16:00-18:00,1,1,0
+2115,18,Female,New Consultation,9,3,0,Wednesday,16:00-18:00,1,0,0
+2116,50,Female,New Consultation,8,2,0,Tuesday,14:00-16:00,1,0,0
+2117,38,Female,New Consultation,14,7,0,Tuesday,16:00-18:00,0,0,0
+2118,55,Female,Routine Check,11,2,0,Tuesday,08:00-10:00,1,0,0
+2119,56,Male,Follow-up,5,16,0,Tuesday,14:00-16:00,1,0,0
+2120,30,Male,Follow-up,6,10,1,Monday,14:00-16:00,0,0,1
+2121,43,Female,New Consultation,14,15,1,Tuesday,10:00-12:00,0,0,0
+2122,66,Male,Follow-up,10,11,3,Monday,10:00-12:00,1,0,0
+2123,37,Male,Follow-up,11,14,4,Wednesday,08:00-10:00,1,0,0
+2124,59,Female,Procedure,4,7,1,Friday,16:00-18:00,1,0,0
+2125,42,Female,Follow-up,8,1,1,Tuesday,12:00-14:00,1,0,0
+2126,47,Female,Follow-up,2,4,0,Friday,08:00-10:00,1,0,0
+2127,43,Female,Routine Check,13,10,0,Saturday,16:00-18:00,1,0,0
+2128,4,Male,Routine Check,16,1,0,Friday,18:00-20:00,1,0,0
+2129,29,Female,New Consultation,4,13,0,Monday,14:00-16:00,1,0,0
+2130,23,Female,New Consultation,3,0,0,Tuesday,14:00-16:00,1,1,0
+2131,39,Male,Follow-up,16,4,0,Saturday,12:00-14:00,1,0,0
+2132,6,Female,Routine Check,32,0,0,Tuesday,18:00-20:00,1,1,1
+2133,77,Male,Follow-up,3,1,0,Wednesday,16:00-18:00,1,0,0
+2134,45,Male,New Consultation,5,3,2,Friday,10:00-12:00,1,0,1
+2135,47,Male,New Consultation,5,4,0,Wednesday,14:00-16:00,1,0,0
+2136,40,Male,Follow-up,38,0,0,Wednesday,08:00-10:00,1,1,0
+2137,54,Female,New Consultation,10,12,0,Saturday,12:00-14:00,1,0,0
+2138,37,Male,Routine Check,10,5,1,Wednesday,12:00-14:00,0,0,1
+2139,57,Female,New Consultation,11,1,0,Friday,10:00-12:00,1,0,0
+2140,54,Female,Follow-up,9,9,0,Tuesday,16:00-18:00,1,0,0
+2141,47,Male,Procedure,11,0,0,Thursday,12:00-14:00,1,1,0
+2142,21,Male,Follow-up,5,10,1,Wednesday,16:00-18:00,1,0,0
+2143,3,Male,Follow-up,7,2,0,Thursday,18:00-20:00,1,0,0
+2144,48,Female,Urgent Visit,1,0,0,Wednesday,10:00-12:00,1,1,0
+2145,41,Male,New Consultation,8,0,0,Wednesday,18:00-20:00,1,1,1
+2146,31,Female,Follow-up,22,21,3,Tuesday,10:00-12:00,1,0,1
+2147,39,Male,Procedure,1,0,0,Wednesday,08:00-10:00,1,1,0
+2148,41,Female,New Consultation,18,6,1,Tuesday,14:00-16:00,0,0,0
+2149,38,Female,Routine Check,1,7,0,Tuesday,08:00-10:00,1,0,0
+2150,36,Male,New Consultation,6,6,1,Monday,10:00-12:00,0,0,1
+2151,41,Male,Procedure,14,0,0,Friday,12:00-14:00,1,1,0
+2152,18,Male,Procedure,6,11,0,Saturday,18:00-20:00,1,0,0
+2153,18,Female,Follow-up,7,0,0,Tuesday,08:00-10:00,1,1,0
+2154,25,Female,Follow-up,14,3,0,Saturday,12:00-14:00,0,0,0
+2155,55,Female,Follow-up,17,4,0,Tuesday,18:00-20:00,1,0,0
+2156,13,Male,Procedure,7,0,0,Saturday,16:00-18:00,0,1,0
+2157,29,Male,New Consultation,7,1,0,Tuesday,18:00-20:00,1,0,0
+2158,47,Male,Follow-up,15,0,0,Friday,16:00-18:00,1,1,0
+2159,34,Female,Follow-up,5,0,0,Friday,08:00-10:00,0,1,0
+2160,34,Female,Follow-up,17,3,1,Tuesday,14:00-16:00,0,0,0
+2161,53,Female,New Consultation,10,16,3,Tuesday,12:00-14:00,1,0,0
+2162,50,Female,Follow-up,3,5,0,Tuesday,14:00-16:00,1,0,0
+2163,16,Female,New Consultation,19,0,0,Friday,10:00-12:00,1,1,0
+2164,58,Female,Urgent Visit,5,0,0,Thursday,08:00-10:00,1,1,0
+2165,54,Female,Routine Check,19,7,0,Friday,16:00-18:00,1,0,0
+2166,64,Female,Routine Check,8,1,0,Monday,14:00-16:00,1,0,0
+2167,65,Female,Urgent Visit,3,10,4,Tuesday,12:00-14:00,1,0,0
+2168,80,Male,Routine Check,14,2,0,Saturday,14:00-16:00,1,0,1
+2169,46,Male,Follow-up,12,19,4,Monday,16:00-18:00,1,0,1
+2170,44,Female,Routine Check,14,2,0,Thursday,10:00-12:00,1,0,0
+2171,47,Male,New Consultation,11,0,0,Tuesday,10:00-12:00,1,1,0
+2172,40,Female,New Consultation,13,1,1,Monday,08:00-10:00,1,0,1
+2173,66,Male,Follow-up,13,0,0,Monday,12:00-14:00,1,1,0
+2174,14,Female,Follow-up,5,1,1,Thursday,10:00-12:00,1,0,0
+2175,33,Male,New Consultation,17,2,0,Tuesday,10:00-12:00,1,0,0
+2176,38,Female,Follow-up,7,5,0,Monday,08:00-10:00,1,0,0
+2177,19,Female,Follow-up,9,3,0,Friday,16:00-18:00,0,0,0
+2178,25,Male,Follow-up,9,5,1,Monday,10:00-12:00,1,0,0
+2179,49,Male,Follow-up,23,0,0,Thursday,16:00-18:00,1,1,1
+2180,50,Male,New Consultation,30,4,1,Thursday,14:00-16:00,1,0,0
+2181,33,Male,New Consultation,3,0,0,Friday,14:00-16:00,1,1,0
+2182,39,Male,Follow-up,18,0,0,Tuesday,10:00-12:00,1,1,0
+2183,48,Female,Urgent Visit,2,0,0,Friday,14:00-16:00,1,1,0
+2184,52,Female,Procedure,10,6,0,Saturday,12:00-14:00,1,0,0
+2185,10,Male,Procedure,3,3,1,Tuesday,14:00-16:00,0,0,0
+2186,25,Female,Procedure,4,1,1,Tuesday,08:00-10:00,1,0,0
+2187,6,Male,Follow-up,5,2,1,Wednesday,16:00-18:00,0,0,0
+2188,12,Female,Follow-up,8,19,2,Thursday,14:00-16:00,1,0,0
+2189,47,Female,New Consultation,23,1,0,Friday,10:00-12:00,0,0,1
+2190,32,Male,New Consultation,7,5,1,Tuesday,10:00-12:00,1,0,0
+2191,36,Male,Procedure,18,11,0,Saturday,16:00-18:00,1,0,0
+2192,41,Male,New Consultation,16,6,0,Wednesday,08:00-10:00,1,0,0
+2193,32,Male,Follow-up,31,3,0,Saturday,10:00-12:00,1,0,0
+2194,36,Male,New Consultation,9,5,2,Tuesday,14:00-16:00,1,0,1
+2195,31,Male,Procedure,7,0,0,Saturday,16:00-18:00,1,1,0
+2196,29,Male,Follow-up,17,8,0,Thursday,18:00-20:00,0,0,0
+2197,29,Male,Urgent Visit,2,10,1,Friday,16:00-18:00,1,0,0
+2198,41,Female,Follow-up,2,6,0,Monday,10:00-12:00,1,0,0
+2199,56,Female,Procedure,3,6,0,Tuesday,16:00-18:00,1,0,0
+2200,39,Female,Routine Check,11,3,0,Thursday,14:00-16:00,1,0,0
+2201,53,Male,Follow-up,7,4,0,Saturday,14:00-16:00,1,0,1
+2202,63,Female,Procedure,5,0,0,Saturday,16:00-18:00,1,1,0
+2203,46,Female,New Consultation,1,8,0,Friday,14:00-16:00,1,0,0
+2204,65,Male,Follow-up,21,1,0,Tuesday,16:00-18:00,1,0,0
+2205,34,Female,New Consultation,8,8,1,Friday,08:00-10:00,1,0,0
+2206,25,Female,Follow-up,8,1,0,Thursday,08:00-10:00,1,0,0
+2207,36,Female,Routine Check,20,0,0,Thursday,14:00-16:00,0,1,0
+2208,23,Female,Follow-up,3,25,4,Friday,18:00-20:00,1,0,0
+2209,39,Male,Follow-up,10,4,1,Tuesday,14:00-16:00,0,0,0
+2210,31,Female,Follow-up,5,12,2,Thursday,16:00-18:00,1,0,1
+2211,36,Female,Follow-up,7,4,2,Monday,10:00-12:00,0,0,0
+2212,76,Female,Procedure,10,1,0,Friday,16:00-18:00,0,0,0
+2213,39,Female,Follow-up,5,0,0,Tuesday,18:00-20:00,1,1,0
+2214,21,Male,Follow-up,19,0,0,Friday,10:00-12:00,1,1,0
+2215,21,Female,Procedure,5,2,0,Saturday,10:00-12:00,1,0,0
+2216,60,Female,Follow-up,4,0,0,Friday,08:00-10:00,1,1,1
+2217,67,Male,Follow-up,18,11,1,Wednesday,12:00-14:00,0,0,0
+2218,61,Female,Procedure,12,5,1,Saturday,08:00-10:00,1,0,0
+2219,45,Female,Follow-up,16,0,0,Saturday,10:00-12:00,1,1,0
+2220,92,Male,New Consultation,16,16,4,Thursday,10:00-12:00,1,0,0
+2221,23,Male,Urgent Visit,3,2,0,Monday,14:00-16:00,0,0,0
+2222,23,Male,Follow-up,20,2,1,Wednesday,12:00-14:00,1,0,0
+2223,29,Male,Routine Check,19,2,1,Tuesday,08:00-10:00,1,0,0
+2224,37,Male,Follow-up,5,1,0,Wednesday,18:00-20:00,0,0,0
+2225,55,Male,Routine Check,2,7,0,Wednesday,16:00-18:00,0,0,0
+2226,37,Male,Follow-up,4,0,0,Saturday,16:00-18:00,1,1,0
+2227,43,Female,Procedure,8,0,0,Tuesday,14:00-16:00,1,1,0
+2228,58,Male,Follow-up,19,4,0,Wednesday,18:00-20:00,1,0,0
+2229,51,Female,Follow-up,1,10,2,Wednesday,18:00-20:00,1,0,1
+2230,76,Female,Routine Check,10,0,0,Tuesday,10:00-12:00,1,1,0
+2231,36,Male,Urgent Visit,6,0,0,Monday,16:00-18:00,1,1,0
+2232,77,Male,Routine Check,3,8,2,Friday,18:00-20:00,0,0,0
+2233,20,Male,Follow-up,21,10,1,Monday,08:00-10:00,1,0,0
+2234,25,Female,Follow-up,2,13,3,Saturday,10:00-12:00,1,0,0
+2235,44,Female,Follow-up,16,0,0,Friday,10:00-12:00,1,1,0
+2236,37,Male,Routine Check,8,1,0,Tuesday,14:00-16:00,1,0,0
+2237,51,Female,Procedure,16,1,0,Friday,10:00-12:00,1,0,0
+2238,54,Female,Follow-up,33,4,0,Wednesday,14:00-16:00,0,0,0
+2239,56,Female,Follow-up,9,4,1,Monday,14:00-16:00,1,0,0
+2240,21,Male,Follow-up,20,1,0,Wednesday,10:00-12:00,1,0,0
+2241,52,Female,Routine Check,6,6,0,Wednesday,14:00-16:00,1,0,0
+2242,51,Male,Urgent Visit,0,4,1,Friday,16:00-18:00,1,0,0
+2243,15,Male,Follow-up,5,0,0,Thursday,14:00-16:00,1,1,0
+2244,33,Male,New Consultation,13,3,2,Thursday,08:00-10:00,1,0,1
+2245,5,Female,Follow-up,16,4,1,Wednesday,16:00-18:00,1,0,0
+2246,65,Male,Procedure,11,2,0,Tuesday,16:00-18:00,1,0,0
+2247,36,Male,Urgent Visit,4,2,0,Wednesday,18:00-20:00,1,0,0
+2248,28,Male,Follow-up,11,0,0,Thursday,10:00-12:00,1,1,0
+2249,41,Female,Follow-up,8,12,0,Tuesday,12:00-14:00,1,0,0
+2250,45,Female,Routine Check,8,1,0,Thursday,10:00-12:00,0,0,1
+2251,33,Female,Follow-up,15,10,0,Monday,10:00-12:00,0,0,0
+2252,33,Male,New Consultation,23,2,0,Tuesday,10:00-12:00,1,0,0
+2253,27,Male,Routine Check,8,1,0,Tuesday,12:00-14:00,0,0,1
+2254,37,Female,Follow-up,18,1,0,Tuesday,14:00-16:00,0,0,0
+2255,25,Female,Routine Check,10,1,0,Tuesday,16:00-18:00,1,0,0
+2256,46,Male,Routine Check,5,12,1,Friday,10:00-12:00,1,0,0
+2257,38,Male,Follow-up,17,4,0,Tuesday,10:00-12:00,1,0,0
+2258,27,Male,Follow-up,20,8,0,Thursday,10:00-12:00,1,0,0
+2259,15,Female,Routine Check,15,3,1,Tuesday,16:00-18:00,0,0,0
+2260,42,Female,Follow-up,5,1,0,Tuesday,16:00-18:00,1,0,1
+2261,19,Male,Follow-up,5,5,1,Monday,14:00-16:00,1,0,0
+2262,41,Female,Procedure,17,4,2,Friday,10:00-12:00,0,0,1
+2263,33,Female,New Consultation,21,6,0,Thursday,08:00-10:00,0,0,1
+2264,30,Male,Urgent Visit,1,11,0,Monday,12:00-14:00,1,0,0
+2265,32,Female,New Consultation,6,11,3,Friday,12:00-14:00,0,0,0
+2266,17,Male,Follow-up,2,0,0,Thursday,18:00-20:00,0,1,0
+2267,43,Male,Follow-up,2,0,0,Monday,10:00-12:00,0,1,0
+2268,30,Female,Routine Check,7,4,1,Tuesday,18:00-20:00,1,0,1
+2269,54,Female,Follow-up,1,5,0,Monday,10:00-12:00,1,0,0
+2270,51,Male,Routine Check,12,10,1,Friday,16:00-18:00,1,0,0
+2271,39,Male,Follow-up,9,1,0,Friday,08:00-10:00,1,0,0
+2272,23,Male,Follow-up,10,6,0,Thursday,08:00-10:00,1,0,0
+2273,41,Male,Urgent Visit,2,1,0,Tuesday,10:00-12:00,1,0,0
+2274,56,Male,Routine Check,27,4,1,Saturday,16:00-18:00,1,0,0
+2275,91,Male,Urgent Visit,1,6,0,Friday,08:00-10:00,0,0,0
+2276,24,Male,Procedure,14,5,0,Friday,10:00-12:00,0,0,0
+2277,20,Female,Routine Check,15,13,2,Friday,16:00-18:00,1,0,0
+2278,37,Male,Follow-up,14,7,0,Saturday,10:00-12:00,1,0,0
+2279,33,Female,Routine Check,14,9,1,Monday,18:00-20:00,0,0,1
+2280,23,Male,Follow-up,9,6,0,Saturday,14:00-16:00,1,0,0
+2281,36,Female,New Consultation,21,1,0,Saturday,10:00-12:00,0,0,0
+2282,10,Male,Procedure,9,0,0,Wednesday,16:00-18:00,0,1,0
+2283,7,Male,Follow-up,13,0,0,Friday,10:00-12:00,1,1,0
+2284,56,Female,Procedure,1,2,0,Tuesday,14:00-16:00,1,0,0
+2285,1,Male,New Consultation,11,4,0,Friday,14:00-16:00,0,0,0
+2286,23,Female,Follow-up,9,4,1,Wednesday,10:00-12:00,1,0,1
+2287,61,Male,New Consultation,5,8,0,Friday,10:00-12:00,1,0,0
+2288,7,Female,New Consultation,18,1,0,Wednesday,08:00-10:00,0,0,0
+2289,13,Male,Follow-up,4,9,0,Wednesday,10:00-12:00,1,0,0
+2290,38,Male,Urgent Visit,5,0,0,Thursday,14:00-16:00,0,1,1
+2291,18,Male,Procedure,9,8,1,Monday,14:00-16:00,1,0,0
+2292,56,Female,New Consultation,10,4,0,Thursday,08:00-10:00,0,0,0
+2293,41,Male,Procedure,10,12,1,Wednesday,10:00-12:00,1,0,0
+2294,16,Female,Follow-up,8,1,0,Monday,12:00-14:00,1,0,0
+2295,57,Male,Follow-up,12,6,0,Wednesday,08:00-10:00,0,0,0
+2296,40,Male,Follow-up,4,0,0,Saturday,14:00-16:00,1,1,0
+2297,26,Female,Follow-up,43,1,0,Saturday,10:00-12:00,1,0,0
+2298,60,Male,New Consultation,21,1,1,Wednesday,08:00-10:00,1,0,0
+2299,20,Male,Follow-up,3,1,0,Thursday,14:00-16:00,1,0,0
+2300,67,Male,New Consultation,11,10,2,Monday,12:00-14:00,0,0,0
+2301,38,Female,New Consultation,3,3,0,Thursday,16:00-18:00,1,0,0
+2302,46,Female,Follow-up,3,4,0,Saturday,10:00-12:00,1,0,0
+2303,54,Female,Routine Check,3,1,0,Wednesday,16:00-18:00,1,0,0
+2304,62,Female,Follow-up,4,0,0,Friday,08:00-10:00,1,1,0
+2305,50,Female,Follow-up,4,12,4,Friday,12:00-14:00,1,0,0
+2306,1,Male,Follow-up,4,14,1,Tuesday,14:00-16:00,1,0,0
+2307,24,Male,Routine Check,4,5,0,Tuesday,14:00-16:00,0,0,0
+2308,20,Male,Follow-up,3,6,1,Thursday,10:00-12:00,1,0,0
+2309,40,Female,Urgent Visit,1,12,4,Thursday,16:00-18:00,1,0,1
+2310,55,Male,Urgent Visit,6,0,0,Saturday,08:00-10:00,1,1,0
+2311,30,Female,Routine Check,5,1,0,Wednesday,16:00-18:00,0,0,0
+2312,31,Female,Routine Check,6,2,0,Tuesday,14:00-16:00,0,0,0
+2313,70,Male,Follow-up,36,0,0,Monday,16:00-18:00,1,1,0
+2314,44,Male,Follow-up,12,11,1,Wednesday,10:00-12:00,0,0,0
+2315,62,Male,Procedure,4,7,0,Thursday,16:00-18:00,1,0,0
+2316,45,Male,Routine Check,4,6,0,Friday,16:00-18:00,1,0,0
+2317,52,Female,Follow-up,23,3,1,Thursday,14:00-16:00,1,0,0
+2318,53,Female,New Consultation,2,0,0,Friday,18:00-20:00,1,1,0
+2319,16,Male,Routine Check,10,1,0,Thursday,14:00-16:00,1,0,0
+2320,72,Male,Follow-up,12,5,0,Wednesday,12:00-14:00,1,0,0
+2321,20,Male,Routine Check,13,12,0,Wednesday,16:00-18:00,0,0,0
+2322,65,Female,New Consultation,5,11,1,Monday,08:00-10:00,0,0,0
+2323,55,Female,Routine Check,4,0,0,Monday,12:00-14:00,1,1,1
+2324,24,Male,Follow-up,1,4,0,Thursday,12:00-14:00,0,0,0
+2325,33,Male,Follow-up,6,1,0,Tuesday,10:00-12:00,1,0,0
+2326,58,Female,New Consultation,14,12,0,Monday,14:00-16:00,0,0,0
+2327,51,Male,New Consultation,5,10,0,Tuesday,10:00-12:00,1,0,0
+2328,30,Male,Procedure,5,0,0,Monday,10:00-12:00,1,1,0
+2329,48,Female,Routine Check,1,0,0,Tuesday,16:00-18:00,1,1,0
+2330,23,Female,New Consultation,7,1,0,Wednesday,16:00-18:00,1,0,0
+2331,36,Male,Follow-up,36,15,3,Friday,12:00-14:00,1,0,0
+2332,25,Male,Urgent Visit,1,17,2,Wednesday,08:00-10:00,1,0,1
+2333,43,Male,Follow-up,2,6,1,Wednesday,16:00-18:00,0,0,0
+2334,55,Female,Routine Check,5,10,1,Wednesday,16:00-18:00,1,0,0
+2335,48,Female,Urgent Visit,1,7,1,Thursday,14:00-16:00,0,0,0
+2336,53,Female,Routine Check,7,16,1,Wednesday,16:00-18:00,0,0,1
+2337,44,Female,New Consultation,12,1,0,Thursday,12:00-14:00,0,0,1
+2338,24,Female,New Consultation,15,5,0,Saturday,18:00-20:00,1,0,1
+2339,64,Female,Follow-up,18,0,0,Friday,08:00-10:00,1,1,0
+2340,18,Female,Procedure,4,9,2,Tuesday,14:00-16:00,1,0,0
+2341,25,Male,Urgent Visit,1,8,1,Thursday,10:00-12:00,1,0,0
+2342,37,Male,New Consultation,1,4,0,Tuesday,12:00-14:00,1,0,0
+2343,40,Female,Follow-up,5,11,1,Saturday,08:00-10:00,0,0,1
+2344,79,Female,Urgent Visit,2,4,0,Monday,12:00-14:00,1,0,0
+2345,1,Female,Follow-up,4,3,0,Saturday,14:00-16:00,1,0,0
+2346,38,Male,Routine Check,4,0,0,Wednesday,14:00-16:00,1,1,0
+2347,45,Female,Follow-up,23,18,3,Thursday,08:00-10:00,1,0,0
+2348,31,Female,Routine Check,8,6,1,Tuesday,10:00-12:00,1,0,0
+2349,41,Male,New Consultation,9,4,0,Monday,12:00-14:00,1,0,0
+2350,35,Female,Follow-up,8,6,0,Thursday,14:00-16:00,0,0,0
+2351,92,Male,New Consultation,12,10,0,Wednesday,14:00-16:00,1,0,0
+2352,34,Male,Routine Check,1,4,0,Wednesday,14:00-16:00,1,0,0
+2353,32,Male,Routine Check,4,0,0,Thursday,18:00-20:00,1,1,0
+2354,36,Female,Follow-up,5,2,1,Wednesday,18:00-20:00,0,0,0
+2355,64,Male,Routine Check,17,0,0,Tuesday,16:00-18:00,1,1,0
+2356,76,Male,Procedure,4,0,0,Tuesday,14:00-16:00,1,1,0
+2357,40,Female,Follow-up,12,4,2,Friday,18:00-20:00,1,0,0
+2358,1,Male,New Consultation,26,9,3,Monday,16:00-18:00,1,0,1
+2359,48,Female,New Consultation,5,30,3,Friday,16:00-18:00,1,0,0
+2360,30,Female,Routine Check,12,6,0,Tuesday,10:00-12:00,1,0,0
+2361,51,Female,Procedure,7,1,0,Thursday,18:00-20:00,1,0,0
+2362,48,Male,Follow-up,3,3,0,Tuesday,10:00-12:00,1,0,0
+2363,20,Female,Urgent Visit,0,0,0,Tuesday,12:00-14:00,1,1,0
+2364,26,Female,New Consultation,27,1,0,Wednesday,14:00-16:00,0,0,1
+2365,27,Male,Urgent Visit,2,4,0,Thursday,12:00-14:00,1,0,0
+2366,34,Male,New Consultation,17,1,0,Friday,12:00-14:00,1,0,1
+2367,59,Male,Follow-up,4,7,0,Friday,18:00-20:00,1,0,0
+2368,87,Female,Urgent Visit,1,0,0,Tuesday,08:00-10:00,1,1,0
+2369,39,Female,Routine Check,15,0,0,Wednesday,16:00-18:00,0,1,0
+2370,34,Male,Follow-up,8,10,0,Wednesday,14:00-16:00,0,0,1
+2371,72,Female,Procedure,6,6,0,Thursday,14:00-16:00,0,0,0
+2372,37,Male,Procedure,5,1,0,Tuesday,14:00-16:00,1,0,0
+2373,51,Female,Procedure,15,0,0,Thursday,14:00-16:00,1,1,0
+2374,30,Male,Routine Check,27,3,0,Friday,10:00-12:00,1,0,0
+2375,15,Male,Routine Check,12,2,0,Thursday,18:00-20:00,1,0,1
+2376,64,Female,Follow-up,3,2,0,Monday,10:00-12:00,1,0,0
+2377,20,Male,Routine Check,21,4,0,Monday,16:00-18:00,0,0,0
+2378,35,Female,Follow-up,21,0,0,Tuesday,14:00-16:00,1,1,0
+2379,19,Female,Follow-up,9,0,0,Thursday,18:00-20:00,0,1,0
+2380,31,Male,Procedure,6,8,0,Monday,16:00-18:00,0,0,0
+2381,49,Female,Routine Check,8,10,0,Monday,10:00-12:00,1,0,0
+2382,22,Female,Procedure,9,2,0,Friday,12:00-14:00,1,0,0
+2383,52,Male,New Consultation,5,0,0,Tuesday,08:00-10:00,1,1,0
+2384,18,Female,Routine Check,12,10,0,Tuesday,18:00-20:00,1,0,0
+2385,69,Male,Urgent Visit,0,6,1,Thursday,10:00-12:00,1,0,0
+2386,23,Male,Follow-up,14,3,0,Friday,18:00-20:00,1,0,0
+2387,34,Female,New Consultation,8,0,0,Saturday,08:00-10:00,1,1,0
+2388,47,Male,Follow-up,7,8,0,Monday,16:00-18:00,1,0,0
+2389,28,Male,New Consultation,2,1,0,Monday,14:00-16:00,1,0,0
+2390,11,Female,Procedure,13,5,2,Thursday,14:00-16:00,1,0,1
+2391,19,Female,Follow-up,15,12,1,Monday,12:00-14:00,1,0,0
+2392,41,Female,Follow-up,21,7,0,Thursday,16:00-18:00,1,0,0
+2393,20,Male,Routine Check,8,12,2,Thursday,10:00-12:00,1,0,0
+2394,34,Female,New Consultation,27,4,1,Wednesday,16:00-18:00,1,0,0
+2395,5,Male,New Consultation,1,8,1,Saturday,08:00-10:00,0,0,1
+2396,49,Female,Procedure,11,1,0,Wednesday,14:00-16:00,0,0,0
+2397,68,Female,Routine Check,11,18,2,Monday,14:00-16:00,1,0,0
+2398,38,Male,Follow-up,18,10,1,Thursday,16:00-18:00,0,0,0
+2399,28,Female,Urgent Visit,4,11,2,Saturday,12:00-14:00,1,0,0
+2400,40,Female,Procedure,7,8,0,Monday,14:00-16:00,0,0,0
+2401,53,Female,Follow-up,3,6,0,Monday,14:00-16:00,1,0,0
+2402,63,Female,Urgent Visit,2,3,0,Thursday,10:00-12:00,1,0,0
+2403,48,Male,New Consultation,13,3,0,Wednesday,14:00-16:00,1,0,0
+2404,56,Female,Follow-up,3,1,0,Monday,10:00-12:00,1,0,0
+2405,80,Male,Routine Check,0,10,1,Saturday,14:00-16:00,0,0,0
+2406,26,Male,Follow-up,3,0,0,Friday,10:00-12:00,1,1,0
+2407,63,Female,Routine Check,21,21,2,Friday,14:00-16:00,1,0,1
+2408,55,Male,Routine Check,2,3,2,Friday,14:00-16:00,0,0,0
+2409,49,Female,New Consultation,1,5,0,Wednesday,10:00-12:00,0,0,0
+2410,45,Male,Routine Check,10,1,0,Tuesday,16:00-18:00,1,0,0
+2411,49,Female,Routine Check,6,3,2,Wednesday,12:00-14:00,1,0,0
+2412,26,Female,Procedure,10,2,1,Monday,16:00-18:00,1,0,1
+2413,49,Male,Follow-up,8,0,0,Thursday,10:00-12:00,1,1,0
+2414,6,Male,Follow-up,5,4,0,Tuesday,10:00-12:00,1,0,0
+2415,64,Male,New Consultation,26,0,0,Monday,16:00-18:00,1,1,0
+2416,43,Male,New Consultation,8,3,0,Wednesday,10:00-12:00,1,0,0
+2417,41,Female,Routine Check,9,8,1,Monday,14:00-16:00,0,0,1
+2418,41,Female,Follow-up,6,10,1,Saturday,12:00-14:00,1,0,0
+2419,18,Female,Routine Check,3,10,0,Tuesday,18:00-20:00,1,0,0
+2420,28,Female,Follow-up,5,1,0,Thursday,14:00-16:00,1,0,0
+2421,50,Male,Follow-up,4,10,1,Friday,12:00-14:00,1,0,0
+2422,38,Female,Urgent Visit,0,6,1,Monday,10:00-12:00,1,0,0
+2423,62,Female,Follow-up,30,3,0,Tuesday,18:00-20:00,1,0,0
+2424,68,Female,Urgent Visit,6,11,1,Tuesday,14:00-16:00,1,0,0
+2425,53,Female,Follow-up,9,4,1,Saturday,14:00-16:00,1,0,1
+2426,49,Female,Follow-up,8,0,0,Tuesday,10:00-12:00,1,1,0
+2427,34,Female,New Consultation,3,13,3,Friday,12:00-14:00,1,0,1
+2428,26,Female,Procedure,21,0,0,Wednesday,10:00-12:00,1,1,0
+2429,52,Female,New Consultation,18,1,0,Tuesday,16:00-18:00,1,0,0
+2430,36,Female,Follow-up,13,6,1,Thursday,08:00-10:00,1,0,0
+2431,45,Female,Procedure,1,3,0,Monday,18:00-20:00,1,0,0
+2432,75,Female,New Consultation,12,3,0,Saturday,16:00-18:00,0,0,0
+2433,31,Female,Follow-up,6,5,2,Wednesday,12:00-14:00,1,0,0
+2434,42,Male,Follow-up,13,0,0,Thursday,10:00-12:00,1,1,1
+2435,21,Female,Routine Check,21,10,0,Friday,14:00-16:00,1,0,0
+2436,30,Male,Routine Check,8,4,1,Monday,14:00-16:00,1,0,0
+2437,43,Male,Follow-up,5,4,0,Thursday,12:00-14:00,1,0,0
+2438,42,Male,New Consultation,11,0,0,Monday,16:00-18:00,1,1,0
+2439,44,Female,New Consultation,5,0,0,Wednesday,08:00-10:00,1,1,0
+2440,10,Female,New Consultation,5,0,0,Saturday,16:00-18:00,0,1,0
+2441,15,Female,Urgent Visit,1,0,0,Saturday,10:00-12:00,1,1,0
+2442,13,Male,Follow-up,13,14,2,Tuesday,12:00-14:00,1,0,1
+2443,4,Female,New Consultation,14,2,0,Tuesday,10:00-12:00,0,0,0
+2444,50,Female,Follow-up,10,3,0,Monday,16:00-18:00,1,0,0
+2445,7,Female,Follow-up,10,11,0,Friday,14:00-16:00,1,0,0
+2446,46,Male,New Consultation,3,3,1,Tuesday,14:00-16:00,1,0,0
+2447,25,Male,Follow-up,10,0,0,Friday,18:00-20:00,0,1,1
+2448,23,Male,Follow-up,6,6,1,Wednesday,12:00-14:00,1,0,1
+2449,63,Male,Procedure,24,4,0,Friday,14:00-16:00,0,0,0
+2450,54,Female,Procedure,6,11,1,Thursday,10:00-12:00,1,0,0
+2451,40,Female,New Consultation,5,11,0,Friday,18:00-20:00,1,0,0
+2452,38,Female,New Consultation,3,1,0,Friday,16:00-18:00,1,0,0
+2453,25,Female,New Consultation,2,11,2,Friday,10:00-12:00,1,0,1
+2454,18,Female,New Consultation,19,0,0,Tuesday,16:00-18:00,1,1,0
+2455,64,Male,New Consultation,9,13,3,Monday,18:00-20:00,1,0,0
+2456,64,Female,Follow-up,13,6,2,Thursday,10:00-12:00,1,0,1
+2457,44,Female,Routine Check,8,10,1,Wednesday,14:00-16:00,1,0,0
+2458,6,Male,Follow-up,11,5,0,Wednesday,10:00-12:00,1,0,0
+2459,56,Male,Routine Check,1,11,1,Friday,14:00-16:00,1,0,0
+2460,16,Female,Procedure,29,3,0,Wednesday,12:00-14:00,1,0,0
+2461,39,Female,New Consultation,22,1,1,Monday,10:00-12:00,1,0,0
+2462,23,Female,Follow-up,11,0,0,Monday,10:00-12:00,0,1,0
+2463,42,Female,New Consultation,12,8,3,Wednesday,14:00-16:00,1,0,0
+2464,13,Male,Urgent Visit,1,0,0,Tuesday,14:00-16:00,1,1,0
+2465,34,Male,New Consultation,3,27,2,Friday,16:00-18:00,1,0,0
+2466,53,Male,New Consultation,14,4,1,Wednesday,16:00-18:00,1,0,0
+2467,51,Female,Routine Check,3,3,1,Tuesday,16:00-18:00,1,0,0
+2468,58,Female,Urgent Visit,0,7,0,Friday,12:00-14:00,1,0,0
+2469,15,Female,Urgent Visit,6,5,1,Wednesday,08:00-10:00,1,0,0
+2470,10,Male,Follow-up,1,1,0,Monday,14:00-16:00,1,0,0
+2471,15,Female,Follow-up,3,10,2,Friday,10:00-12:00,0,0,0
+2472,38,Female,New Consultation,21,0,0,Saturday,18:00-20:00,1,1,0
+2473,52,Male,Follow-up,16,5,2,Monday,10:00-12:00,1,0,0
+2474,37,Male,New Consultation,17,9,1,Thursday,16:00-18:00,1,0,1
+2475,42,Male,Follow-up,8,5,0,Saturday,10:00-12:00,0,0,0
+2476,60,Female,Procedure,25,1,0,Wednesday,08:00-10:00,1,0,0
+2477,62,Female,Procedure,2,1,0,Thursday,10:00-12:00,0,0,0
+2478,26,Male,New Consultation,18,1,0,Tuesday,10:00-12:00,1,0,0
+2479,51,Male,New Consultation,57,2,0,Tuesday,14:00-16:00,1,0,0
+2480,22,Male,Procedure,1,11,2,Wednesday,08:00-10:00,0,0,1
+2481,73,Male,Follow-up,12,3,0,Wednesday,14:00-16:00,1,0,0
+2482,13,Female,Follow-up,9,6,0,Wednesday,16:00-18:00,1,0,0
+2483,29,Female,Follow-up,7,6,0,Wednesday,08:00-10:00,1,0,0
+2484,31,Male,Follow-up,6,11,2,Monday,16:00-18:00,1,0,1
+2485,61,Female,Routine Check,7,1,0,Friday,12:00-14:00,1,0,0
+2486,40,Male,Follow-up,19,7,0,Monday,10:00-12:00,1,0,0
+2487,25,Male,Urgent Visit,3,1,0,Thursday,10:00-12:00,1,0,0
+2488,75,Female,Follow-up,29,6,2,Tuesday,18:00-20:00,1,0,0
+2489,25,Female,Follow-up,6,0,0,Friday,10:00-12:00,1,1,0
+2490,35,Female,Follow-up,14,2,0,Tuesday,12:00-14:00,0,0,0
+2491,45,Female,New Consultation,1,0,0,Wednesday,10:00-12:00,1,1,0
+2492,70,Female,New Consultation,3,2,0,Monday,14:00-16:00,1,0,0
+2493,30,Male,Routine Check,1,1,0,Wednesday,08:00-10:00,0,0,0
+2494,46,Male,Follow-up,4,25,1,Thursday,16:00-18:00,1,0,0
+2495,65,Female,New Consultation,11,4,0,Saturday,12:00-14:00,1,0,0
+2496,48,Female,New Consultation,4,3,1,Saturday,10:00-12:00,1,0,0
+2497,56,Female,New Consultation,24,3,1,Friday,10:00-12:00,1,0,0
+2498,33,Female,Follow-up,11,10,1,Saturday,10:00-12:00,1,0,0
+2499,46,Male,New Consultation,4,8,3,Thursday,18:00-20:00,1,0,0
+2500,35,Male,Routine Check,8,5,1,Tuesday,16:00-18:00,1,0,0
+2501,69,Female,Routine Check,5,9,1,Tuesday,12:00-14:00,1,0,0
+2502,78,Female,Urgent Visit,1,16,6,Thursday,18:00-20:00,1,0,1
+2503,50,Female,Follow-up,20,0,0,Friday,14:00-16:00,1,1,0
+2504,6,Female,Follow-up,13,7,0,Thursday,14:00-16:00,0,0,0
+2505,42,Female,New Consultation,10,4,0,Monday,10:00-12:00,1,0,0
+2506,5,Male,Follow-up,14,1,0,Friday,12:00-14:00,1,0,1
+2507,1,Female,Procedure,19,10,1,Friday,18:00-20:00,1,0,0
+2508,58,Male,Procedure,4,0,0,Monday,10:00-12:00,1,1,0
+2509,58,Female,Follow-up,3,7,1,Tuesday,10:00-12:00,1,0,0
+2510,14,Male,Routine Check,14,1,0,Saturday,18:00-20:00,1,0,0
+2511,51,Male,New Consultation,24,6,2,Friday,14:00-16:00,1,0,1
+2512,61,Male,Follow-up,38,14,2,Friday,08:00-10:00,1,0,1
+2513,53,Female,Follow-up,12,1,0,Thursday,16:00-18:00,0,0,0
+2514,66,Female,Follow-up,8,0,0,Saturday,14:00-16:00,1,1,0
+2515,46,Female,Follow-up,31,9,1,Tuesday,18:00-20:00,0,0,1
+2516,24,Male,Routine Check,7,5,0,Tuesday,16:00-18:00,1,0,0
+2517,50,Female,New Consultation,9,0,0,Monday,14:00-16:00,1,1,0
+2518,21,Male,Follow-up,22,0,0,Wednesday,14:00-16:00,1,1,0
+2519,45,Female,Follow-up,12,0,0,Wednesday,10:00-12:00,1,1,0
+2520,52,Female,Procedure,4,15,2,Wednesday,14:00-16:00,1,0,0
+2521,29,Male,New Consultation,10,14,0,Thursday,18:00-20:00,1,0,0
+2522,60,Male,Follow-up,2,0,0,Wednesday,14:00-16:00,1,1,0
+2523,28,Male,Follow-up,3,3,0,Tuesday,08:00-10:00,0,0,0
+2524,11,Male,Urgent Visit,1,6,0,Monday,08:00-10:00,1,0,0
+2525,65,Female,Follow-up,7,2,0,Monday,12:00-14:00,1,0,0
+2526,1,Male,New Consultation,13,4,0,Monday,10:00-12:00,1,0,0
+2527,33,Male,Follow-up,26,10,0,Monday,16:00-18:00,1,0,0
+2528,53,Female,Follow-up,16,26,2,Wednesday,10:00-12:00,1,0,0
+2529,60,Male,Routine Check,8,3,1,Friday,14:00-16:00,1,0,0
+2530,35,Female,Routine Check,14,2,1,Saturday,18:00-20:00,1,0,0
+2531,35,Female,Procedure,3,2,0,Thursday,08:00-10:00,1,0,0
+2532,75,Female,Routine Check,6,0,0,Thursday,16:00-18:00,1,1,0
+2533,30,Male,Follow-up,11,2,0,Monday,12:00-14:00,1,0,0
+2534,47,Female,New Consultation,8,1,0,Monday,08:00-10:00,1,0,0
+2535,53,Female,Routine Check,5,0,0,Monday,14:00-16:00,0,1,0
+2536,30,Female,New Consultation,27,3,0,Wednesday,18:00-20:00,1,0,0
+2537,62,Female,Routine Check,8,2,0,Friday,16:00-18:00,0,0,0
+2538,74,Male,Follow-up,8,15,3,Friday,12:00-14:00,1,0,1
+2539,34,Female,Follow-up,12,0,0,Monday,08:00-10:00,1,1,0
+2540,63,Male,New Consultation,12,2,1,Wednesday,14:00-16:00,0,0,0
+2541,25,Female,Routine Check,9,1,0,Friday,16:00-18:00,1,0,0
+2542,92,Male,New Consultation,13,30,6,Tuesday,10:00-12:00,1,0,1
+2543,36,Male,Follow-up,7,5,3,Thursday,12:00-14:00,0,0,0
+2544,32,Male,Follow-up,29,2,0,Saturday,18:00-20:00,1,0,0
+2545,71,Male,Follow-up,1,2,1,Tuesday,10:00-12:00,1,0,0
+2546,61,Male,New Consultation,13,3,2,Monday,10:00-12:00,1,0,1
+2547,47,Female,Procedure,6,4,1,Friday,14:00-16:00,1,0,0
+2548,34,Male,Routine Check,8,4,0,Wednesday,16:00-18:00,1,0,0
+2549,59,Female,New Consultation,14,0,0,Tuesday,10:00-12:00,1,1,1
+2550,26,Male,Follow-up,5,1,1,Friday,10:00-12:00,1,0,0
+2551,34,Female,Follow-up,15,0,0,Tuesday,18:00-20:00,1,1,0
+2552,20,Male,New Consultation,19,5,2,Monday,18:00-20:00,1,0,1
+2553,9,Female,Follow-up,9,16,2,Saturday,10:00-12:00,1,0,1
+2554,34,Female,Procedure,4,14,1,Thursday,14:00-16:00,1,0,0
+2555,46,Female,Urgent Visit,5,0,0,Thursday,10:00-12:00,1,1,0
+2556,30,Male,Urgent Visit,6,0,0,Friday,14:00-16:00,1,1,0
+2557,23,Male,Follow-up,5,16,2,Wednesday,10:00-12:00,1,0,0
+2558,50,Male,Follow-up,17,0,0,Wednesday,08:00-10:00,1,1,0
+2559,46,Female,New Consultation,13,0,0,Thursday,08:00-10:00,1,1,0
+2560,72,Male,New Consultation,9,4,1,Tuesday,10:00-12:00,1,0,0
+2561,78,Male,Follow-up,6,7,0,Monday,10:00-12:00,1,0,0
+2562,43,Male,Follow-up,24,0,0,Wednesday,08:00-10:00,1,1,0
+2563,28,Female,Follow-up,5,3,0,Tuesday,10:00-12:00,1,0,0
+2564,41,Male,Routine Check,5,27,5,Thursday,16:00-18:00,1,0,0
+2565,49,Male,Follow-up,35,3,0,Tuesday,18:00-20:00,1,0,0
+2566,30,Female,Follow-up,21,4,2,Monday,14:00-16:00,0,0,0
+2567,6,Male,Follow-up,21,4,0,Friday,14:00-16:00,0,0,0
+2568,77,Male,Follow-up,20,8,0,Monday,16:00-18:00,0,0,0
+2569,31,Female,New Consultation,15,11,1,Thursday,08:00-10:00,1,0,1
+2570,42,Female,Procedure,4,4,0,Saturday,18:00-20:00,1,0,0
+2571,47,Male,Urgent Visit,1,0,0,Tuesday,18:00-20:00,1,1,0
+2572,40,Male,Procedure,5,14,2,Saturday,16:00-18:00,1,0,0
+2573,1,Female,Follow-up,29,3,0,Monday,12:00-14:00,0,0,0
+2574,41,Female,New Consultation,12,9,4,Tuesday,16:00-18:00,1,0,1
+2575,44,Male,New Consultation,7,0,0,Friday,10:00-12:00,0,1,0
+2576,69,Male,New Consultation,15,1,0,Wednesday,08:00-10:00,1,0,0
+2577,31,Female,Follow-up,17,1,1,Thursday,08:00-10:00,0,0,0
+2578,34,Female,Follow-up,8,15,2,Tuesday,18:00-20:00,1,0,0
+2579,24,Female,New Consultation,9,1,0,Wednesday,18:00-20:00,1,0,0
+2580,50,Female,Urgent Visit,0,5,0,Wednesday,18:00-20:00,0,0,0
+2581,49,Male,Follow-up,3,7,3,Wednesday,18:00-20:00,0,0,1
+2582,44,Male,New Consultation,13,3,0,Thursday,10:00-12:00,1,0,0
+2583,9,Female,Procedure,12,3,1,Monday,14:00-16:00,1,0,0
+2584,46,Male,Follow-up,4,3,1,Saturday,16:00-18:00,1,0,1
+2585,21,Male,New Consultation,4,5,0,Wednesday,16:00-18:00,1,0,0
+2586,51,Female,Follow-up,16,0,0,Thursday,08:00-10:00,1,1,0
+2587,61,Female,Follow-up,8,0,0,Wednesday,10:00-12:00,1,1,0
+2588,1,Male,Follow-up,3,0,0,Monday,18:00-20:00,1,1,0
+2589,34,Male,Follow-up,11,0,0,Saturday,18:00-20:00,1,1,0
+2590,42,Male,Follow-up,5,3,2,Tuesday,14:00-16:00,1,0,0
+2591,43,Male,Follow-up,15,0,0,Wednesday,16:00-18:00,1,1,0
+2592,24,Female,Follow-up,0,4,0,Monday,10:00-12:00,0,0,0
+2593,55,Female,Follow-up,6,6,0,Monday,16:00-18:00,1,0,0
+2594,39,Female,Procedure,8,0,0,Friday,16:00-18:00,1,1,1
+2595,48,Male,Follow-up,9,0,0,Wednesday,08:00-10:00,1,1,0
+2596,5,Female,Procedure,11,0,0,Tuesday,12:00-14:00,1,1,0
+2597,49,Female,Follow-up,7,4,1,Monday,16:00-18:00,0,0,1
+2598,70,Female,Follow-up,16,16,2,Tuesday,16:00-18:00,1,0,1
+2599,27,Male,Follow-up,4,2,0,Saturday,10:00-12:00,1,0,0
+2600,66,Male,Procedure,6,0,0,Tuesday,18:00-20:00,1,1,1
+2601,50,Female,New Consultation,21,14,3,Friday,16:00-18:00,1,0,0
+2602,52,Male,New Consultation,7,10,1,Friday,18:00-20:00,1,0,0
+2603,72,Female,Follow-up,13,0,0,Friday,16:00-18:00,1,1,0
+2604,49,Female,Procedure,11,7,2,Thursday,16:00-18:00,1,0,0
+2605,56,Male,Follow-up,6,11,1,Tuesday,10:00-12:00,1,0,0
+2606,69,Female,New Consultation,10,6,0,Tuesday,16:00-18:00,1,0,0
+2607,51,Female,Routine Check,10,5,0,Wednesday,10:00-12:00,1,0,0
+2608,49,Male,Routine Check,8,12,1,Friday,14:00-16:00,1,0,0
+2609,33,Male,Routine Check,3,6,2,Monday,10:00-12:00,1,0,0
+2610,31,Male,Follow-up,50,1,0,Thursday,12:00-14:00,0,0,0
+2611,58,Female,Follow-up,11,6,0,Wednesday,10:00-12:00,1,0,1
+2612,32,Male,New Consultation,21,0,0,Monday,16:00-18:00,0,1,0
+2613,60,Female,Follow-up,10,3,0,Monday,14:00-16:00,1,0,0
+2614,61,Male,Follow-up,8,6,0,Friday,14:00-16:00,1,0,0
+2615,56,Female,Procedure,7,0,0,Monday,12:00-14:00,1,1,0
+2616,59,Male,New Consultation,6,0,0,Wednesday,08:00-10:00,1,1,0
+2617,53,Female,Procedure,9,5,1,Tuesday,14:00-16:00,1,0,0
+2618,59,Female,Routine Check,4,2,0,Wednesday,16:00-18:00,1,0,1
+2619,49,Male,Routine Check,19,2,0,Thursday,18:00-20:00,0,0,0
+2620,49,Female,Follow-up,19,11,4,Wednesday,10:00-12:00,1,0,1
+2621,43,Female,Follow-up,33,3,0,Wednesday,12:00-14:00,1,0,0
+2622,46,Male,Procedure,3,4,0,Tuesday,10:00-12:00,1,0,1
+2623,43,Female,Follow-up,8,0,0,Saturday,18:00-20:00,1,1,0
+2624,44,Male,Routine Check,10,10,1,Saturday,14:00-16:00,1,0,0
+2625,39,Female,Follow-up,5,2,0,Tuesday,16:00-18:00,1,0,0
+2626,43,Male,Procedure,19,0,0,Saturday,10:00-12:00,1,1,0
+2627,14,Female,Procedure,15,15,2,Saturday,14:00-16:00,1,0,0
+2628,22,Male,New Consultation,4,1,0,Friday,16:00-18:00,1,0,0
+2629,19,Male,Urgent Visit,5,7,2,Wednesday,14:00-16:00,1,0,0
+2630,56,Female,Urgent Visit,0,11,1,Saturday,14:00-16:00,0,0,0
+2631,29,Female,New Consultation,9,1,1,Tuesday,12:00-14:00,1,0,0
+2632,30,Female,Routine Check,8,6,1,Thursday,14:00-16:00,1,0,0
+2633,37,Female,Routine Check,13,0,0,Wednesday,18:00-20:00,1,1,0
+2634,37,Female,Routine Check,31,21,1,Monday,08:00-10:00,1,0,0
+2635,51,Male,Follow-up,11,2,0,Thursday,14:00-16:00,1,0,0
+2636,58,Female,Procedure,6,4,2,Friday,16:00-18:00,1,0,0
+2637,42,Male,Routine Check,22,3,0,Friday,10:00-12:00,1,0,0
+2638,29,Male,Routine Check,12,0,0,Thursday,10:00-12:00,1,1,0
+2639,28,Female,Follow-up,1,4,1,Monday,10:00-12:00,1,0,0
+2640,35,Male,Procedure,6,1,0,Wednesday,08:00-10:00,1,0,0
+2641,39,Female,Follow-up,29,3,0,Tuesday,14:00-16:00,1,0,0
+2642,31,Female,Follow-up,0,3,0,Monday,12:00-14:00,1,0,0
+2643,12,Female,Follow-up,7,8,1,Thursday,08:00-10:00,1,0,0
+2644,34,Female,Routine Check,16,3,0,Wednesday,08:00-10:00,1,0,0
+2645,20,Male,Urgent Visit,2,0,0,Friday,10:00-12:00,1,1,0
+2646,68,Female,Follow-up,11,4,0,Thursday,18:00-20:00,1,0,0
+2647,32,Female,Follow-up,10,4,0,Saturday,18:00-20:00,1,0,0
+2648,47,Male,Follow-up,1,1,0,Wednesday,08:00-10:00,1,0,0
+2649,49,Male,Urgent Visit,3,7,0,Tuesday,14:00-16:00,1,0,0
+2650,28,Female,New Consultation,5,1,0,Wednesday,14:00-16:00,1,0,0
+2651,36,Female,Follow-up,2,7,0,Tuesday,12:00-14:00,1,0,0
+2652,57,Female,Routine Check,9,5,1,Tuesday,16:00-18:00,1,0,0
+2653,34,Male,Follow-up,18,1,0,Wednesday,16:00-18:00,1,0,0
+2654,44,Female,Procedure,14,5,1,Friday,16:00-18:00,1,0,0
+2655,58,Female,New Consultation,17,1,0,Monday,16:00-18:00,1,0,0
+2656,57,Female,Follow-up,12,5,1,Friday,10:00-12:00,1,0,0
+2657,45,Female,Follow-up,6,0,0,Thursday,08:00-10:00,0,1,0
+2658,16,Female,New Consultation,31,9,2,Friday,16:00-18:00,1,0,0
+2659,79,Male,Routine Check,28,0,0,Tuesday,18:00-20:00,1,1,0
+2660,26,Male,Procedure,9,0,0,Friday,08:00-10:00,1,1,1
+2661,14,Male,Follow-up,7,2,1,Tuesday,18:00-20:00,1,0,0
+2662,52,Female,Procedure,12,1,1,Monday,10:00-12:00,1,0,0
+2663,18,Female,Follow-up,23,1,0,Wednesday,10:00-12:00,1,0,1
+2664,52,Female,Routine Check,11,8,1,Saturday,14:00-16:00,1,0,0
+2665,16,Female,Routine Check,9,3,1,Monday,16:00-18:00,1,0,0
+2666,39,Male,Follow-up,13,0,0,Monday,16:00-18:00,1,1,0
+2667,29,Male,Follow-up,6,0,0,Friday,14:00-16:00,1,1,0
+2668,13,Female,Procedure,2,6,1,Friday,14:00-16:00,1,0,0
+2669,37,Male,Follow-up,4,2,0,Tuesday,08:00-10:00,1,0,0
+2670,60,Female,Follow-up,5,0,0,Wednesday,10:00-12:00,1,1,1
+2671,14,Female,Urgent Visit,3,2,0,Saturday,14:00-16:00,1,0,0
+2672,32,Female,Follow-up,8,7,1,Wednesday,12:00-14:00,0,0,0
+2673,55,Female,Urgent Visit,1,7,0,Thursday,08:00-10:00,0,0,0
+2674,23,Female,New Consultation,5,1,0,Thursday,10:00-12:00,1,0,0
+2675,49,Female,New Consultation,9,4,0,Tuesday,16:00-18:00,0,0,0
+2676,36,Female,Urgent Visit,4,0,0,Monday,18:00-20:00,1,1,0
+2677,40,Male,Follow-up,1,6,0,Wednesday,18:00-20:00,1,0,0
+2678,42,Female,New Consultation,14,0,0,Tuesday,14:00-16:00,1,1,0
+2679,18,Female,Routine Check,4,8,0,Monday,08:00-10:00,0,0,0
+2680,21,Male,Follow-up,18,3,1,Wednesday,14:00-16:00,1,0,0
+2681,71,Male,Urgent Visit,6,0,0,Tuesday,08:00-10:00,0,1,1
+2682,26,Male,Follow-up,18,0,0,Thursday,16:00-18:00,1,1,0
+2683,54,Female,Follow-up,6,7,1,Monday,08:00-10:00,1,0,0
+2684,19,Female,Routine Check,14,6,0,Tuesday,16:00-18:00,1,0,0
+2685,47,Female,Follow-up,3,2,0,Monday,16:00-18:00,1,0,0
+2686,17,Female,Follow-up,5,0,0,Friday,10:00-12:00,1,1,0
+2687,59,Male,Follow-up,8,7,1,Saturday,18:00-20:00,0,0,0
+2688,50,Female,Procedure,3,0,0,Monday,16:00-18:00,1,1,0
+2689,57,Male,Follow-up,4,0,0,Friday,14:00-16:00,1,1,0
+2690,63,Female,Follow-up,12,2,0,Wednesday,12:00-14:00,1,0,0
+2691,2,Female,Follow-up,1,12,1,Wednesday,14:00-16:00,1,0,0
+2692,30,Female,New Consultation,6,8,1,Friday,12:00-14:00,1,0,0
+2693,54,Female,Urgent Visit,1,5,1,Wednesday,10:00-12:00,1,0,0
+2694,39,Female,Follow-up,13,10,1,Monday,18:00-20:00,0,0,0
+2695,23,Male,New Consultation,15,5,1,Wednesday,16:00-18:00,1,0,0
+2696,31,Male,Follow-up,9,11,2,Tuesday,18:00-20:00,1,0,0
+2697,58,Female,Urgent Visit,4,3,0,Tuesday,16:00-18:00,1,0,0
+2698,57,Male,Follow-up,7,2,0,Monday,16:00-18:00,1,0,0
+2699,10,Male,Follow-up,10,1,0,Friday,12:00-14:00,1,0,0
+2700,67,Female,Routine Check,21,3,0,Tuesday,16:00-18:00,0,0,0
+2701,76,Female,New Consultation,6,1,0,Tuesday,16:00-18:00,1,0,0
+2702,15,Male,Routine Check,10,19,0,Saturday,10:00-12:00,0,0,0
+2703,28,Male,Follow-up,5,0,0,Saturday,16:00-18:00,0,1,0
+2704,58,Male,Follow-up,1,16,2,Wednesday,14:00-16:00,1,0,0
+2705,27,Female,New Consultation,6,9,2,Thursday,18:00-20:00,0,0,0
+2706,49,Male,New Consultation,8,0,0,Tuesday,14:00-16:00,1,1,0
+2707,30,Male,Follow-up,18,5,0,Saturday,14:00-16:00,1,0,0
+2708,21,Female,Urgent Visit,0,2,0,Saturday,14:00-16:00,1,0,0
+2709,43,Female,New Consultation,15,1,0,Friday,10:00-12:00,1,0,0
+2710,14,Male,Follow-up,13,1,0,Friday,10:00-12:00,1,0,0
+2711,44,Female,Urgent Visit,5,3,0,Monday,14:00-16:00,1,0,0
+2712,14,Male,New Consultation,17,2,0,Wednesday,18:00-20:00,1,0,0
+2713,38,Male,New Consultation,4,0,0,Tuesday,08:00-10:00,0,1,0
+2714,40,Male,Follow-up,6,2,0,Monday,10:00-12:00,1,0,0
+2715,53,Female,Follow-up,4,7,1,Tuesday,14:00-16:00,1,0,0
+2716,49,Male,Procedure,20,1,0,Friday,16:00-18:00,1,0,0
+2717,63,Female,Follow-up,3,1,0,Saturday,16:00-18:00,0,0,0
+2718,31,Female,Routine Check,6,8,0,Saturday,18:00-20:00,1,0,0
+2719,8,Male,Follow-up,8,5,1,Monday,08:00-10:00,1,0,0
+2720,30,Male,Follow-up,7,14,1,Wednesday,08:00-10:00,1,0,0
+2721,44,Male,Follow-up,4,4,0,Thursday,08:00-10:00,0,0,0
+2722,45,Male,Urgent Visit,7,1,0,Tuesday,16:00-18:00,1,0,0
+2723,63,Male,Follow-up,26,14,2,Monday,12:00-14:00,0,0,0
+2724,41,Male,Follow-up,7,8,1,Monday,16:00-18:00,0,0,1
+2725,48,Male,Routine Check,9,3,1,Monday,14:00-16:00,1,0,0
+2726,32,Male,Routine Check,4,5,0,Thursday,16:00-18:00,1,0,0
+2727,38,Male,New Consultation,3,2,0,Thursday,14:00-16:00,1,0,0
+2728,44,Female,Follow-up,4,1,1,Wednesday,10:00-12:00,0,0,0
+2729,29,Male,Routine Check,2,3,1,Friday,16:00-18:00,1,0,0
+2730,30,Female,New Consultation,2,1,0,Wednesday,14:00-16:00,1,0,0
+2731,62,Female,New Consultation,3,0,0,Thursday,08:00-10:00,1,1,0
+2732,33,Female,Procedure,6,0,0,Saturday,18:00-20:00,1,1,0
+2733,48,Female,Follow-up,27,7,1,Saturday,16:00-18:00,0,0,1
+2734,31,Female,Urgent Visit,0,12,2,Saturday,10:00-12:00,1,0,0
+2735,39,Female,New Consultation,3,6,2,Friday,16:00-18:00,1,0,0
+2736,34,Male,Procedure,13,7,0,Saturday,14:00-16:00,1,0,0
+2737,40,Male,Follow-up,10,0,0,Thursday,16:00-18:00,1,1,1
+2738,63,Female,Follow-up,0,6,1,Tuesday,14:00-16:00,1,0,0
+2739,10,Female,Routine Check,5,19,4,Friday,16:00-18:00,1,0,1
+2740,48,Male,Procedure,1,5,0,Monday,08:00-10:00,0,0,0
+2741,26,Female,Routine Check,10,17,1,Wednesday,14:00-16:00,1,0,0
+2742,44,Female,Follow-up,6,0,0,Friday,14:00-16:00,0,1,0
+2743,43,Male,Routine Check,2,1,0,Wednesday,14:00-16:00,1,0,0
+2744,1,Female,Follow-up,2,6,3,Friday,16:00-18:00,1,0,1
+2745,29,Female,Routine Check,7,6,1,Thursday,18:00-20:00,0,0,0
+2746,24,Female,Procedure,16,11,2,Friday,14:00-16:00,1,0,0
+2747,42,Female,Follow-up,5,8,2,Wednesday,18:00-20:00,1,0,0
+2748,16,Female,New Consultation,12,6,0,Thursday,12:00-14:00,1,0,0
+2749,56,Female,Procedure,6,1,0,Wednesday,10:00-12:00,1,0,0
+2750,80,Male,Routine Check,24,1,0,Wednesday,10:00-12:00,1,0,0
+2751,47,Female,New Consultation,2,1,1,Tuesday,16:00-18:00,1,0,0
+2752,85,Male,New Consultation,6,4,1,Thursday,08:00-10:00,1,0,0
+2753,52,Female,New Consultation,12,5,0,Tuesday,12:00-14:00,1,0,0
+2754,49,Female,Routine Check,3,6,2,Tuesday,08:00-10:00,1,0,0
+2755,14,Male,New Consultation,42,7,0,Thursday,08:00-10:00,1,0,0
+2756,48,Female,Urgent Visit,6,4,0,Thursday,18:00-20:00,1,0,0
+2757,36,Female,Urgent Visit,2,25,4,Friday,12:00-14:00,1,0,1
+2758,72,Female,Procedure,54,2,0,Wednesday,14:00-16:00,1,0,0
+2759,39,Female,Routine Check,4,12,1,Friday,16:00-18:00,0,0,0
+2760,43,Female,Follow-up,29,0,0,Thursday,14:00-16:00,1,1,0
+2761,38,Female,Procedure,15,12,3,Wednesday,18:00-20:00,1,0,0
+2762,65,Male,Procedure,6,0,0,Tuesday,10:00-12:00,1,1,0
+2763,52,Male,New Consultation,17,5,0,Friday,14:00-16:00,0,0,0
+2764,53,Male,New Consultation,1,22,3,Friday,10:00-12:00,1,0,1
+2765,28,Male,Follow-up,7,1,0,Friday,14:00-16:00,1,0,0
+2766,19,Male,Procedure,17,7,0,Wednesday,16:00-18:00,1,0,1
+2767,44,Female,Routine Check,12,0,0,Monday,12:00-14:00,1,1,0
+2768,12,Male,Routine Check,13,2,1,Tuesday,14:00-16:00,1,0,0
+2769,59,Female,Routine Check,2,5,1,Monday,10:00-12:00,1,0,1
+2770,54,Male,Procedure,9,2,0,Friday,10:00-12:00,0,0,1
+2771,37,Male,New Consultation,28,4,1,Tuesday,12:00-14:00,0,0,1
+2772,26,Female,Urgent Visit,0,19,0,Monday,14:00-16:00,0,0,0
+2773,54,Male,Follow-up,2,0,0,Thursday,12:00-14:00,1,1,0
+2774,20,Female,Follow-up,11,0,0,Monday,14:00-16:00,1,1,0
+2775,47,Male,Urgent Visit,1,3,0,Thursday,14:00-16:00,0,0,0
+2776,41,Male,Routine Check,12,10,0,Monday,12:00-14:00,1,0,0
+2777,31,Female,Procedure,1,6,1,Friday,16:00-18:00,0,0,0
+2778,30,Female,Follow-up,11,11,1,Monday,10:00-12:00,0,0,0
+2779,41,Male,New Consultation,9,5,1,Wednesday,10:00-12:00,0,0,0
+2780,4,Female,Procedure,12,1,0,Friday,08:00-10:00,1,0,0
+2781,35,Male,New Consultation,1,2,1,Friday,08:00-10:00,1,0,0
+2782,21,Female,Follow-up,6,4,0,Tuesday,16:00-18:00,1,0,0
+2783,31,Female,Follow-up,7,0,0,Saturday,14:00-16:00,1,1,0
+2784,26,Male,New Consultation,4,25,6,Saturday,18:00-20:00,0,0,1
+2785,44,Female,New Consultation,14,7,0,Saturday,18:00-20:00,1,0,0
+2786,50,Female,New Consultation,11,15,0,Tuesday,14:00-16:00,1,0,0
+2787,13,Male,Routine Check,3,6,1,Friday,16:00-18:00,1,0,0
+2788,52,Male,New Consultation,6,8,3,Monday,18:00-20:00,1,0,1
+2789,27,Male,Procedure,8,10,2,Wednesday,08:00-10:00,1,0,0
+2790,24,Male,Urgent Visit,0,2,0,Saturday,16:00-18:00,0,0,0
+2791,59,Female,Follow-up,33,2,0,Monday,18:00-20:00,0,0,0
+2792,67,Female,Follow-up,7,2,0,Monday,16:00-18:00,1,0,0
+2793,68,Female,Follow-up,9,3,0,Wednesday,14:00-16:00,1,0,0
+2794,59,Male,Follow-up,5,7,1,Monday,16:00-18:00,1,0,0
+2795,8,Male,Urgent Visit,4,6,0,Thursday,16:00-18:00,1,0,1
+2796,72,Female,Follow-up,9,4,1,Thursday,08:00-10:00,1,0,0
+2797,46,Female,Follow-up,8,0,0,Monday,12:00-14:00,1,1,1
+2798,29,Female,New Consultation,8,1,0,Saturday,16:00-18:00,1,0,0
+2799,33,Male,Procedure,14,4,0,Friday,08:00-10:00,1,0,0
+2800,65,Female,Procedure,17,3,1,Saturday,14:00-16:00,1,0,0
+2801,54,Male,Routine Check,23,8,1,Thursday,12:00-14:00,1,0,0
+2802,48,Female,New Consultation,1,8,0,Wednesday,16:00-18:00,1,0,0
+2803,31,Female,Routine Check,5,9,0,Tuesday,16:00-18:00,1,0,0
+2804,33,Male,Follow-up,16,0,0,Thursday,10:00-12:00,0,1,0
+2805,58,Female,New Consultation,10,3,1,Saturday,12:00-14:00,1,0,1
+2806,61,Female,Follow-up,3,14,0,Thursday,14:00-16:00,0,0,0
+2807,28,Female,New Consultation,8,13,1,Saturday,14:00-16:00,1,0,1
+2808,18,Male,Procedure,7,8,0,Friday,16:00-18:00,1,0,0
+2809,38,Female,Follow-up,18,5,0,Friday,10:00-12:00,1,0,0
+2810,68,Female,New Consultation,17,0,0,Thursday,14:00-16:00,1,1,0
+2811,57,Male,Routine Check,9,4,0,Friday,14:00-16:00,1,0,0
+2812,16,Male,Routine Check,3,0,0,Wednesday,10:00-12:00,1,1,0
+2813,64,Female,Follow-up,9,0,0,Tuesday,16:00-18:00,1,1,0
+2814,65,Female,Follow-up,5,3,0,Friday,14:00-16:00,1,0,0
+2815,62,Female,Routine Check,10,1,0,Thursday,16:00-18:00,1,0,0
+2816,32,Male,Routine Check,8,4,0,Thursday,12:00-14:00,0,0,1
+2817,30,Female,Follow-up,19,3,0,Saturday,18:00-20:00,1,0,0
+2818,28,Female,Procedure,6,3,0,Wednesday,10:00-12:00,0,0,0
+2819,72,Female,Procedure,18,0,0,Monday,18:00-20:00,1,1,0
+2820,56,Female,Urgent Visit,1,2,0,Friday,14:00-16:00,1,0,0
+2821,44,Male,Routine Check,10,1,0,Wednesday,18:00-20:00,1,0,0
+2822,49,Female,Urgent Visit,2,6,1,Thursday,08:00-10:00,1,0,0
+2823,62,Male,New Consultation,23,18,2,Monday,16:00-18:00,1,0,1
+2824,53,Female,New Consultation,9,10,0,Monday,16:00-18:00,1,0,0
+2825,21,Female,New Consultation,29,9,2,Friday,14:00-16:00,1,0,1
+2826,31,Male,Follow-up,15,0,0,Friday,08:00-10:00,1,1,0
+2827,41,Female,Follow-up,12,1,0,Tuesday,08:00-10:00,1,0,0
+2828,23,Male,Follow-up,10,1,1,Monday,08:00-10:00,1,0,0
+2829,31,Male,Follow-up,8,8,1,Tuesday,16:00-18:00,1,0,0
+2830,35,Male,New Consultation,7,6,1,Monday,10:00-12:00,1,0,0
+2831,52,Female,Follow-up,6,6,1,Saturday,16:00-18:00,1,0,0
+2832,49,Female,New Consultation,20,17,1,Wednesday,18:00-20:00,1,0,0
+2833,10,Female,Follow-up,20,4,2,Monday,12:00-14:00,1,0,1
+2834,32,Female,Routine Check,4,9,2,Saturday,18:00-20:00,0,0,1
+2835,61,Female,Procedure,17,4,1,Tuesday,10:00-12:00,1,0,0
+2836,35,Male,New Consultation,7,9,1,Wednesday,12:00-14:00,1,0,0
+2837,32,Female,New Consultation,7,0,0,Tuesday,14:00-16:00,0,1,0
+2838,17,Male,New Consultation,0,2,0,Wednesday,10:00-12:00,1,0,0
+2839,29,Female,New Consultation,10,4,1,Friday,12:00-14:00,1,0,0
+2840,31,Female,New Consultation,2,2,0,Wednesday,16:00-18:00,1,0,0
+2841,50,Female,Follow-up,6,5,2,Saturday,10:00-12:00,1,0,0
+2842,49,Female,Follow-up,10,0,0,Saturday,16:00-18:00,1,1,0
+2843,28,Female,Follow-up,12,4,0,Friday,18:00-20:00,1,0,0
+2844,58,Male,New Consultation,9,5,0,Wednesday,10:00-12:00,1,0,0
+2845,61,Male,Routine Check,9,0,0,Saturday,08:00-10:00,1,1,0
+2846,58,Male,Procedure,9,1,0,Thursday,14:00-16:00,1,0,0
+2847,55,Female,New Consultation,14,10,1,Thursday,14:00-16:00,0,0,0
+2848,25,Male,Urgent Visit,7,2,0,Friday,18:00-20:00,0,0,1
+2849,37,Female,Routine Check,12,9,0,Thursday,14:00-16:00,1,0,0
+2850,20,Female,Procedure,5,0,0,Friday,18:00-20:00,1,1,0
+2851,59,Female,Follow-up,8,1,0,Friday,14:00-16:00,1,0,0
+2852,30,Male,New Consultation,9,3,0,Monday,10:00-12:00,1,0,0
+2853,48,Male,New Consultation,14,0,0,Wednesday,10:00-12:00,1,1,0
+2854,30,Female,Procedure,11,2,0,Friday,18:00-20:00,1,0,0
+2855,63,Female,Follow-up,11,3,0,Saturday,14:00-16:00,0,0,0
+2856,43,Male,New Consultation,10,4,0,Saturday,12:00-14:00,1,0,0
+2857,59,Male,New Consultation,4,5,2,Friday,14:00-16:00,0,0,0
+2858,75,Male,Procedure,17,1,0,Monday,14:00-16:00,1,0,0
+2859,38,Female,Procedure,8,8,2,Monday,12:00-14:00,0,0,0
+2860,52,Male,Follow-up,6,1,1,Friday,14:00-16:00,1,0,0
+2861,33,Male,New Consultation,3,0,0,Saturday,16:00-18:00,1,1,0
+2862,36,Female,Procedure,15,9,0,Friday,14:00-16:00,1,0,0
+2863,53,Female,Routine Check,7,0,0,Saturday,18:00-20:00,1,1,1
+2864,48,Female,Procedure,8,7,0,Tuesday,12:00-14:00,1,0,0
+2865,31,Female,Follow-up,21,3,0,Wednesday,10:00-12:00,1,0,0
+2866,56,Male,New Consultation,20,15,3,Saturday,08:00-10:00,1,0,1
+2867,31,Female,Routine Check,4,10,1,Wednesday,14:00-16:00,1,0,0
+2868,56,Female,Routine Check,11,1,0,Monday,10:00-12:00,1,0,0
+2869,72,Male,Urgent Visit,1,4,1,Tuesday,16:00-18:00,1,0,0
+2870,20,Female,Procedure,7,1,0,Friday,16:00-18:00,0,0,1
+2871,63,Female,Procedure,27,4,0,Thursday,08:00-10:00,1,0,0
+2872,49,Male,New Consultation,8,0,0,Wednesday,14:00-16:00,1,1,0
+2873,32,Male,Follow-up,29,1,0,Saturday,08:00-10:00,1,0,0
+2874,57,Female,New Consultation,14,2,0,Wednesday,18:00-20:00,1,0,1
+2875,28,Female,New Consultation,13,4,0,Friday,14:00-16:00,1,0,0
+2876,12,Female,Routine Check,7,10,2,Monday,10:00-12:00,1,0,0
+2877,40,Male,Follow-up,5,0,0,Monday,18:00-20:00,1,1,0
+2878,56,Male,Routine Check,6,1,0,Saturday,10:00-12:00,1,0,0
+2879,55,Male,Follow-up,6,23,5,Tuesday,12:00-14:00,1,0,0
+2880,44,Female,New Consultation,15,3,0,Friday,18:00-20:00,1,0,0
+2881,45,Female,Follow-up,6,0,0,Monday,14:00-16:00,1,1,0
+2882,64,Female,Follow-up,7,3,0,Saturday,14:00-16:00,0,0,0
+2883,52,Male,New Consultation,16,10,1,Wednesday,14:00-16:00,1,0,0
+2884,54,Female,Follow-up,13,10,0,Monday,16:00-18:00,1,0,0
+2885,23,Female,Routine Check,7,6,0,Thursday,12:00-14:00,0,0,0
+2886,48,Female,Follow-up,4,10,3,Friday,14:00-16:00,1,0,0
+2887,57,Female,Follow-up,24,6,1,Thursday,16:00-18:00,0,0,0
+2888,50,Female,Follow-up,15,1,0,Friday,12:00-14:00,1,0,0
+2889,13,Female,Follow-up,27,3,0,Thursday,18:00-20:00,0,0,1
+2890,65,Female,Follow-up,17,0,0,Wednesday,08:00-10:00,1,1,0
+2891,9,Male,New Consultation,11,23,3,Wednesday,14:00-16:00,1,0,0
+2892,20,Female,Procedure,16,0,0,Thursday,16:00-18:00,1,1,0
+2893,31,Female,Routine Check,0,2,0,Friday,10:00-12:00,0,0,0
+2894,58,Male,Routine Check,9,0,0,Tuesday,16:00-18:00,0,1,0
+2895,35,Male,Urgent Visit,1,4,0,Thursday,16:00-18:00,0,0,0
+2896,48,Male,Follow-up,18,0,0,Wednesday,08:00-10:00,1,1,1
+2897,24,Male,Follow-up,0,9,1,Friday,14:00-16:00,1,0,0
+2898,35,Male,Follow-up,5,0,0,Friday,14:00-16:00,1,1,0
+2899,62,Female,Routine Check,9,6,1,Thursday,08:00-10:00,1,0,0
+2900,45,Male,Follow-up,3,0,0,Monday,18:00-20:00,0,1,0
+2901,36,Female,Routine Check,6,2,0,Wednesday,10:00-12:00,1,0,0
+2902,68,Male,New Consultation,17,0,0,Friday,12:00-14:00,1,1,0
+2903,32,Female,Follow-up,4,4,0,Wednesday,10:00-12:00,1,0,0
+2904,54,Male,New Consultation,16,0,0,Wednesday,16:00-18:00,0,1,1
+2905,37,Female,New Consultation,4,0,0,Saturday,16:00-18:00,1,1,0
+2906,45,Male,New Consultation,23,0,0,Wednesday,08:00-10:00,1,1,0
+2907,30,Male,Routine Check,4,30,6,Saturday,12:00-14:00,1,0,0
+2908,46,Male,Urgent Visit,7,0,0,Thursday,12:00-14:00,1,1,0
+2909,43,Female,New Consultation,8,0,0,Friday,14:00-16:00,1,1,1
+2910,43,Male,Routine Check,25,3,0,Wednesday,08:00-10:00,0,0,0
+2911,47,Female,Routine Check,6,7,0,Thursday,12:00-14:00,1,0,0
+2912,40,Female,Follow-up,11,1,0,Wednesday,10:00-12:00,1,0,0
+2913,57,Male,Urgent Visit,1,0,0,Tuesday,16:00-18:00,0,1,0
+2914,22,Female,Follow-up,7,0,0,Saturday,16:00-18:00,1,1,1
+2915,5,Female,New Consultation,7,0,0,Monday,12:00-14:00,1,1,0
+2916,47,Female,Follow-up,30,0,0,Monday,14:00-16:00,1,1,0
+2917,26,Female,Procedure,10,14,1,Friday,18:00-20:00,0,0,1
+2918,59,Male,Urgent Visit,1,0,0,Thursday,12:00-14:00,1,1,0
+2919,37,Male,Follow-up,14,17,2,Monday,16:00-18:00,1,0,0
+2920,37,Female,Procedure,18,10,3,Thursday,16:00-18:00,1,0,0
+2921,34,Female,Follow-up,11,1,0,Thursday,16:00-18:00,1,0,0
+2922,51,Male,Urgent Visit,1,30,3,Friday,16:00-18:00,1,0,1
+2923,58,Male,New Consultation,35,3,2,Thursday,14:00-16:00,1,0,0
+2924,28,Male,Urgent Visit,0,1,0,Wednesday,16:00-18:00,0,0,0
+2925,54,Male,Follow-up,5,5,0,Tuesday,16:00-18:00,1,0,0
+2926,44,Female,New Consultation,21,0,0,Tuesday,10:00-12:00,0,1,0
+2927,43,Male,Urgent Visit,1,16,5,Saturday,14:00-16:00,1,0,1
+2928,9,Female,Follow-up,5,1,0,Thursday,16:00-18:00,0,0,0
+2929,12,Male,Urgent Visit,4,0,0,Friday,16:00-18:00,1,1,0
+2930,27,Female,Routine Check,3,0,0,Wednesday,14:00-16:00,1,1,0
+2931,43,Male,Follow-up,14,4,0,Friday,08:00-10:00,1,0,0
+2932,28,Female,Follow-up,14,0,0,Wednesday,16:00-18:00,1,1,0
+2933,27,Male,Follow-up,2,3,1,Tuesday,12:00-14:00,1,0,0
+2934,26,Male,New Consultation,8,6,0,Friday,16:00-18:00,1,0,0
+2935,61,Male,Procedure,1,0,0,Wednesday,10:00-12:00,1,1,1
+2936,61,Female,Follow-up,5,5,1,Thursday,16:00-18:00,1,0,0
+2937,43,Female,Follow-up,5,3,0,Thursday,16:00-18:00,1,0,0
+2938,82,Female,Routine Check,24,0,0,Monday,08:00-10:00,1,1,1
+2939,9,Male,Follow-up,21,5,2,Friday,10:00-12:00,1,0,0
+2940,55,Female,Urgent Visit,3,0,0,Monday,10:00-12:00,1,1,0
+2941,56,Female,Follow-up,3,3,0,Tuesday,18:00-20:00,1,0,1
+2942,16,Male,Routine Check,1,3,0,Thursday,16:00-18:00,0,0,0
+2943,35,Male,New Consultation,5,5,1,Friday,14:00-16:00,1,0,0
+2944,38,Male,Follow-up,35,2,1,Friday,16:00-18:00,1,0,0
+2945,50,Female,New Consultation,25,0,0,Thursday,16:00-18:00,0,1,0
+2946,59,Female,New Consultation,1,2,1,Friday,10:00-12:00,1,0,0
+2947,55,Female,New Consultation,17,2,0,Wednesday,08:00-10:00,0,0,0
+2948,75,Female,Follow-up,11,1,0,Monday,14:00-16:00,1,0,0
+2949,52,Male,Urgent Visit,0,4,0,Thursday,16:00-18:00,0,0,0
+2950,25,Female,Procedure,28,0,0,Thursday,18:00-20:00,1,1,0
+2951,12,Female,Follow-up,23,2,0,Tuesday,14:00-16:00,0,0,0
+2952,39,Female,New Consultation,17,2,0,Wednesday,12:00-14:00,1,0,0
+2953,27,Female,Procedure,5,0,0,Tuesday,12:00-14:00,1,1,0
+2954,29,Male,New Consultation,5,1,0,Tuesday,08:00-10:00,0,0,1
+2955,30,Male,Follow-up,4,0,0,Friday,18:00-20:00,1,1,0
+2956,48,Female,Follow-up,6,0,0,Saturday,12:00-14:00,1,1,0
+2957,38,Male,Follow-up,15,17,2,Friday,10:00-12:00,1,0,0
+2958,47,Male,Follow-up,11,0,0,Thursday,18:00-20:00,1,1,0
+2959,33,Female,New Consultation,12,13,3,Wednesday,18:00-20:00,1,0,0
+2960,12,Male,Follow-up,4,13,1,Tuesday,14:00-16:00,1,0,1
+2961,69,Male,Procedure,16,9,0,Friday,10:00-12:00,0,0,0
+2962,31,Male,Urgent Visit,7,10,1,Tuesday,14:00-16:00,1,0,0
+2963,33,Male,New Consultation,16,0,0,Monday,12:00-14:00,1,1,0
+2964,30,Male,Follow-up,6,10,1,Thursday,12:00-14:00,1,0,0
+2965,45,Female,Follow-up,5,0,0,Saturday,12:00-14:00,1,1,0
+2966,37,Female,New Consultation,6,1,0,Tuesday,10:00-12:00,1,0,0
+2967,26,Female,Follow-up,6,10,0,Friday,10:00-12:00,1,0,0
+2968,81,Female,New Consultation,15,0,0,Monday,10:00-12:00,1,1,0
+2969,16,Female,New Consultation,11,3,2,Tuesday,14:00-16:00,1,0,0
+2970,6,Female,New Consultation,19,2,1,Monday,10:00-12:00,1,0,0
+2971,34,Female,Follow-up,19,11,3,Monday,16:00-18:00,1,0,0
+2972,39,Female,Urgent Visit,4,11,2,Friday,18:00-20:00,1,0,1
+2973,61,Male,New Consultation,14,3,1,Friday,14:00-16:00,1,0,0
+2974,70,Male,New Consultation,9,0,0,Wednesday,10:00-12:00,1,1,0
+2975,48,Male,Procedure,3,2,0,Thursday,14:00-16:00,1,0,0
+2976,46,Male,New Consultation,22,2,0,Monday,10:00-12:00,0,0,0
+2977,24,Male,Routine Check,5,3,0,Friday,08:00-10:00,1,0,0
+2978,28,Male,New Consultation,3,2,0,Wednesday,12:00-14:00,1,0,0
+2979,19,Male,Urgent Visit,6,7,0,Thursday,10:00-12:00,0,0,0
+2980,30,Female,Follow-up,6,3,1,Thursday,08:00-10:00,0,0,0
+2981,26,Female,New Consultation,10,0,0,Thursday,12:00-14:00,0,1,0
+2982,59,Female,Routine Check,4,7,2,Tuesday,12:00-14:00,1,0,0
+2983,58,Female,Urgent Visit,1,3,0,Tuesday,14:00-16:00,1,0,0
+2984,29,Female,Urgent Visit,3,0,0,Wednesday,18:00-20:00,1,1,0
+2985,17,Male,Routine Check,4,8,0,Saturday,14:00-16:00,1,0,0
+2986,45,Female,New Consultation,4,17,0,Tuesday,16:00-18:00,1,0,0
+2987,40,Female,Procedure,5,3,0,Tuesday,14:00-16:00,1,0,0
+2988,31,Male,New Consultation,28,1,0,Thursday,14:00-16:00,0,0,0
+2989,19,Male,Follow-up,15,4,1,Tuesday,10:00-12:00,1,0,0
+2990,53,Male,Follow-up,10,8,1,Wednesday,10:00-12:00,1,0,0
+2991,28,Female,New Consultation,42,3,1,Friday,12:00-14:00,1,0,1
+2992,25,Female,New Consultation,11,0,0,Friday,12:00-14:00,1,1,0
+2993,36,Male,Follow-up,13,12,1,Thursday,08:00-10:00,0,0,0
+2994,46,Female,Routine Check,13,3,0,Thursday,10:00-12:00,1,0,1
+2995,41,Male,Follow-up,5,10,0,Saturday,16:00-18:00,1,0,0
+2996,7,Female,Routine Check,8,1,0,Thursday,12:00-14:00,1,0,0
+2997,46,Female,Urgent Visit,5,4,0,Monday,14:00-16:00,1,0,0
+2998,13,Male,Follow-up,8,10,0,Tuesday,12:00-14:00,1,0,0
+2999,24,Female,Follow-up,2,3,1,Saturday,16:00-18:00,1,0,0
+3000,50,Male,Follow-up,8,14,0,Saturday,10:00-12:00,0,0,0

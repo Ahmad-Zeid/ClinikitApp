@@ -320,6 +320,74 @@ def test_only_a_real_reschedule_looks_for_an_appointment(message, is_move, now, 
     assert _sounds_like_moving_something(extraction) is is_move
 
 
+def test_model_date_phrase_does_not_force_a_reschedule(now, db):
+    """
+    The live bug: Gemini labelled "can i do this thursday at 12 pm?" as a reschedule and
+    put "this thursday" in existing_appointment_phrase. Policy trusted that field and
+    listed the patient's existing appointments instead of offering the new slot.
+    """
+    from clinikit.agent.policy import _sounds_like_moving_something
+
+    extraction = E(
+        intent=Intent.RESCHEDULE_APPOINTMENT,
+        raw_message="can i do this thursday at 12 pm?",
+        preferred_date="this thursday",
+        preferred_time="12 pm",
+        existing_appointment_phrase="this thursday",
+        doctor="Dr. George",
+    )
+    assert _sounds_like_moving_something(extraction) is False
+
+    decision = decide(extraction, Context(now=now, db=db, known_slots={"doctor": "Dr. George"}))
+    assert "which_appointment" not in decision.missing
+    assert decision.action in (
+        Action.ASK_FOR_MORE_INFORMATION,
+        Action.CHECK_AVAILABILITY,
+    )
+
+
+def test_decline_then_new_time_does_not_list_existing_appointments(now, db):
+    """
+    Full thread from the screenshot: ask for George, decline the list, ask for Thursday
+    noon. Must never answer with "You have these coming up."
+    """
+    from clinikit.agent.session import Session
+    from clinikit.agent.schema import Extraction as Ex
+
+    session = Session(backend="rules", clock=lambda: now)
+
+    # Drive the reader with hand-built extractions so we replay the exact LLM mistake.
+    class Scripted:
+        name = "scripted"
+        def __init__(self, answers):
+            self._answers = list(answers)
+            self.last_used = None
+        def extract(self, message, history=()):
+            return self._answers.pop(0)
+
+    session.extractor = Scripted([
+        Ex(intent=Intent.ASK_DOCTOR_AVAILABILITY, confidence=0.9,
+           doctor="Dr. George", preferred_date="tomorrow", preferred_time="afternoon",
+           raw_message="Can I see Dr. George tomorrow afternoon?", backend="scripted"),
+        Ex(intent=Intent.DENY, confidence=0.9,
+           raw_message="hmm, not really", backend="scripted"),
+        Ex(intent=Intent.RESCHEDULE_APPOINTMENT, confidence=0.85,
+           doctor=None, preferred_date="this thursday", preferred_time="12 pm",
+           existing_appointment_phrase="this thursday",
+           raw_message="can i do this thursday at 12 pm?", backend="scripted"),
+    ])
+
+    session.handle("Can I see Dr. George tomorrow afternoon?")
+    session.handle("hmm, not really")
+    assert session.offered_options == ()
+
+    turn = session.handle("can i do this thursday at 12 pm?")
+    reply = turn.reply.lower()
+    assert "which one did you mean" not in reply
+    assert "you have these coming up" not in reply
+    assert "which_appointment" not in turn.decision.missing
+
+
 @pytest.mark.parametrize("message", ["thanks", "thank you", "bye", "ok", "alright"])
 def test_a_courtesy_is_not_a_request(message, now, db):
     """
