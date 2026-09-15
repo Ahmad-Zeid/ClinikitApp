@@ -84,6 +84,15 @@ CONFIDENCE_THRESHOLD = 0.55
 # After this many clarifying questions in a row, stop asking and fetch a human.
 MAX_CLARIFICATIONS = 3
 
+# Intents where "show me what's free" is a sensible thing to do. Used by the hedge rule:
+# a hedged booking request gets a look-up, a hedged "hmm, hang on" does not.
+_APPOINTMENT_INTENTS = frozenset({
+    Intent.BOOK_APPOINTMENT,
+    Intent.RESCHEDULE_APPOINTMENT,
+    Intent.CANCEL_APPOINTMENT,
+    Intent.ASK_DOCTOR_AVAILABILITY,
+})
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Inputs and outputs
@@ -344,6 +353,30 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     # A confirmation is only meaningful against an offer we ourselves made.
     if extraction.intent == Intent.CONFIRM:
         if ctx.pending_offer is not None:
+            # A "yes" that also says "not yet" cannot write. ------------- G1 ----
+            #
+            # This is the one place in the whole policy layer that writes, and the hedge
+            # rule below it never got the chance to look at this message. So a patient
+            # who wrote "yes, but don't book anything yet" got a booking, while G1 claims
+            # in writing that a message saying "not yet" can only ever look things up.
+            #
+            # The test meant to catch this ran every intent through with a hedge set --
+            # but with no offer waiting, so the confirm branch fell straight through to
+            # "nothing to confirm" and the one dangerous combination was never reached.
+            # A guarantee is only as good as the least convenient case its test covers.
+            #
+            # Contradictory messages get a question, not a guess about which half of the
+            # sentence the patient meant.
+            if extraction.is_hedged:
+                return Decision(
+                    action=Action.ASK_FOR_MORE_INFORMATION,
+                    reason=("They said yes and also said not yet, so nothing was done. "
+                            "Asking which they meant."),
+                    guarantee="G1",
+                    problem="hedged_confirmation",
+                    offer=ctx.pending_offer,
+                    missing=("confirmation",),
+                )
             return _execute_offer(ctx.pending_offer, ctx)
 
         # Not an offer, but we did ask them a yes/no question. Answer it.
@@ -472,7 +505,18 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     # intent won, or how confident the model was: if the message contains an explicit
     # "not yet", nothing may be written. This is the rule that handles the brief's
     # ambiguous example, and it holds regardless of what the model decided the intent was.
-    if extraction.is_hedged:
+    # The lookup only makes sense if they were talking about an appointment at all.
+    #
+    # It used to run on ANY hedged message, which produced nonsense: "wait, but maybe you
+    # can answer" was read as hedged, and the clinic replied "I will not book anything
+    # yet" followed by a list of Thursday slots, to somebody who had not mentioned
+    # booking anything. Confident, safe, and completely beside the point.
+    #
+    # Narrowing the LOOKUP does not narrow the GUARANTEE. Nothing below this line writes:
+    # the single write in this file is the confirmation branch above, which now checks
+    # the hedge itself. A hedged message that falls through here gets handled as whatever
+    # it actually was, and still cannot book anything.
+    if extraction.is_hedged and extraction.intent in _APPOINTMENT_INTENTS:
         return _remember_single_slot(Decision(
             action=Action.CHECK_AVAILABILITY,
             reason=(
@@ -523,22 +567,51 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
         )
 
     # --- 11. Anything else ---------------------------------------------------
-    # This used to reply "could you tell me more about what you need" -- a dead end for
-    # anyone asking about insurance, prescriptions or parking.
+    # OFFER THE HUMAN ONCE. DO NOT JUST LEAVE.
     #
-    # The reader now always writes a plain-language summary of what was wanted, whatever
-    # it was, so we can hand the conversation to a person WITH that context instead of
-    # asking the patient to rephrase something we were never going to understand.
-    if extraction.request_summary:
+    # This branch has now been wrong in both directions, which is why it is written out
+    # at length.
+    #
+    # It first replied "could you tell me more about what you need" to everything -- a
+    # dead end for anyone asking about insurance or prescriptions, because no amount of
+    # rephrasing was going to make those answerable.
+    #
+    # So it was changed to hand straight to a person, carrying the reader's plain-language
+    # summary as context. That looked right and was worse. The reader is told to fill in
+    # that summary on EVERY message, so `if extraction.request_summary` is true every
+    # time -- the handoff was unconditional and the branch below it was unreachable.
+    #
+    # The result was a conversation that gave up instantly:
+    #
+    #     patient: hi, i would like to inquire about something
+    #     clinic:  I am passing your question on to a colleague.
+    #     patient: wait, but maybe you can answer
+    #     clinic:  I am passing you to a colleague.
+    #     patient: why
+    #     clinic:  I am passing your question on to a colleague.
+    #
+    # Nobody had asked for a person. The patient had not even said what they wanted yet,
+    # so there was nothing to hand over -- a colleague would have received "this patient
+    # would like to ask something", which is not a message worth waking anyone for.
+    #
+    # So: say what we can actually do, and offer the person rather than silently
+    # becoming them. If the next message is still outside what we cover, escalate for
+    # real -- ctx.clarifications_so_far counts how many times we have already asked.
+    if ctx.clarifications_so_far >= 1:
         return Decision(
             action=Action.HANDOFF_TO_HUMAN,
-            reason=f"Outside what this assistant covers: {extraction.request_summary}.",
+            reason=(f"Still outside what this assistant covers after asking: "
+                    f"{extraction.request_summary or 'unclear request'}."),
             topic=extraction.request_summary,
         )
 
     return Decision(
         action=Action.ASK_FOR_MORE_INFORMATION,
-        reason="The message was not a recognisable clinic request.",
+        reason=(f"Not a recognisable clinic request: "
+                f"{extraction.request_summary or 'unclear'}. Saying what we can do "
+                f"and offering a person."),
+        problem="outside_scope",
+        topic=extraction.request_summary,
         missing=("what_they_need",),
     )
 

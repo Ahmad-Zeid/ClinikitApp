@@ -548,3 +548,79 @@ def test_a_word_that_is_not_a_time_of_day_is_not_forced_into_one():
 
     assert resolve_time("4pm")[:2] == (clock(16, 0), clock(16, 30))
     assert resolve_time("")[:2] == (None, None)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Don't fetch a human before you've even asked what they want
+#
+# The real conversation this comes from:
+#
+#   patient: hi, i would like to inquire about something
+#   clinic:  I am passing your question on to a colleague.
+#   patient: wait, but maybe you can answer
+#   clinic:  I am passing you to a colleague.
+#   patient: why
+#   clinic:  I am passing your question on to a colleague.
+#
+# Nobody had asked for a person, and the patient had not yet said what they wanted, so
+# there was nothing to hand over. The cause: the handoff was gated on request_summary
+# being set, and the reader is instructed to set it on EVERY message.
+# ══════════════════════════════════════════════════════════════════════════════
+
+def test_an_unclear_opener_is_answered_not_escalated(now, db):
+    from clinikit.agent.policy import Action
+
+    opener = E(intent=Intent.OTHER, confidence=0.95,
+               request_summary="a general inquiry")
+    decision = decide(opener, Context(now=now, db=db))
+
+    assert decision.action == Action.ASK_FOR_MORE_INFORMATION, (
+        "nothing has been asked yet, so there is nothing to hand to a colleague"
+    )
+
+
+def test_it_escalates_once_it_has_actually_asked(now, db):
+    from clinikit.agent.policy import Action
+
+    still_unclear = E(intent=Intent.OTHER, confidence=0.95,
+                      request_summary="a general inquiry")
+    decision = decide(still_unclear,
+                      Context(now=now, db=db, clarifications_so_far=1))
+
+    assert decision.action == Action.HANDOFF_TO_HUMAN, (
+        "we asked and it is still outside what we cover, so a person should take over"
+    )
+
+
+def test_the_first_reply_says_what_the_assistant_can_do(now, db):
+    """Telling them what you handle is more use than telling them you don't."""
+    from clinikit.agent.tools import execute
+
+    extraction = E(intent=Intent.OTHER, confidence=0.95,
+                   request_summary="a general inquiry")
+    ctx = Context(now=now, db=db)
+    decision = decide(extraction, ctx)
+    reply = respond(decision, execute(decision, ctx), ctx, extraction).as_text().lower()
+
+    assert "appointment" in reply
+    assert "passing you to" not in reply, "this is an offer, not a handoff"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# A summary the model narrated instead of naming
+# ══════════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.parametrize("summary, expected", [
+    ("their insurance coverage", "their insurance coverage"),
+    ("a repeat prescription", "a repeat prescription"),
+    ("The patient wants to know about billing", "billing"),
+    # A sentence, not a phrase. "your question about user is asking if the assistant
+    # can answer a question" actually reached a patient.
+    ("user is asking if the assistant can answer a question", ""),
+    ("greeting", ""),
+    (None, ""),
+])
+def test_a_topic_is_only_used_when_it_reads_as_a_phrase(summary, expected):
+    from clinikit.agent.responder import _as_topic
+
+    assert _as_topic(summary) == expected

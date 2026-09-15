@@ -9,6 +9,7 @@ A guarantee written in a README is a promise. A guarantee with a test is a fact.
 
 import itertools
 import json
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
@@ -44,8 +45,26 @@ def test_G1_hedged_never_writes_whatever_the_intent(intent, now, db):
     """
     extraction = Extraction(intent=intent, confidence=0.99, doctor="Dr. George",
                             preferred_date="tomorrow", preferred_time="11", is_hedged=True)
-    ctx = Context(now=now, db=db)
-    assert decide(extraction, ctx).action not in WRITE_ACTIONS
+
+    # WITH AN OFFER ALREADY WAITING.
+    #
+    # This used to pass an empty Context, and passing it proved less than it looked.
+    # With nothing pending, a hedged "yes" fell through the confirmation branch to
+    # "there is nothing to confirm" -- so the single dangerous combination in the whole
+    # policy layer, a hedged confirmation against a live offer, was never once exercised.
+    # It wrote, and this test watched it happen and reported success.
+    offer = Offer(
+        kind="create",
+        summary="Dr. George Haddad tomorrow at 11:00",
+        doctor_id="d_george",
+        start=now.replace(hour=11, minute=0) + timedelta(days=1),
+    )
+    for context in (Context(now=now, db=db),
+                    Context(now=now, db=db, pending_offer=offer)):
+        decision = decide(extraction, context)
+        assert decision.action not in WRITE_ACTIONS, (
+            f"{intent.value} + is_hedged wrote {decision.action}"
+        )
 
 
 def test_G1_hedge_beats_maximum_confidence(now, db):

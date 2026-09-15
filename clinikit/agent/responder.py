@@ -34,6 +34,7 @@ THE OPTIONS ARE NUMBERED ON PURPOSE
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -138,17 +139,65 @@ def _acknowledge(extraction) -> str:
 # The reply
 # ──────────────────────────────────────────────────────────────────────────────
 
+_TOPIC_PREAMBLE = re.compile(
+    r"^(?:the\s+)?(?:user|patient|they|he|she|caller)\s+(?:is\s+|are\s+|was\s+)?"
+    r"(?:asking|enquiring|inquiring|wondering|wants?|would\s+like|requests?)"
+    r"(?:\s+(?:about|for|if|whether|to\s+know))?\s*",
+    re.I,
+)
+
+
+_CLAUSE_VERB = re.compile(
+    r"\b(?:is|are|was|were|can|could|will|would|should|does|do|did|has|have|had|am)\b",
+    re.I,
+)
+
+
+def _as_topic(topic: str | None) -> str:
+    """
+    Make a summary safe to drop into "your question about ___".
+
+    The reader is asked for a short noun phrase, and mostly gives one. Sometimes it
+    narrates instead, and the sentence it writes gets pasted straight into a reply to a
+    patient:
+
+        "I'm passing on your question about user is asking if the assistant can
+         answer a question."
+
+    Patient-facing text should not depend on a model following a formatting instruction.
+    So the usual narration openers are trimmed, and anything still shaped like a sentence
+    rather than a phrase is dropped entirely -- the reply then uses the plain wording,
+    which says less but reads like a person wrote it.
+    """
+    if not topic:
+        return ""
+    cleaned = _TOPIC_PREAMBLE.sub("", topic.strip()).strip(" .?!")
+    cleaned = re.sub(r"^(?:about|for|regarding)\s+", "", cleaned, flags=re.I).strip()
+    if not cleaned or cleaned.lower() in ("greeting", "courtesy"):
+        return ""
+
+    # A topic has to be a noun phrase, because it is pasted after the word "about".
+    # Anything still carrying a verb is a sentence, and "your question about the
+    # assistant can answer a question" is not English. Drop it and say less.
+    if _CLAUSE_VERB.search(cleaned):
+        return ""
+    if len(cleaned.split()) > 8:
+        return ""
+    return cleaned[0].lower() + cleaned[1:]
+
+
 def respond(decision: Decision, result: ToolResult, ctx, extraction=None) -> Reply:
     """Build the reply for one turn."""
 
     # --- a person takes over -------------------------------------------------
     if decision.action == Action.HANDOFF_TO_HUMAN:
-        if decision.topic and decision.topic not in ("greeting",):
+        topic = _as_topic(decision.topic)
+        if topic:
             return Reply(
                 opening=f"That one is better answered by our team — I'm passing on your "
-                        f"question about {decision.topic}.",
+                        f"question about {topic}.",
                 closing="Someone will come back to you shortly.",
-                goal=(f"Say their question about {decision.topic} is going to a colleague "
+                goal=(f"Say their question about {topic} is going to a colleague "
                       "who will come back to them. Do not attempt to answer it."),
             )
         return Reply(
@@ -399,6 +448,24 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
     #
     # The lesson is general. An empty brief is not a safe brief; it is an invitation to
     # invent. Every branch that reaches the model needs something true to say.
+    # --- a request outside what we cover, first time ------------------------
+    # Say what we CAN do before offering a person. The patient may not know what this
+    # assistant is for, and "I'll pass you on" as a first answer teaches them nothing
+    # and wastes a colleague's time on a request nobody has described yet.
+    if "what_they_need" in missing and decision.problem == "outside_scope":
+        about = f" about {decision.topic}" if decision.topic else ""
+        return Reply(
+            opening=("I can book, move and cancel appointments, and answer questions "
+                     "about our opening hours and doctors."),
+            closing=("If you need something else, tell me a bit more and I'll pass you "
+                     "to a colleague."),
+            goal=(f"They asked{about}, which is outside what you handle. Say briefly "
+                  "what you CAN help with — appointments, opening hours, our doctors — "
+                  "and offer to pass them to a colleague if it is something else. Do "
+                  "NOT say you are passing them on now; you are offering. Do not "
+                  "apologise more than once."),
+        )
+
     if "what_they_need" in missing:
         return Reply(
             opening="Understood — nothing has been changed.",
