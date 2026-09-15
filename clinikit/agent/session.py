@@ -144,6 +144,7 @@ class Session:
         # --- everything below here is the memory ---
         self.known_slots: dict[str, str] = {}
         self.pending_offer: Optional[Offer] = None
+        self.last_touched_appointment_id: Optional[str] = None
         self.clarifications: int = 0
         self.history: list[str] = []
         self.turns: list[Turn] = []
@@ -157,7 +158,7 @@ class Session:
         ctx = self._snapshot()
 
         try:
-            extraction = self.extractor.extract(message, self.history)
+            extraction = self.extractor.extract(message, self._reader_history())
         except ExtractorUnavailable as exc:
             # Nobody could read the message. Do not guess -- hand over to a person.
             turn = self._outage_turn(message, str(exc), time.monotonic() - started)
@@ -198,6 +199,22 @@ class Session:
         return turn
 
     # ---- memory in ------------------------------------------------------------
+
+    def _reader_history(self) -> list[str]:
+        """
+        What the reader is told about the conversation so far.
+
+        If an offer is waiting for a yes or no, that is stated outright rather than left
+        for the model to infer from our last reply. Without it, "yes please book it" was
+        read as a brand-new booking request, and the patient had to start again.
+        """
+        lines = list(self.history[-4:])
+        if self.pending_offer is not None:
+            lines.append(
+                f"clinic is waiting for a YES or NO on this exact offer: "
+                f"{self.pending_offer.summary}"
+            )
+        return lines
 
     def _outage_turn(self, message: str, problem: str, seconds: float) -> Turn:
         """
@@ -243,6 +260,7 @@ class Session:
             known_slots=dict(self.known_slots),
             pending_offer=self.pending_offer,
             clarifications_so_far=self.clarifications,
+            last_touched_appointment_id=self.last_touched_appointment_id,
         )
 
     # ---- memory out -----------------------------------------------------------
@@ -254,7 +272,13 @@ class Session:
         If the agent ever remembers something wrong, the bug is in here.
         """
         self.turns.append(turn)
-        self.history.append(turn.message)
+
+        # Record BOTH sides. The reader used to see only the patient's own messages, so
+        # it had no idea a question had just been asked -- and read "yes please book it"
+        # as a brand-new booking request rather than an answer. A conversation the model
+        # can only half-see is a conversation it will half-understand.
+        self.history.append(f"patient: {turn.message}")
+        self.history.append(f"clinic: {' '.join(turn.reply.split())[:200]}")
 
         # Forget earlier details once a request is over.
         #
@@ -298,6 +322,8 @@ class Session:
         # A finished booking ends the thread: clear the offer and the gathered details so
         # the next request starts clean.
         if turn.changed_the_book:
+            if turn.result.appointment is not None:
+                self.last_touched_appointment_id = turn.result.appointment.id
             self.pending_offer = None
             self.known_slots.clear()
             return
@@ -320,6 +346,7 @@ class Session:
         self.known_slots.clear()
         self.pending_offer = None
         self.clarifications = 0
+        self.last_touched_appointment_id = None
         self.history.clear()
         self.turns.clear()
 

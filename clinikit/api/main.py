@@ -33,7 +33,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from ..agent.backends import available_backends
+from ..agent.backends import available_backends, patient_facing_backends
 from ..agent.cli import SCENARIOS
 from ..agent.clinic import DOCTORS, describe_opening_hours
 from ..agent.session import Session
@@ -54,10 +54,23 @@ app.add_middleware(
 
 _SESSIONS: dict[str, Session] = {}
 
-DEFAULT_BACKEND = os.environ.get(
-    "CLINIKIT_BACKEND",
-    "gemini" if "gemini" in available_backends() else "rules",
-)
+def _default_backend() -> str:
+    """
+    Which reader the web page uses unless told otherwise.
+
+    This used to name a provider directly, which broke badly: it still said "gemini" long
+    after Groq became the main one, so when Gemini ran out of quota every visitor was
+    handed to a human. "auto" asks the chain, so adding or removing a provider needs no
+    change here.
+    """
+    chosen = os.environ.get("CLINIKIT_BACKEND")
+    if chosen:
+        return chosen
+    usable = patient_facing_backends()
+    return usable[0] if usable else "rules"
+
+
+DEFAULT_BACKEND = _default_backend()
 NATURAL_REPLIES = os.environ.get("CLINIKIT_NATURAL_REPLIES", "1") != "0"
 
 
@@ -83,7 +96,9 @@ class ChatResponse(BaseModel):
     was_write: bool
     changed_the_book: bool
     detail: str
-    slots: list[str]
+    slots: list[dict]
+    """Free times to offer. Each is {when, label, doctor} -- the doctor is included
+    because a bare list of times tells the patient nothing about who they would see."""
     reply_source: str
     reply_rejected_because: Optional[str]
     degraded_reason: Optional[str]
@@ -101,7 +116,7 @@ def _get_session(session_id: Optional[str], backend: Optional[str]) -> tuple[str
     new_id = session_id or uuid.uuid4().hex[:12]
     wanted = backend or DEFAULT_BACKEND
     if wanted not in available_backends():
-        wanted = "rules"
+        wanted = DEFAULT_BACKEND
     _SESSIONS[new_id] = Session(backend=wanted, natural_replies=NATURAL_REPLIES)
     return new_id, _SESSIONS[new_id]
 
@@ -129,6 +144,23 @@ def chat(request: ChatRequest) -> ChatResponse:
     return ChatResponse(
         session_id=session_id, appointments=_appointments(session), **payload
     )
+
+
+@app.post("/api/start")
+def start(backend: Optional[str] = None) -> dict:
+    """
+    Open a conversation without saying anything.
+
+    The web page used to send a fake "hello" just to get a session id, which meant every
+    visitor waited two seconds and burned a request before the page was even usable. This
+    creates the session and returns the appointment book, with no model call at all.
+    """
+    session_id, session = _get_session(None, backend)
+    return {
+        "session_id": session_id,
+        "appointments": _appointments(session),
+        "greeting": "Hello — how can the clinic help today?",
+    }
 
 
 @app.post("/api/reset")

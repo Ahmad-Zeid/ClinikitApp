@@ -17,6 +17,7 @@ WHAT IT DOES NOT DO
 
 from __future__ import annotations
 
+import time
 from collections.abc import Sequence
 
 from ..schema import Extraction
@@ -34,6 +35,13 @@ class ChainExtractor(Extractor):
         self.last_used: str | None = None
         self.skipped: list[str] = []
 
+        # When a provider fails, stop asking it for a while.
+        #
+        # Without this, a provider that has run out of its daily quota is tried again on
+        # every single message -- each one waiting for a connection, a timeout and a retry
+        # before moving on. One dead provider made every reply slow.
+        self._resting_until: dict[str, float] = {}
+
     @property
     def members(self) -> list[str]:
         return [e.name for e in self._extractors]
@@ -41,13 +49,25 @@ class ChainExtractor(Extractor):
     def extract(self, message: str, history: Sequence[str] = ()) -> Extraction:
         self.skipped = []
         problems: list[str] = []
+        now = time.monotonic()
 
         for extractor in self._extractors:
+            resting = self._resting_until.get(extractor.name, 0.0)
+            if resting > now:
+                self.skipped.append(extractor.name)
+                problems.append(f"{extractor.name}: resting for "
+                                f"{int(resting - now)}s after an earlier failure")
+                continue
             try:
                 result = extractor.extract(message, history)
                 self.last_used = extractor.name
+                self._resting_until.pop(extractor.name, None)
                 return result
             except ExtractorUnavailable as exc:
+                # Out of quota for the day rests much longer than a momentary blip.
+                out_of_quota = any(s in str(exc).lower()
+                                   for s in ("429", "resource_exhausted", "quota"))
+                self._resting_until[extractor.name] = now + (600.0 if out_of_quota else 60.0)
                 self.skipped.append(extractor.name)
                 problems.append(f"{extractor.name}: {str(exc)[:90]}")
                 continue

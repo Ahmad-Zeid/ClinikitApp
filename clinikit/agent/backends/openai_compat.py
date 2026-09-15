@@ -27,6 +27,7 @@ import hashlib
 import json
 import os
 import time
+from collections import deque
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -113,8 +114,12 @@ RULES
    book_appointment. ask_opening_hours is ONLY for what hours the clinic operates.
 8. A symptom with no request ("my back hurts") is book_appointment, modest confidence,
    symptom in reason_for_visit. A bare greeting is "other", low confidence.
-9. confirm/deny are ONLY short replies to a question we just asked ("yes", "go ahead",
-   "no thanks"). "ok thanks" is "other". A yes carrying a new request is NOT a confirm.
+9. confirm/deny: if the previous clinic message offered a specific appointment and this
+   message accepts it, the intent is "confirm" - even if it also says "book it"
+   ("yes", "go ahead", "yes please book it", "sounds good"). If it declines, "deny".
+   "ok thanks" with nothing pending is "other".
+10. NEVER copy a date, time or doctor from the examples above. Only record what appears
+   in the patient's own message. If the message names no date, preferred_date is null.
 
 Return only JSON."""
 
@@ -166,8 +171,8 @@ class OpenAICompatibleExtractor(Extractor):
         self._models = tuple(models or self.provider.models)
         self._use_cache = use_cache
         self._budget = budget_seconds
-        self._min_interval = 60.0 / self.provider.requests_per_minute
-        self._last_call_at = 0.0
+        # Times of recent calls, used to stay under the per-minute limit.
+        self._recent_calls: deque[float] = deque()
 
         self.last_model_used: str | None = None
         self.last_latency: float | None = None
@@ -246,8 +251,12 @@ class OpenAICompatibleExtractor(Extractor):
         budget. With a tight limit they used the whole allowance thinking and returned an
         empty answer -- which looked like the model being broken when it was us starving it.
         """
+        # Rewording an approved sentence is far easier than reading a messy message, so
+        # the smaller model is used first here. It is roughly twice as fast.
+        models = sorted(self._models, key=lambda m: 0 if "20b" in m else 1)
+
         last_error: Exception | None = None
-        for model in self._models:
+        for model in models:
             for extra in ({"reasoning_effort": "low"}, {}):
                 try:
                     self._throttle()
@@ -303,17 +312,66 @@ class OpenAICompatibleExtractor(Extractor):
             parts.append({"role": "user", "content": example_message})
             parts.append({"role": "assistant", "content": json.dumps(example_json)})
         if history:
-            recent = " | ".join(list(history)[-4:])
-            parts.append({"role": "system",
-                          "content": f"Earlier messages, for context only: {recent}"})
+            lines = list(history)[-4:]
+
+            # An offer waiting for an answer is pulled out and stated immediately before
+            # the patient's message, not left buried in a long system prompt.
+            #
+            # It was in the system prompt first, and the model ignored it: after being
+            # offered Tuesday 11:00, "actually yes please book it" still came back as a
+            # brand new booking request. Instructions placed right next to the thing they
+            # apply to get followed; the same words further away do not.
+            pending = [l for l in lines if l.startswith("clinic is waiting")]
+            context = [l for l in lines if not l.startswith("clinic is waiting")]
+
+            if context:
+                parts.append({
+                    "role": "system",
+                    "content": ("Conversation so far (context only - extract ONLY from "
+                                f"the new message):\n" + "\n".join(context)),
+                })
+            if pending:
+                parts.append({
+                    "role": "system",
+                    "content": (
+                        f"{pending[-1]}\n\n"
+                        "The next message is the patient's ANSWER to that offer. If it "
+                        "accepts in any form - \"yes\", \"ok\", \"sure\", \"go ahead\", "
+                        "\"book it\", \"yes please book it\", \"that works\" - then intent "
+                        "MUST be \"confirm\", even if it contains the word book. If it "
+                        "refuses, intent MUST be \"deny\". Only classify it as something "
+                        "else if it clearly asks for something different from the offer."
+                    ),
+                })
         parts.append({"role": "user", "content": message})
         return parts
 
     def _throttle(self) -> None:
-        elapsed = time.monotonic() - self._last_call_at
-        if self._last_call_at and elapsed < self._min_interval:
-            time.sleep(self._min_interval - elapsed)
-        self._last_call_at = time.monotonic()
+        """
+        Wait only when we are actually about to exceed the per-minute limit.
+
+        This used to sleep a fixed 60/limit seconds before every call -- 2 seconds each
+        for Groq -- whether or not we had made a single request. Two calls per reply meant
+        4 seconds of waiting for nothing. Now we keep the times of recent calls and sleep
+        only when the last minute is genuinely full.
+        """
+        limit = self.provider.requests_per_minute
+        now = time.monotonic()
+
+        # Drop anything older than a minute; it no longer counts against us.
+        while self._recent_calls and now - self._recent_calls[0] > 60.0:
+            self._recent_calls.popleft()
+
+        if len(self._recent_calls) >= limit:
+            # Wait just long enough for the oldest call to fall out of the window.
+            sleep_for = 60.0 - (now - self._recent_calls[0]) + 0.05
+            if sleep_for > 0:
+                time.sleep(sleep_for)
+            now = time.monotonic()
+            while self._recent_calls and now - self._recent_calls[0] > 60.0:
+                self._recent_calls.popleft()
+
+        self._recent_calls.append(now)
 
     # ---- cache --------------------------------------------------------------
 

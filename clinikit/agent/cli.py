@@ -22,7 +22,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from .backends import available_backends
+from .backends import available_backends, patient_facing_backends
 from .clinic import TIMEZONE
 from .policy import WRITE_ACTIONS
 from .session import Session, Turn
@@ -110,7 +110,12 @@ def _show_book(session: Session) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Chat with the CliniKit assistant.")
-    parser.add_argument("--backend", default="rules", choices=["rules", "gemini"])
+    parser.add_argument("--backend", default="auto",
+                        choices=["auto", "groq", "gemini", "openrouter", "rules"],
+                        help="auto = try Groq, then Gemini. rules = keyword matcher "
+                             "(evaluation baseline only, gives poor answers)")
+    parser.add_argument("--plain", action="store_true",
+                        help="use the hand-written replies instead of letting the model word them")
     parser.add_argument("--scenario", choices=sorted(SCENARIOS))
     parser.add_argument("--quiet", action="store_true", help="replies only")
     parser.add_argument("--freeze", metavar="ISO",
@@ -127,11 +132,12 @@ def main(argv: list[str] | None = None) -> int:
         pinned = datetime.fromisoformat(args.freeze).replace(tzinfo=TIMEZONE)
         clock = lambda: pinned  # noqa: E731
 
-    session = Session(backend=args.backend, clock=clock)
+    session = Session(backend=args.backend, clock=clock, natural_replies=not args.plain)
 
     console.print(Panel(
         "[bold]CliniKit assistant[/bold]\n"
-        f"reader: [cyan]{args.backend}[/cyan]   "
+        f"reader: [cyan]{args.backend}[/cyan]"
+        + ("  [dim](replies worded by the model)[/dim]" if not args.plain else "") + "   "
         f"commands: [dim]/book  /log  /reset  /quit[/dim]",
         border_style="dim",
     ))

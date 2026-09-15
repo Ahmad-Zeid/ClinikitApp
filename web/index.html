@@ -349,13 +349,15 @@ async function boot() {
       b.onclick = async () => { for (const m of sc.messages) { await send(m); } };
       box.append(b);
     }
-    const c = await (await fetch(API + '/api/chat', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({message: 'hello', backend: $('backend').value}),
+    // Open a session without sending anything through the model. Sending a fake
+    // "hello" used to cost every visitor a two-second wait before the page was usable.
+    const c = await (await fetch(API + '/api/start?backend=' + encodeURIComponent($('backend').value), {
+      method: 'POST',
     })).json();
-    sessionId = c.session_id; renderBook(c.appointments);
+    sessionId = c.session_id;
+    renderBook(c.appointments);
     $('stream').innerHTML = '';
-    bubble('Hello — how can the clinic help today?', 'bot');
+    bubble(c.greeting, 'bot');
   } catch (err) {
     $('status').innerHTML = '<span class="dot off"></span>server not reachable';
     bubble('Start the server with:  uvicorn clinikit.api.main:app', 'sys');

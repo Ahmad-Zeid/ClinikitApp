@@ -45,6 +45,11 @@ _COMPLETION_CLAIMS = [
 ]
 
 # Promises about things this system cannot do at all.
+# Arabic script and common Arabizi markers. The clinic is English-only for now, and a
+# reply in the wrong language is a bad reply however accurate it is.
+_NON_ENGLISH_MARKERS = ["3a", "7a", "2a", "5a", "9a", "badd", "shou", "kif", "bukra",
+                        "ma3", "3ando", "fadi", "el "]
+
 _IMPOSSIBLE_CLAIMS = [
     "sent you a reminder", "sent a reminder", "sent you a confirmation",
     "email", "e-mail", "text message", "sms", "call you back", "ring you",
@@ -109,7 +114,16 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
             if claim in low:
                 return f"claims completion ({claim!r}) but nothing was written"
 
-    # 2. Does it promise something this system cannot do?
+    # 2. Is it actually in English?
+    if any(ch for ch in candidate if "\u0600" <= ch <= "\u06ff"):
+        return "reply contains Arabic script"
+    words = set(low.replace(",", " ").replace(".", " ").split())
+    hits = [m for m in _NON_ENGLISH_MARKERS if m.strip() in words or
+            any(w.startswith(m) for w in words if len(m) > 2)]
+    if len(hits) >= 2:
+        return f"reply looks like Arabizi rather than English ({', '.join(hits[:3])})"
+
+    # 3. Does it promise something this system cannot do?
     for claim in _IMPOSSIBLE_CLAIMS:
         if claim in low:
             return f"promises something the system cannot do ({claim!r})"
@@ -155,9 +169,10 @@ HARD RULES
 - Never promise reminders, emails, texts, calls, calendar invites or payments. The clinic
   cannot do these.
 - Keep it to two or three short sentences.
-- If the patient wrote in Arabizi (Lebanese Arabic in Latin letters), reply the same way.
-  Otherwise reply in English.
+- ALWAYS reply in English. Never reply in Arabic or in Arabizi (Arabic written in Latin
+  letters), even if the patient wrote that way.
 - Do not add a greeting unless the approved reply has one.
+- Do not use emoji or exclamation marks.
 
 Return only the reply text. No quotes, no explanation."""
 
@@ -177,6 +192,14 @@ class Phraser:
     def rephrase(self, facts: ReplyFacts, patient_message: str = "") -> PhrasedReply:
         if not self.available:
             return PhrasedReply(facts.template, "template", "no language model available")
+
+        # Replies containing a list are left exactly as written.
+        #
+        # A list of free times or a list of doctors is already clear, and asking a model
+        # to reword it produces a run-on sentence with the bullets flattened into commas.
+        # Rewording helps a plain sentence; it only damages a list.
+        if facts.template.count("\n") >= 2 or "•" in facts.template:
+            return PhrasedReply(facts.template, "template", "contains a list — left as written")
 
         prompt = self._prompt(facts, patient_message)
         try:

@@ -21,9 +21,21 @@ __all__ = [
     "available_backends", "patient_facing_backends",
 ]
 
-# Tried in this order by "auto". Groq first: 14,400 requests a day against Gemini's 1,500,
-# double the per-minute rate, and it runs on hardware built for speed.
-CHAIN_ORDER = ("groq", "gemini", "openrouter")
+import os
+
+# Which providers "auto" tries, in order.
+#
+# Groq only by default. Gemini's free tier is 1,500 requests a day and a single
+# evaluation run can use most of it -- after which every request fails with 429 and the
+# assistant has nothing to say. Keeping a provider in the queue that is usually out of
+# quota costs a wasted call on every single message.
+#
+# The others are one environment variable away, which is the point of the whole
+# multi-provider design:
+#     CLINIKIT_PROVIDERS=groq,gemini,openrouter
+CHAIN_ORDER = tuple(
+    p.strip() for p in os.environ.get("CLINIKIT_PROVIDERS", "groq").split(",") if p.strip()
+)
 
 
 def get_extractor(name: str = "auto") -> Extractor:

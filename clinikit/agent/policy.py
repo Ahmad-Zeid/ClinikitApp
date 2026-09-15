@@ -130,6 +130,16 @@ class Context:
     pending_offer: Optional[Offer] = None
     clarifications_so_far: int = 0
 
+    last_touched_appointment_id: Optional[str] = None
+    """
+    The appointment we booked, moved or cancelled on the previous turn.
+
+    Needed so that "cancel that" straight after booking means the thing we just booked.
+    Without it, the patient books an appointment, says "actually cancel that", and gets
+    a list of all their appointments asking which one -- which reads as the assistant
+    not having been paying attention.
+    """
+
 
 @dataclass(frozen=True)
 class Decision:
@@ -598,6 +608,15 @@ def _identify_appointment(
 
     phrase = (extraction.existing_appointment_phrase or "").lower()
     named_doctor = (extraction.doctor or "").lower()
+
+    # "that", "it", "this one" straight after we acted on something means that thing.
+    vague = phrase.strip() in ("", "that", "it", "this", "this one", "that one",
+                               "the appointment", "my appointment")
+    if vague and not named_doctor and ctx.last_touched_appointment_id:
+        just_done = next((a for a in existing
+                          if a.id == ctx.last_touched_appointment_id), None)
+        if just_done is not None:
+            return just_done, None
 
     matches = existing
     if phrase or named_doctor:
