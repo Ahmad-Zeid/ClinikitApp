@@ -7,6 +7,8 @@ Two exercises for the CliniKit AI Trainee assessment:
 
 AI tools were used while building this. Every decision below is one I can explain in an interview.
 
+**Try Part 1 without installing anything: https://clinikit-app.vercel.app**
+
 ---
 
 ## Quick start
@@ -16,7 +18,7 @@ cd ClinikitApp
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # then add GROQ_API_KEY and/or GEMINI_API_KEY
+cp .env.example .env   # then add GEMINI_API_KEY (free, no card)
 ```
 
 ### Part 1 — chat assistant
@@ -35,11 +37,13 @@ Optional: `CLINIKIT_NATURAL_REPLIES=0` turns off the second AI call that only so
 ### Part 2 — no-show model
 
 ```bash
-.venv/bin/python ml/train.py
-.venv/bin/python ml/predict.py
+.venv/bin/python ml/train.py          # the experiment
+.venv/bin/python ml/ceiling_check.py  # could any other model do better? (no)
+.venv/bin/python ml/predict.py        # example predictions
 ```
 
 Notebook walkthrough: `ml/notebooks/part2_no_show.ipynb`
+Full explanation from first principles: `ml/EXPLAINED.md`
 
 ---
 
@@ -51,7 +55,7 @@ Notebook walkthrough: `ml/notebooks/part2_no_show.ipynb`
 
 ```
 patient message
-  → UNDERSTAND   (Groq / Gemini / rules → structured Extraction)
+  → UNDERSTAND   (Gemini, with Groq as backup → structured Extraction)
   → POLICY       (decide what is allowed — G1–G7)
   → ACTION       (mocked clinic tools)
   → RESPONSE     (template, optionally reworded then fact-checked)
@@ -75,7 +79,12 @@ Writes (`create` / `cancel` / `reschedule`) only happen after an explicit yes ag
 
 ### How to improve in production
 
-Persistent sessions, real EHR calendar, human review queue for handoffs, continuous eval on Lebanese / Arabizi traffic, rate-limit budgets with paid tiers, audit log shipping.
+Real EHR calendar behind the same `tools.py` method names, a human review queue for
+handoffs, continuous evaluation on real Lebanese / Arabizi traffic, paid provider tiers
+so quota is not a failure mode, and audit logs shipped somewhere durable.
+
+Conversation memory is already handled: the server stores nothing, so it scales sideways
+and survives restarts (`clinikit/agent/state.py`).
 
 ### Layout
 
@@ -83,14 +92,31 @@ Persistent sessions, real EHR calendar, human review queue for handoffs, continu
 |------|------|
 | `clinikit/agent/session.py` | One conversation; only place that writes memory |
 | `clinikit/agent/policy.py` | Pure safety / routing |
+| `clinikit/agent/temporal.py` | Turns "tomorrow afternoon" into real times |
 | `clinikit/agent/tools.py` | Mocked clinic actions |
 | `clinikit/agent/responder.py` | Hand-written replies |
 | `clinikit/agent/phrasing.py` | Optional AI wording + fact check |
-| `clinikit/agent/backends/` | Groq, Gemini, chain, rules |
+| `clinikit/agent/state.py` | Signed conversation memory, so the server keeps none |
+| `clinikit/agent/backends/` | Gemini, Groq, chain, rules |
+| `clinikit/api/main.py` | HTTP service |
 | `web/index.html` | Chat + inspector |
 | `eval/` | Hand-labelled test set + runner |
 
-Results: `eval/RESULTS.md` (rules baseline). Live LLM numbers depend on today’s free-tier quota.
+Results on 55 hand-labelled cases (`eval/RESULTS.md`):
+
+| backend | intent | hedge detection | doctor resolved | median latency | safety violations |
+|---|---|---|---|---|---|
+| `rules` (keyword baseline) | 48.0% | 98.2% | 98.2% | 0.00s | **0** |
+| `gemini` | **98.0%** | 98-100% | **100%** | 1.05s | **0** |
+
+The keyword baseline is there to answer one question: did the language model earn its
+place? 48% to 98% says yes.
+
+Two honest notes. The model is not perfectly repeatable, so a re-run moves a borderline
+case or two — hedge detection sits at 98-100% depending on the run. And **safety
+violations is not an accuracy score.** It counts times the appointment book changed on a
+message containing no confirmation. It must be zero, and it is zero by construction
+rather than by scoring well.
 
 ---
 
@@ -115,6 +141,19 @@ from final evaluation.
 
 The final hidden test result is **0.695 ROC-AUC** and **0.372 PR-AUC**. These are
 moderate results, not production-ready claims.
+
+### Why the score is moderate — and why that is the right answer
+
+`ml/ceiling_check.py` exists to answer "could a better model do better?" It cannot:
+every candidate lands between 0.67 and 0.70. More tellingly, **three of the ten columns
+score 0.702 while all ten score 0.700** — the other seven add nothing measurable.
+
+The limit is the data, not the model. Most of why someone misses an appointment — the car
+would not start, the child got sick — was never recorded, and no algorithm recovers
+information that was never collected. Published no-show models on real hospital data
+typically reach 0.70–0.75, so this is roughly where the problem sits.
+
+Full reasoning, written from first principles: `ml/EXPLAINED.md`.
 
 ### Metrics
 
@@ -141,20 +180,43 @@ Nightly job scores tomorrow’s list → “risk” badge in reception UI → ex
 
 ---
 
+## Deployment
+
+Live at **https://clinikit-app.vercel.app**.
+
+The interesting constraint: Vercel starts a short-lived worker per request and throws it
+away, so the worker answering "yes" has never seen the offer being accepted. Rather than
+add a database, the server keeps **no** memory at all — the conversation travels with the
+patient and comes back with the next message.
+
+It is signed (HMAC-SHA256), so a patient cannot forge an offer the clinic never made,
+which is what `G2` depends on. `tests/test_state_roundtrip.py` runs that exact attack.
+
+Deploying needs three environment variables: `GEMINI_API_KEY`, `CLINIKIT_STATE_SECRET`,
+and `CLINIKIT_CACHE_DIR=/tmp/clinikit` (the disk is read-only elsewhere).
+
+---
+
 ## Tests
 
 ```bash
-.venv/bin/pytest -m "not live"
+.venv/bin/pytest          # 136 tests, about a second, no network
 ```
 
 Live provider checks (uses API quota): `pytest -m live`
+Re-run the agent evaluation: `.venv/bin/python eval/run_eval.py --backends rules,gemini`
+
+The suite covers the seven safety guarantees, conversation memory, date and time
+handling, the reply fact-checker, and the things that only break once deployed
+(`tests/test_deployable.py`).
 
 ---
 
 ## Submission notes
 
 - Secrets stay in `.env` (git-ignored). `.env.example` shows the keys.
-- Free Groq / Gemini tiers run out; `auto` falls through the chain. Local usage is tracked in `.cache/daily_usage.json`.
+- Free Gemini / Groq tiers run out; `auto` falls through the chain, Gemini first. Usage is
+  tracked in `.cache/daily_usage.json` so a restart does not re-discover it the expensive way.
 - Part 1 is not “never wrong” — it is **safe by construction** on writes, with accuracy measured separately.
 - Part 2 is an honest experiment on the supplied data. Its moderate score and data
   limits are documented rather than hidden.
