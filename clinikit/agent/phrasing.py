@@ -110,6 +110,15 @@ class ReplyFacts:
     doctors: tuple[str, ...] = ()
     times: tuple[datetime, ...] = ()
     reference: str | None = None
+    situation: str = ""
+    """What just happened, in plain words. Comes from the policy layer's own reason."""
+
+    goal: str = ""
+    """What this reply needs to achieve. Comes from the responder's branch."""
+
+    needs: tuple[str, ...] = ()
+    """What we still need from the patient, if anything."""
+
     has_list: bool = False
     """True when a numbered list sits between the lead and the closing, so the model can
     be told not to repeat or summarise something it cannot see."""
@@ -232,38 +241,44 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
 SYSTEM_PROMPT = """\
 You are the receptionist at a medical clinic in Beirut, writing back to a patient.
 
-You are given an approved reply split into a LEAD (what comes before any list) and a
-CLOSING (what comes after). Rewrite both so they sound like a capable, warm human.
+You will be given the SITUATION, the GOAL for this reply, and the FACTS you may use.
+Write the reply yourself. A safe version is included -- use it as a guide to what is
+true, not as a sentence to paraphrase.
 
-A list of times or doctors may sit between them. You will not see it and must not
-reproduce it. Do not list anything yourself.
+Your reply has two parts:
+  LEAD     what comes before any list
+  CLOSING  what comes after it
+
+A numbered list of times or doctors may sit between them. You will not see it and must
+not reproduce, summarise, or count it.
 
 TONE
-- Warm but professional. A good receptionist, not a chatbot.
-- Two or three short sentences at most across the whole reply.
-- If the patient mentioned a symptom or a problem, acknowledge it briefly first.
-- Say the useful thing early. Pleasantries do not lead.
+- Warm but professional. A real receptionist, not a chatbot.
+- Two or three short sentences across the whole reply. Often one is enough.
+- If they mentioned a symptom or a problem, acknowledge it briefly first.
+- Answer what they actually asked. If they asked a yes/no question, answer it.
 - No emoji. No exclamation marks. Never "Absolutely", "I'd be delighted", "Great news".
-- Only greet them if the approved LEAD greets them.
+- Greet them only if the SITUATION says they greeted you.
 
 HARD RULES
-- Use ONLY the facts given. Never add a time, date, doctor or detail that is not there.
-- Never say something was booked, cancelled or moved unless the facts say it was.
-- Never promise reminders, emails, texts, calls, calendar invites or payments.
-- Never say anything about what a symptom might mean, how serious it is, or what the
-  patient should do about it. You are a receptionist, not a clinician.
-- Always write in English, even if the patient wrote in another language.
+- Use ONLY the facts given. Never invent a time, date, doctor or detail.
+- Never say anything was booked, moved or cancelled unless the FACTS say it was.
+- Never promise reminders, emails, texts, calls, or calendar invites.
+- Never say what a symptom might mean, how serious it is, or how urgent. You are a
+  receptionist, not a clinician. Name the department and stop.
+- Always write in English.
 
 Reply in exactly this format and nothing else:
-LEAD: <the rewritten lead, or blank>
-CLOSING: <the rewritten closing, or blank>"""
+LEAD: <your lead, or blank>
+CLOSING: <your closing, or blank>"""
+
 
 
 class Phraser:
-    """Rewrites approved replies in natural language, and checks the result."""
+    """Writes the patient-facing wording, and checks it before it is sent."""
 
     def __init__(self, extractor=None) -> None:
-        """`extractor` is a GeminiExtractor -- we reuse its client, throttle and retries."""
+        """`extractor` is any provider backend -- we reuse its client, throttle and retries."""
         self._extractor = extractor
         self.rejections: list[str] = []
 
@@ -273,11 +288,15 @@ class Phraser:
 
     def rephrase(self, reply, facts: ReplyFacts, patient_message: str = "") -> PhrasedReply:
         """
-        Reword the prose around a reply, leaving the list of facts untouched.
+        Write the prose around a reply, leaving the list of facts untouched.
+
+        The model is given the situation and the goal and composes its own sentences. It
+        used to be handed our sentence and asked to reword it, which could not recover
+        from a bad one -- "No problem, I won't book that" was reworded faithfully to a
+        patient who was looking at a list nobody was booking.
 
         The model never sees the body. That is what makes this safe to do on every reply,
-        including the ones with a list in them -- which is most of them, and which used to
-        be skipped entirely, leaving the whole thing sounding like a form.
+        including the ones with a list, which is most of them.
         """
         if not self.available:
             return PhrasedReply(reply.as_text(), "template", "no language model available")
@@ -317,30 +336,45 @@ class Phraser:
 
     @staticmethod
     def _prompt(lead: str, closing: str, facts: ReplyFacts, patient_message: str) -> str:
+        """
+        The situation brief.
+
+        Deliberately not "here is a sentence, rewrite it". That was the old approach and
+        it could not recover from a bad sentence: when the template said "I won't book
+        that" about some times nobody was booking, the model reworded the nonsense
+        faithfully. Given the situation instead, it can write something that makes sense.
+        """
         lines = []
         if patient_message:
-            lines.append(f"The patient wrote: {patient_message}")
-        lines.append(f"\nLEAD (rewrite): {lead or '(blank)'}")
-        lines.append(f"CLOSING (rewrite): {closing or '(blank)'}")
-        lines.append("\nFacts you may use:")
-        lines.append(f"- action taken: {facts.action}")
+            lines.append(f'The patient wrote: "{patient_message}"')
+        if facts.situation:
+            lines.append(f"SITUATION: {facts.situation}")
+        if facts.goal:
+            lines.append(f"GOAL: {facts.goal}")
+
+        lines.append("")
+        lines.append("FACTS you may use:")
         if facts.changed_the_book:
-            lines.append("- the appointment book WAS changed. You may say it is done.")
+            lines.append("- The appointment book WAS changed. You may say it is done.")
         else:
-            lines.append(
-                "- NOTHING WAS BOOKED, MOVED OR CANCELLED. The appointment book is "
-                "unchanged. Do not write 'is scheduled for', 'is set for', 'is "
-                "confirmed', or anything else implying it has happened. If you are "
-                "asking them to confirm, make it clearly a question."
-            )
+            lines.append("- NOTHING was booked, moved or cancelled. The appointment book "
+                         "is unchanged. Do not imply otherwise.")
         if facts.doctors:
-            lines.append(f"- doctors involved: {', '.join(facts.doctors)}")
+            lines.append(f"- Doctors involved: {', '.join(facts.doctors)}")
         if facts.times:
-            lines.append("- times involved: " +
+            lines.append("- Times involved: " +
                          ", ".join(f"{t:%A %d %B %H:%M}" for t in facts.times))
         if facts.reference:
-            lines.append(f"- booking reference: {facts.reference}")
+            lines.append(f"- Booking reference: {facts.reference}")
+        if facts.needs:
+            lines.append(f"- Still needed from them: {', '.join(facts.needs)}")
         if facts.has_list:
-            lines.append("- a numbered list sits between LEAD and CLOSING. Do not repeat "
-                         "it, do not summarise it, do not mention how many items it has.")
+            lines.append("- A numbered list sits between LEAD and CLOSING. Do not repeat "
+                         "it, summarise it, or say how many items it has.")
+
+        lines.append("")
+        lines.append(f"A safe version (true, but stiff):\n  LEAD: {lead or '(blank)'}"
+                     f"\n  CLOSING: {closing or '(blank)'}")
+        lines.append("")
+        lines.append("Now write your own LEAD and CLOSING.")
         return "\n".join(lines)

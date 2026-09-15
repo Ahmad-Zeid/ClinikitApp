@@ -210,9 +210,17 @@ def resolve_date(phrase: Optional[str], now: datetime) -> tuple[tuple[date, ...]
     if "this week" in p:
         return _week_span(today + timedelta(days=1), days=6 - today.weekday()), ()
 
-    # --- weekday names, with an optional "next" prefix ---
+    # --- weekday names, with an optional prefix ---
+    #
+    # "this thursday", "coming Friday" and "on Monday" all name the same kind of thing as
+    # a bare weekday. Only "next" changes the meaning. Missing "this" meant "can I do
+    # this thursday at 12?" came back as "no usable date was given" -- the reader had
+    # done its job and the arithmetic threw the answer away.
     wants_following_week = p.startswith("next ")
     bare = p[5:].strip() if wants_following_week else p
+    for filler in ("this coming ", "this ", "coming ", "on ", "the "):
+        if bare.startswith(filler):
+            bare = bare[len(filler):].strip()
     bare = bare.replace("on ", "").strip()
 
     if bare in _WEEKDAYS:

@@ -358,6 +358,15 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
                 **_availability_lookup(extraction, ctx, doctor=only),
             ))
 
+        # "ok" or "thanks" with nothing pending is a sign-off, not a confirmation.
+        # The reader reasonably calls it a confirm; there is simply nothing to confirm.
+        if _is_a_courtesy(extraction):
+            return Decision(
+                action=Action.PROVIDE_INFORMATION,
+                reason="The patient is signing off politely, not confirming anything.",
+                topic="courtesy",
+            )
+
         # A list is on screen and they said yes. They mean one of those -- we just do
         # not know which. "I don't have anything waiting for a yes" is technically true
         # and completely useless when the patient is looking at four options we sent.
@@ -378,10 +387,28 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
 
     # --- 4. "No" -------------------------------------------------------------
     if extraction.intent == Intent.DENY:
+        # WHAT they declined matters, and we used to lose it. Saying "no problem, I won't
+        # book that" to somebody who was looking at a list of free times is nonsense --
+        # nothing was being booked. They meant none of those times suit.
+        if ctx.pending_offer is not None:
+            return Decision(
+                action=Action.ASK_FOR_MORE_INFORMATION,
+                reason=f"Declined the offer of {ctx.pending_offer.summary}. Not booking it.",
+                problem="declined_offer",
+                missing=("what_they_would_prefer",),
+            )
+        if ctx.offered_options:
+            return Decision(
+                action=Action.ASK_FOR_MORE_INFORMATION,
+                reason="None of the times we listed suit them. Nothing was being booked.",
+                problem="declined_options",
+                missing=("different_time",),
+            )
         return Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
-            reason="The patient declined. The pending offer is dropped.",
-            missing=("what_they_would_prefer",),
+            reason="The patient said no, but there was nothing pending.",
+            problem="declined_nothing",
+            missing=("what_they_need",),
         )
 
     # --- 5. Opening hours ----------------------------------------------------
@@ -470,11 +497,30 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
 
     # --- 9. Reschedule -------------------------------------------------------
     if extraction.intent == Intent.RESCHEDULE_APPOINTMENT:
+        # Check it really is one before going looking for an appointment to move.
+        #
+        # "can i do this thursday at 12 pm?" was read as a reschedule -- the word "this"
+        # was enough -- and the patient asking for a NEW appointment was shown their
+        # existing ones and asked which they meant. Nonsense, and it needs no model to
+        # avoid: moving an appointment requires a word that means moving.
+        if not _sounds_like_moving_something(extraction):
+            return _propose_booking(extraction, ctx)
         return _propose_reschedule(extraction, ctx)
 
     # --- 10. Book ------------------------------------------------------------
     if extraction.intent == Intent.BOOK_APPOINTMENT:
         return _propose_booking(extraction, ctx)
+
+    # --- 10b. "thanks", "ok", "bye" -------------------------------------------
+    # A courtesy is not a request. It used to fall through to the catch-all and get
+    # handed to a colleague -- "I'm passing on your question about thanking us" -- which
+    # is a strange way to end a conversation that went fine.
+    if _is_a_courtesy(extraction):
+        return Decision(
+            action=Action.PROVIDE_INFORMATION,
+            reason="The patient is signing off politely, not asking for anything.",
+            topic="courtesy",
+        )
 
     # --- 11. Anything else ---------------------------------------------------
     # This used to reply "could you tell me more about what you need" -- a dead end for
@@ -763,6 +809,43 @@ _ORDINALS = {
     "fifth": 5, "5th": 5,
     "last": -1, "latest": -1,
 }
+
+
+# Words that mean "change something that already exists". A reschedule needs one of
+# these, or an explicit reference to an appointment the patient already has.
+# Short pleasantries that end a conversation rather than starting a request.
+_COURTESIES = {
+    "thanks", "thank you", "thanks a lot", "thank you so much", "thanks!",
+    "ok thanks", "okay thanks", "great thanks", "perfect thanks", "cheers",
+    "bye", "goodbye", "bye bye", "see you", "great", "perfect", "lovely",
+    "ok", "okay", "alright", "sounds good", "appreciate it", "much appreciated",
+    "no worries", "nevermind", "never mind", "that's all", "thats all", "nothing else",
+}
+
+
+def _is_a_courtesy(extraction: Extraction) -> bool:
+    """A short thank-you or sign-off, with nothing else asked."""
+    message = (extraction.raw_message or "").lower().strip(" .!,")
+    if not message or len(message.split()) > 4:
+        return False
+    return message in _COURTESIES
+
+
+_MOVING_WORDS = (
+    "move", "moving", "reschedule", "re-schedule", "change", "changing", "switch",
+    "swap", "postpone", "push", "bring forward", "earlier", "later", "instead",
+    "shift", "rearrange", "put it", "make it",
+)
+
+
+def _sounds_like_moving_something(extraction: Extraction) -> bool:
+    """Does this message actually ask to move an existing appointment?"""
+    if extraction.existing_appointment_phrase:
+        return True
+    message = (extraction.raw_message or "").lower()
+    if not message:
+        return True          # nothing to check against; trust the reader
+    return any(re.search(rf"(?<!\w){word}(?!\w)", message) for word in _MOVING_WORDS)
 
 
 def _is_really_picking_an_option(extraction: Extraction, ctx: Context) -> bool:

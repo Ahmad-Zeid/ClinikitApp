@@ -270,3 +270,113 @@ def test_yes_with_neither_a_question_nor_an_offer_still_asks(now, db):
     decision = decide(E(intent=Intent.CONFIRM), Context(now=now, db=db))
     assert decision.action == Action.ASK_FOR_MORE_INFORMATION
     assert decision.guarantee == "G2"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Replies that made no sense for the situation
+# ══════════════════════════════════════════════════════════════════════════════
+
+def test_declining_a_list_does_not_talk_about_booking(now, db):
+    """
+    We showed four free times, the patient said "hmm, not really", and the reply was
+    "No problem, I won't book that" -- nothing was being booked. The template was wrong
+    for the situation, and the model dutifully reworded a wrong sentence.
+    """
+    from clinikit.agent.policy import FreeSlot
+    options = _four_slots(now)
+    ctx = Context(now=now, db=db, offered_options=options, pending_offer=None)
+    decision = decide(E(intent=Intent.DENY), ctx)
+
+    assert decision.problem == "declined_options"
+    reply = respond(decision, ToolResult(True, decision.action, ""), ctx).as_text().lower()
+    assert "book" not in reply, f"must not mention booking; said: {reply!r}"
+
+
+def test_declining_an_actual_offer_does_mention_it(now, db):
+    """The other side: if there WAS an offer, saying nothing was booked is the point."""
+    from clinikit.agent.policy import Offer
+    offer = Offer(kind="create", summary="Dr. George on Wednesday at 11:00",
+                  doctor_id="d_george", start=now)
+    decision = decide(E(intent=Intent.DENY), Context(now=now, db=db, pending_offer=offer))
+    assert decision.problem == "declined_offer"
+
+
+@pytest.mark.parametrize("message,is_move", [
+    ("can i do this thursday at 12 pm?", False),
+    ("can i come in friday", False),
+    ("book me thursday", False),
+    ("move my appointment to friday", True),
+    ("can i change it to monday", True),
+    ("push it back a week", True),
+])
+def test_only_a_real_reschedule_looks_for_an_appointment(message, is_move, now, db):
+    """
+    "can i do this thursday at 12 pm?" was read as a reschedule -- the word "this" was
+    enough -- so a patient asking for a NEW appointment was shown their existing ones and
+    asked which they meant.
+    """
+    from clinikit.agent.policy import _sounds_like_moving_something
+    extraction = E(intent=Intent.RESCHEDULE_APPOINTMENT, raw_message=message)
+    assert _sounds_like_moving_something(extraction) is is_move
+
+
+@pytest.mark.parametrize("message", ["thanks", "thank you", "bye", "ok", "alright"])
+def test_a_courtesy_is_not_a_request(message, now, db):
+    """
+    "thanks" was handed to a colleague -- "I'm passing on your question about thanking
+    us" -- which is a strange way to end a conversation that went perfectly well.
+    """
+    decision = decide(E(intent=Intent.OTHER, raw_message=message,
+                        request_summary="thanking the clinic"), Context(now=now, db=db))
+    assert decision.topic == "courtesy"
+    assert decision.action != Action.HANDOFF_TO_HUMAN
+
+
+def test_a_courtesy_after_an_offer_still_confirms_it(now, db):
+    """
+    The distinction that matters: "ok" on its own is a sign-off, but "ok" right after we
+    offer an appointment is consent. Getting this backwards either books nothing or
+    books something nobody agreed to.
+    """
+    from clinikit.agent.policy import Offer
+    offer = Offer(kind="create", summary="Dr. George on Wednesday at 11:00",
+                  doctor_id="d_george",
+                  start=now.replace(hour=11, minute=0) + __import__("datetime").timedelta(days=1))
+    decision = decide(E(intent=Intent.CONFIRM, raw_message="ok"),
+                      Context(now=now, db=db, pending_offer=offer))
+    assert decision.action == Action.CREATE_APPOINTMENT
+
+
+@pytest.mark.parametrize("phrase,weekday", [
+    ("thursday", 3),
+    ("this thursday", 3),
+    ("coming friday", 4),
+    ("on monday", 0),
+    ("this coming saturday", 5),
+    ("next thursday", 3),
+])
+def test_weekday_prefixes_resolve(phrase, weekday, now):
+    """
+    "can i do this thursday at 12?" came back as "no usable date was given". The reader
+    had correctly returned "this thursday"; the arithmetic only understood "thursday" and
+    "next thursday", so it threw a perfectly good answer away.
+
+    Checked by weekday rather than by a fixed offset, so the test says what it means:
+    the phrase must land on the right DAY OF THE WEEK, on or after today.
+    """
+    from clinikit.agent.temporal import resolve_date
+
+    days, problems = resolve_date(phrase, now)
+    assert not problems, f"{phrase!r} produced {problems}"
+    assert days, f"{phrase!r} resolved to nothing"
+    assert days[0].weekday() == weekday
+    assert days[0] >= now.date()
+
+
+def test_next_weekday_is_further_out_than_the_bare_one(now):
+    """"next thursday" must mean a different Thursday from "thursday"."""
+    from clinikit.agent.temporal import resolve_date
+
+    plain, _ = resolve_date("thursday", now)
+    later, _ = resolve_date("next thursday", now)
+    assert later[0] > plain[0]

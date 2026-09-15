@@ -37,7 +37,7 @@ from ..clinic import DOCTORS
 from ..schema import Extraction
 from .base import Extractor, ExtractorUnavailable
 
-PROMPT_VERSION = "v5"
+PROMPT_VERSION = "v6"
 CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "llm"
 
 # How long we will spend making a reply sound nicer before giving up and sending the
@@ -171,16 +171,34 @@ PROVIDERS: dict[str, Provider] = {
         # code -- it inherits the retries, budgets and model fallback built here.
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         env_key="GEMINI_API_KEY",
+        # FLASH-LITE FIRST, and this is the single most important line in the file for
+        # staying inside the free tier.
+        #
+        # Every article about Gemini's free tier quotes "1,500 requests a day". That is
+        # not what the API grants for the full-size Flash models any more. Measured
+        # against the live API today, by reading the 429s:
+        #
+        #     gemini-3-flash-preview   daily limit 20     <- twenty. not 1,500.
+        #     gemini-3.5-flash         daily limit 20
+        #     gemini-flash-latest      daily limit 20
+        #     gemini-*-flash-LITE      still answering after a day of heavy testing
+        #
+        # So the Lite variants are the generous ones, and they are not a compromise
+        # here: on our own test messages gemini-flash-lite-latest scored 4/4 on intent,
+        # caught the hedge, and answered in 1.3s -- as fast as Groq.
+        #
+        # The full-size models stay at the end of the list. Twenty calls a day is worth
+        # having as a last resort, and they are the strongest readers we have.
         models=(
-            "gemini-3-flash-preview",
+            "gemini-flash-lite-latest",
             "gemini-3.1-flash-lite",
-            "gemini-3.5-flash",
-            "gemini-flash-latest",
+            "gemini-3.5-flash-lite",
+            "gemini-3-flash-preview",
         ),
-        requests_per_minute=10,
+        requests_per_minute=15,
         tokens_per_minute=250_000,
-        requests_per_day=1500,
-        tokens_per_day=None,          # the important bit
+        requests_per_day=1000,
+        tokens_per_day=None,          # Gemini counts requests, not tokens
         signup="https://aistudio.google.com/apikey  (free, no card)",
     ),
     "groq": Provider(
@@ -229,7 +247,11 @@ Doctors:
 
 1. Copy dates and times VERBATIM ("tomorrow", "after 5"). Never convert to a real date -
    you do not know today's date.
-2. Reschedule: preferred_date is the NEW date; the old one goes in
+2. reschedule_appointment ONLY when they want to MOVE an appointment they already have
+   ("move", "change", "reschedule", "instead", "push it back"). Asking to come in on a
+   day - "can I do this Thursday at 12?", "can I come Friday?" - is book_appointment,
+   even if the sentence contains "this" or "that".
+   For a real reschedule: preferred_date is the NEW date, the old one goes in
    existing_appointment_phrase. "from Monday to Wednesday" -> new=Wednesday, old=Monday.
 3. is_hedged = they explicitly said not to act yet ("don't book yet", "just checking").
    A plain question is NOT hedged. Politeness is NOT hedging.
@@ -287,11 +309,13 @@ class OpenAICompatibleExtractor(Extractor):
         use_cache: bool = True,
         # Long enough to WAIT OUT a full rate-limit window rather than give up inside it.
         #
-        # It was 25 seconds, which was shorter than the wait it sometimes needed -- so a
-        # busy minute produced "sorry, I'm having trouble" instead of a slow reply. A slow
-        # reply is a reply. An apology is not. Reading the message is the one thing that
+        # It must be LONGER than the window it may have to wait out, or it gives up just
+        # before the allowance refills -- which is how a busy minute produced "sorry, I'm
+        # having trouble" instead of a slow reply. The window is 60 seconds, so the budget
+        # is 80. A slow reply is a reply. An apology is not. Reading the message is the one
+        # thing that
         # cannot degrade gracefully, so it is allowed to take its time.
-        budget_seconds: float = 60.0,
+        budget_seconds: float = 80.0,
     ) -> None:
         if provider not in PROVIDERS:
             raise ValueError(f"Unknown provider {provider!r}. Known: {list(PROVIDERS)}")
@@ -493,8 +517,13 @@ class OpenAICompatibleExtractor(Extractor):
                 # Gemini allows only 10 calls a minute, so two calls per turn means five
                 # turns before it stops -- and wording must not be what spends the last
                 # one. Reading the next message matters more than wording this reply.
+                # The reserve scales with how tight the provider is. Gemini allows only
+                # ten calls a minute, so spending one on wording costs a fifth of the
+                # minute's capacity -- wording must give way early there. Groq allows
+                # thirty and can afford to be generous.
+                reserve = 2 if self.provider.requests_per_minute >= 20 else 4
                 if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS,
-                                       reserve_requests=2):
+                                       reserve_requests=reserve):
                     continue
                 try:
                     # Rewording is much cheaper than reading: a short prompt, a short answer.

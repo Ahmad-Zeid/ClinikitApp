@@ -456,5 +456,11 @@ def _facts_for(decision, result, structured, changed: bool, ctx) -> ReplyFacts:
         doctors=tuple(dict.fromkeys(doctors)),
         times=tuple(dict.fromkeys(times)),
         reference=result.appointment.id if result.appointment else None,
+        # The policy layer already wrote a plain-language account of what it decided and
+        # why. That is exactly the situation brief the model needs -- no second
+        # description to write and keep in step with the first.
+        situation=decision.reason,
+        goal=structured.goal,
+        needs=tuple(decision.missing),
         has_list=bool(structured.body),
     )

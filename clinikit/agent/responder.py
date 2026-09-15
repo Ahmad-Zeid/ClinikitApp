@@ -67,6 +67,19 @@ class Reply:
     closing: str = ""
     """The question that moves things along. "Would either of those suit?" Prose."""
 
+    goal: str = ""
+    """
+    What this reply needs to achieve, in plain words, for the model composing it.
+
+    This exists because rewording could not fix a wrong sentence. When the patient said
+    "hmm, not really" about some times we had shown, the template said "No problem, I
+    won't book that" -- nothing was being booked -- and the model dutifully reworded a
+    sentence that was already nonsense.
+
+    So the model is given the SITUATION and the GOAL and writes its own sentence. The
+    template survives underneath as the fallback when its wording cannot be verified.
+    """
+
     def as_text(self) -> str:
         """Assemble the pieces into the message the patient sees."""
         blocks: list[str] = []
@@ -137,10 +150,13 @@ def respond(decision: Decision, result: ToolResult, ctx, extraction=None) -> Rep
                 opening=f"That one is better answered by our team — I'm passing on your "
                         f"question about {decision.topic}.",
                 closing="Someone will come back to you shortly.",
+                goal=(f"Say their question about {decision.topic} is going to a colleague "
+                      "who will come back to them. Do not attempt to answer it."),
             )
         return Reply(
             opening="Of course — I'm passing you to a member of our team now.",
             closing="Someone will be with you shortly.",
+            goal="Tell them a colleague is taking over and will be in touch.",
         )
 
     # --- information ---------------------------------------------------------
@@ -157,6 +173,7 @@ def respond(decision: Decision, result: ToolResult, ctx, extraction=None) -> Rep
         return Reply(
             opening=f"That's booked — {doctor.full_name}, {_when(appt.start)}.",
             closing=f"Your reference is {appt.id}.",
+            goal="Confirm the booking is done, give the reference, and be warm about it.",
         )
 
     if decision.action == Action.RESCHEDULE_APPOINTMENT:
@@ -166,7 +183,8 @@ def respond(decision: Decision, result: ToolResult, ctx, extraction=None) -> Rep
         appt = result.appointment
         doctor = ctx.db.doctor(appt.doctor_id)
         return Reply(opening=f"Moved — you're now seeing {doctor.full_name} on "
-                             f"{_when(appt.start)}.")
+                             f"{_when(appt.start)}.",
+                     goal="Confirm the appointment has been moved to the new time.")
 
     if decision.action == Action.CANCEL_APPOINTMENT:
         if not result.ok:
@@ -177,6 +195,7 @@ def respond(decision: Decision, result: ToolResult, ctx, extraction=None) -> Rep
             opening=f"Cancelled — your appointment with {doctor.full_name} on "
                     f"{_when(appt.start)} has been removed.",
             closing="Let me know if you'd like to rebook.",
+            goal="Confirm the cancellation and offer to rebook.",
         )
 
     # --- showing what is free ------------------------------------------------
@@ -198,6 +217,14 @@ def _inform(decision: Decision, extraction) -> Reply:
         return Reply(
             opening=f"Hello — you've reached {CLINIC_NAME}.",
             closing="How can I help today?",
+        )
+
+    if topic == "courtesy":
+        return Reply(
+            opening="You're very welcome.",
+            closing="Take care, and just message us if you need anything else.",
+            goal="They are thanking you or signing off. Say goodbye warmly in one short "
+                 "sentence. Do not ask what else they need, and do not offer a list.",
         )
 
     if topic == "opening_hours":
@@ -234,6 +261,8 @@ def _availability(decision: Decision, result: ToolResult, extraction) -> Reply:
             opening=(f"I can't see anything free for {who} then." if who
                      else "I can't see anything free around then."),
             closing="Would a different day work?",
+            goal=f"Tell them nothing is free for {who or 'us'} at that time, and ask "
+                 "whether another day would work.",
         )
 
     # The patient said not to act yet. Say so plainly so they know we listened.
@@ -251,6 +280,9 @@ def _availability(decision: Decision, result: ToolResult, extraction) -> Reply:
         opening=opening,
         body=_slot_lines(result.slots, show_doctor=show_doctor),
         closing="Would any of those suit?",
+        goal=(f"Say {who or 'we'} have these times free and invite them to pick one. "
+              "A numbered list follows your opening - do not repeat or summarise it. "
+              "Nothing is booked yet."),
     )
 
 
@@ -261,7 +293,12 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
     if "confirmation" in missing and decision.offer:
         offer = decision.offer
         if offer.kind == "create":
-            return Reply(opening=f"{offer.summary}.", closing="Shall I lock that in?")
+            return Reply(
+                opening=f"{offer.summary}.",
+                closing="Shall I lock that in?",
+                goal="Repeat back the exact doctor and time, and ask them to confirm. "
+                     "NOTHING is booked yet - make that unmistakable.",
+            )
         if offer.kind == "cancel":
             return Reply(opening=f"Just to check — you'd like me to {offer.summary}?",
                          closing="Say yes and I'll take care of it.")
@@ -276,6 +313,9 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
                 opening=f"That's handled by our {decision.specialty.lower()} team.",
                 body=_doctor_lines(decision.candidates),
                 closing="Shall I check when they're free?",
+                goal=(f"Acknowledge what they told you, say our "
+                      f"{decision.specialty.lower()} team covers it, and offer to check "
+                      "availability. Say NOTHING about what their symptom might mean."),
             )
         if decision.problem == "doctor_ambiguous" and decision.candidates:
             return Reply(
@@ -335,7 +375,19 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
         return Reply(opening="I don't have anything waiting for a yes at the moment.",
                      closing="What would you like to do?")
     if "what_they_would_prefer" in missing:
-        return Reply(opening="No problem, I won't book that.",
-                     closing="What would work better for you?")
+        return Reply(
+            opening="No problem, I won't book that.",
+            closing="What would work better for you?",
+            goal="They turned down the appointment we offered. Confirm nothing was "
+                 "booked and ask what would suit them instead.",
+        )
+
+    if "different_time" in missing:
+        return Reply(
+            opening="No problem.",
+            closing="What day or time would work better for you?",
+            goal="None of the times we listed suit them. NOTHING was being booked, so do "
+                 "not mention booking or cancelling. Just ask what would suit better.",
+        )
 
     return Reply(closing="Could you tell me a little more about what you need?")
