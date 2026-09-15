@@ -15,15 +15,23 @@ WHAT EACH REPLY CARRIES
     needs the reasoning, not just the sentence -- and so would a real clinic's audit log.
 
 SESSIONS
-    Kept in a dictionary in memory. Fine for a demo; a real deployment would use Redis or
-    a database so that sessions survive a restart and work across several servers. Because
-    all the memory lives in one class, that swap touches one file.
+    This service keeps NO memory of its own between messages.
+
+    Most hosts today do not keep one computer running for your site. They start a small
+    worker when a message arrives and throw it away afterwards, so the worker answering
+    "yes" may never have seen the offer the patient is saying yes to.
+
+    So the conversation's memory travels with the patient instead: it goes out with every
+    reply as a `state` string, and the browser sends it back with the next message. The
+    string is stamped so it cannot be edited -- see `clinikit/agent/state.py`.
+
+    The upside beyond hosting: any number of servers can answer any message, and a
+    restart loses nothing.
 """
 
 from __future__ import annotations
 
 import os
-import uuid
 from pathlib import Path
 from typing import Optional
 
@@ -34,9 +42,10 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from ..agent.backends import available_backends, patient_facing_backends
-from ..agent.cli import SCENARIOS
+from ..agent.examples import SCENARIOS
 from ..agent.clinic import DOCTORS, describe_opening_hours
 from ..agent.session import Session
+from ..agent.state import TamperedState, open_sealed, restore, seal
 
 WEB_DIR = Path(__file__).resolve().parents[2] / "web"
 
@@ -51,8 +60,6 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
-
-_SESSIONS: dict[str, Session] = {}
 
 def _default_backend() -> str:
     """
@@ -80,12 +87,19 @@ NATURAL_REPLIES = os.environ.get("CLINIKIT_NATURAL_REPLIES", "1") != "0"
 
 class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
-    session_id: Optional[str] = None
-    backend: Optional[str] = Field(default=None, description="'rules' or 'gemini'")
+    state: Optional[str] = Field(
+        default=None,
+        description="The conversation so far, as handed back by the previous reply. "
+                    "Omit it to start a new conversation.",
+    )
+    backend: Optional[str] = Field(default=None, description="'auto', 'gemini' or 'rules'")
 
 
 class ChatResponse(BaseModel):
-    session_id: str
+    state: str
+    """The conversation so far. Send it back with the next message, unchanged. It is
+    stamped, so an edited one is refused."""
+
     reply: str
     backend: str
     seconds: float
@@ -109,16 +123,29 @@ class ChatResponse(BaseModel):
 # Endpoints
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _get_session(session_id: Optional[str], backend: Optional[str]) -> tuple[str, Session]:
-    if session_id and session_id in _SESSIONS:
-        return session_id, _SESSIONS[session_id]
+def _session_for(state: Optional[str], backend: Optional[str]) -> Session:
+    """
+    Build the session this message belongs to.
 
-    new_id = session_id or uuid.uuid4().hex[:12]
+    Always a brand-new object. If the browser sent the conversation back, its memory is
+    poured into the new object first. Nothing is kept between requests.
+    """
     wanted = backend or DEFAULT_BACKEND
     if wanted not in available_backends():
         wanted = DEFAULT_BACKEND
-    _SESSIONS[new_id] = Session(backend=wanted, natural_replies=NATURAL_REPLIES)
-    return new_id, _SESSIONS[new_id]
+
+    session = Session(backend=wanted, natural_replies=NATURAL_REPLIES)
+
+    if state:
+        try:
+            restore(session, open_sealed(state))
+        except TamperedState as exc:
+            # Refuse rather than quietly starting over. A ticket that fails its stamp is
+            # either a bug or someone editing their own memory to invent an offer, and
+            # both deserve to be visible instead of silently swallowed.
+            raise HTTPException(400, f"Conversation state rejected: {exc}") from exc
+
+    return session
 
 
 def _appointments(session: Session) -> list[dict]:
@@ -138,11 +165,12 @@ def _appointments(session: Session) -> list[dict]:
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
     """Send one patient message and get back the reply plus the full reasoning."""
-    session_id, session = _get_session(request.session_id, request.backend)
+    session = _session_for(request.state, request.backend)
     turn = session.handle(request.message)
-    payload = turn.as_dict()
     return ChatResponse(
-        session_id=session_id, appointments=_appointments(session), **payload
+        state=seal(session),
+        appointments=_appointments(session),
+        **turn.as_dict(),
     )
 
 
@@ -155,20 +183,25 @@ def start(backend: Optional[str] = None) -> dict:
     visitor waited two seconds and burned a request before the page was even usable. This
     creates the session and returns the appointment book, with no model call at all.
     """
-    session_id, session = _get_session(None, backend)
+    session = _session_for(None, backend)
     return {
-        "session_id": session_id,
+        "state": seal(session),
         "appointments": _appointments(session),
         "greeting": "Hello — how can the clinic help today?",
     }
 
 
 @app.post("/api/reset")
-def reset(session_id: Optional[str] = None) -> dict:
-    """Clear a conversation and restore the appointment book to its starting state."""
-    if session_id and session_id in _SESSIONS:
-        del _SESSIONS[session_id]
-    return {"ok": True}
+def reset() -> dict:
+    """
+    Start again.
+
+    There is nothing on the server to clear, so this just hands back a fresh, empty
+    conversation. The browser throws away the old one by replacing it with this.
+    """
+    session = _session_for(None, None)
+    return {"ok": True, "state": seal(session),
+            "appointments": _appointments(session)}
 
 
 @app.get("/api/health")
@@ -238,13 +271,26 @@ def clinic() -> dict:
     }
 
 
-@app.get("/api/audit")
-def audit(session_id: str) -> dict:
-    """Everything that happened in one conversation. A real clinic would need this."""
-    session = _SESSIONS.get(session_id)
-    if session is None:
-        raise HTTPException(404, "No such session")
-    return {"turns": session.audit_log()}
+class AuditRequest(BaseModel):
+    state: str
+
+
+@app.post("/api/audit")
+def audit(request: AuditRequest) -> dict:
+    """
+    What this conversation looks like from the clinic's side. A real clinic needs this.
+
+    The per-turn reasoning -- what was understood, what was decided, which guarantee
+    applied -- comes back with every single reply, so the caller already has it. What
+    this adds is the signed record: the transcript and the appointment book as the
+    server sees them, from a ticket that cannot have been edited.
+    """
+    session = _session_for(request.state, None)
+    return {
+        "history": session.history,
+        "appointments": _appointments(session),
+        "pending_offer": session.pending_offer.summary if session.pending_offer else None,
+    }
 
 
 # ──────────────────────────────────────────────────────────────────────────────

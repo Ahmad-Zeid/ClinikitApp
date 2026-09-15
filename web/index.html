@@ -204,7 +204,10 @@ footer{padding:var(--s4) var(--s5); border-top:1px solid var(--rule);
 <script>
 const API = location.origin.startsWith('http') ? '' : 'http://127.0.0.1:8000';
 const $ = id => document.getElementById(id);
-let sessionId = null, busy = false;
+// The conversation itself, as handed back by the server each turn. The server keeps no
+// memory, so this string IS the conversation: without it the next message starts fresh.
+// It is stamped server-side, so editing it here only gets it refused.
+let convo = null, busy = false;
 
 /* ── theme ───────────────────────────────────────────────────────────────── */
 $('theme').onclick = () => {
@@ -302,11 +305,11 @@ async function send(text) {
   try {
     const res = await fetch(API + '/api/chat', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({message: text, session_id: sessionId, backend: $('backend').value}),
+      body: JSON.stringify({message: text, state: convo, backend: $('backend').value}),
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const d = await res.json();
-    sessionId = d.session_id;
+    convo = d.state;
     thinking.remove();
 
     // The reply, and only the reply.
@@ -332,8 +335,7 @@ $('input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('composer').requestSubmit(); }
 });
 $('reset').onclick = async () => {
-  if (sessionId) await fetch(API + '/api/reset?session_id=' + sessionId, {method: 'POST'});
-  sessionId = null; $('stream').innerHTML = '';
+  convo = null; $('stream').innerHTML = '';
   $('decision').innerHTML = '<p class="why none">Send a message to see how it was handled.</p>';
   $('extraction').innerHTML = '<dd class="none">nothing yet</dd>';
   boot();
@@ -362,7 +364,7 @@ async function boot() {
     const c = await (await fetch(API + '/api/start?backend=' + encodeURIComponent($('backend').value), {
       method: 'POST',
     })).json();
-    sessionId = c.session_id;
+    convo = c.state;
     renderBook(c.appointments);
     $('stream').innerHTML = '';
     bubble(c.greeting, 'bot');
