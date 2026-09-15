@@ -36,7 +36,7 @@ HOW ONE MESSAGE FLOWS THROUGH
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Callable, Optional
 
@@ -434,9 +434,24 @@ def _facts_for(decision, result, structured, changed: bool, ctx) -> ReplyFacts:
     if decision.doctor is not None:
         doctors.append(decision.doctor.full_name)
     for c in decision.candidates:
+        # A numbered choice is one of three things: a doctor, a free slot, or one of the
+        # patient's existing appointments. Doctors carry their own name; appointments
+        # only carry a doctor's id and have to be looked up.
+        #
+        # Missing that third case left this list EMPTY whenever we asked "which
+        # appointment did you mean?" -- and an empty list switches the reply checker's
+        # doctor test off completely, because it has nothing to check against. The model
+        # was then free to name anyone. It echoed a patient's typo, "Dr. Karin", back at
+        # them while the list underneath said Dr. Karim Nassar.
         full = getattr(c, "full_name", None)
         if full:
             doctors.append(full)
+            continue
+        doctor_id = getattr(c, "doctor_id", None)
+        if doctor_id:
+            doctor = ctx.db.doctor(doctor_id)
+            if doctor is not None:
+                doctors.append(doctor.full_name)
 
     times: list[datetime] = []
     for s in result.slots:
@@ -483,4 +498,7 @@ def _facts_for(decision, result, structured, changed: bool, ctx) -> ReplyFacts:
         goal=structured.goal,
         needs=tuple(decision.missing),
         has_list=bool(structured.body),
+        # G1 is the hedge guarantee: the patient said "don't book anything yet". The
+        # reply has to say we won't. Carried through so the wording check can enforce it.
+        must_promise_no_action=(decision.guarantee == "G1"),
     )

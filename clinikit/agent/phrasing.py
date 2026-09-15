@@ -32,7 +32,6 @@ import re
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from .backends.base import ExtractorUnavailable
 
 # Words that only make sense if something really was written to the appointment book.
 # If nothing changed, none of these may appear in the reply.
@@ -93,6 +92,41 @@ _IMPOSSIBLE_CLAIMS = [
     "we accept your insurance", "we take your insurance",
 ]
 
+# Ways of saying "we will not act yet".
+#
+# When the patient wrote "don't book anything yet", the approved reply opens with
+# "Understood -- I won't book anything yet." That one sentence is the whole point of the
+# turn: it tells the patient we heard the instruction. A reworded reply that quietly
+# drops it looks helpful and breaks the promise.
+#
+# So on those turns the promise is not optional. If the model's wording does not contain
+# one of these, the wording is thrown away and the hand-written version is sent.
+_NO_ACTION_PROMISES = [
+    "won't book", "will not book", "wont book", "not book anything",
+    "won't confirm", "will not confirm", "wont confirm", "not confirm anything",
+    "won't reserve", "will not reserve", "not reserve anything",
+    "nothing is booked", "nothing has been booked", "nothing booked",
+    "haven't booked", "have not booked", "hold off", "holding off",
+    "leave it unbooked", "without booking",
+]
+
+# Statements about what is (or is not) in the patient's records.
+#
+# These are claims about the clinic's own files, and the model has no way to check them.
+# On one turn it wrote "we do not have an active appointment on our schedule for you" to
+# a patient who did have one. The patient could have acted on that.
+#
+# The rule: a claim like this may appear only if OUR OWN approved reply made it. We are
+# not asking the model to be right, only to not add records claims we did not make.
+_RECORD_CLAIMS = [
+    "do not have an active appointment", "don't have an active appointment",
+    "do not have an appointment", "don't have an appointment",
+    "no appointment on", "no active appointment", "no upcoming appointment",
+    "you have no appointment", "you don't have any appointment",
+    "you do not have any appointment", "nothing on our schedule",
+    "nothing in our system", "not on our schedule", "no record of",
+]
+
 _TIME_RE = re.compile(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b", re.I)
 _TIME_24_RE = re.compile(r"\b(\d{1,2}):(\d{2})\b")
 _DOCTOR_RE = re.compile(r"\bDr\.?\s+([A-Z][a-z]+)", re.I)
@@ -122,6 +156,10 @@ class ReplyFacts:
     has_list: bool = False
     """True when a numbered list sits between the lead and the closing, so the model can
     be told not to repeat or summarise something it cannot see."""
+
+    must_promise_no_action: bool = False
+    """True on a hedged turn (G1). The reply MUST still say we are not booking anything.
+    Without this the reworded version can drop the promise and sound like a sales push."""
 
     extra_notes: tuple[str, ...] = field(default_factory=tuple)
 
@@ -176,6 +214,20 @@ def _allowed_times(times: tuple[datetime, ...]) -> set[str]:
     return allowed
 
 
+# Words that flip a claim into its opposite.
+#
+# "Nothing is booked" contains "is booked", which is on the completion list -- and it is
+# the exact sentence we most want to be able to send. Without this, the reassurance that
+# nothing happened was rejected for claiming that something had.
+_NEGATORS = ("nothing", "not", "no ", "never", "n't", "without", "isn", "wasn", "hasn")
+
+
+def _is_negated(low: str, start: int) -> bool:
+    """Is the claim just before position `start` cancelled by a negative word?"""
+    window = low[max(0, start - 24):start]
+    return any(word in window for word in _NEGATORS)
+
+
 def verify(candidate: str, facts: ReplyFacts) -> str | None:
     """
     Check a proposed reply. Returns a reason to reject it, or None if it is fine.
@@ -188,10 +240,25 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
     # 1. Does it claim something happened that did not?
     if not facts.changed_the_book:
         for claim in _COMPLETION_CLAIMS:
-            if claim in low:
+            start = low.find(claim)
+            if start != -1 and not _is_negated(low, start):
                 return f"claims completion ({claim!r}) but nothing was written"
 
-    # 2. Is it actually in English?
+    # 2. On a hedged turn, is the promise still there?
+    #    "don't book anything yet" must be answered with "I won't". A reply that drops
+    #    it and goes straight to "here are the times, shall I secure one?" reads as a
+    #    push, which is the opposite of what the patient asked for.
+    if facts.must_promise_no_action:
+        if not any(promise in low for promise in _NO_ACTION_PROMISES):
+            return "hedged turn, but the reply never promises not to book"
+
+    # 3. Does it make a claim about the patient's records that we did not make?
+    template_low = facts.template.lower()
+    for claim in _RECORD_CLAIMS:
+        if claim in low and claim not in template_low:
+            return f"claims something about the patient's records we did not say ({claim!r})"
+
+    # 4. Is it actually in English?
     if any(ch for ch in candidate if "\u0600" <= ch <= "\u06ff"):
         return "reply contains Arabic script"
     words = set(low.replace(",", " ").replace(".", " ").split())
@@ -200,17 +267,17 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
     if len(hits) >= 2:
         return f"reply looks like Arabizi rather than English ({', '.join(hits[:3])})"
 
-    # 3. Has it strayed into assessing the patient rather than routing them?
+    # 5. Has it strayed into assessing the patient rather than routing them?
     for phrase in _CLINICAL_ADVICE:
         if phrase in low:
             return f"strays into clinical advice ({phrase!r})"
 
-    # 4. Does it promise something this system cannot do?
+    # 6. Does it promise something this system cannot do?
     for claim in _IMPOSSIBLE_CLAIMS:
         if claim in low:
             return f"promises something the system cannot do ({claim!r})"
 
-    # 3. Does every time it mentions come from the facts we supplied?
+    # 7. Does every time it mentions come from the facts we supplied?
     allowed = _allowed_times(facts.times)
     mentioned: set[str] = set()
     for h, m, ampm in _TIME_RE.findall(candidate):
@@ -225,13 +292,13 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
                                                  for a in allowed}:
             return f"mentions a time we did not offer ({token})"
 
-    # 4. Does every doctor it names come from the facts we supplied?
+    # 8. Does every doctor it names come from the facts we supplied?
     permitted = {d.lower() for name in facts.doctors for d in name.replace("Dr.", "").split()}
     for surname in _DOCTOR_RE.findall(candidate):
         if facts.doctors and surname.lower() not in permitted:
             return f"names a doctor we did not mention (Dr. {surname})"
 
-    # 5. Sanity: a reply that is far longer than the template is probably padded out.
+    # 9. Sanity: a reply that is far longer than the template is probably padded out.
     if len(candidate) > max(400, len(facts.template) * 3):
         return "much longer than the approved reply; likely padded with invented detail"
 
@@ -259,6 +326,8 @@ TONE
 - Answer what they actually asked. If they asked a yes/no question, answer it.
 - No emoji. No exclamation marks. Never "Absolutely", "I'd be delighted", "Great news".
 - Greet them only if the SITUATION says they greeted you.
+- Write times the way a receptionist says them out loud: "4:00 pm", never "16:00". The
+  FACTS give you times in 24-hour form; convert them.
 
 HARD RULES
 - Use ONLY the facts given. Never invent a time, date, doctor or detail.
@@ -371,6 +440,13 @@ class Phraser:
         if facts.has_list:
             lines.append("- A numbered list sits between LEAD and CLOSING. Do not repeat "
                          "it, summarise it, or say how many items it has.")
+        if facts.must_promise_no_action:
+            # Stated as a requirement rather than a preference, because verify() will
+            # reject the reply if it is missing and the patient will get the stiff one.
+            lines.append("- REQUIRED: the patient asked us NOT to act yet. Your reply "
+                         "must say plainly that you will not book anything. Say it "
+                         "first, and do not follow it with 'but'. You may still show "
+                         "the times and invite them to come back to you.")
 
         lines.append("")
         lines.append(f"A safe version (true, but stiff):\n  LEAD: {lead or '(blank)'}"

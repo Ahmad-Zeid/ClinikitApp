@@ -22,7 +22,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
-from .backends import available_backends, patient_facing_backends
+from .backends import available_backends
 from .examples import SCENARIOS
 from .clinic import TIMEZONE
 from .policy import WRITE_ACTIONS

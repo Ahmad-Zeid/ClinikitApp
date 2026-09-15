@@ -36,7 +36,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
 from .clinic import (
     CLINIC_ADDRESS,
@@ -44,7 +43,6 @@ from .clinic import (
     CLINIC_PHONE,
     DOCTORS,
     Appointment,
-    Doctor,
     describe_opening_hours,
 )
 from .policy import Action, Decision, FreeSlot
@@ -391,6 +389,24 @@ def _ask(decision: Decision, ctx, extraction) -> Reply:
             closing="What day or time would work better?",
             goal="None of the times we listed suit them. NOTHING was being booked, so do "
                  "not mention booking or cancelling. Just ask what would suit better.",
+        )
+
+    # --- "no" with nothing pending -------------------------------------------
+    # This branch used to fall through to the bare closing below, with no opening and no
+    # goal. The model was handed almost nothing and filled the gap itself: to "I do NOT
+    # want to cancel my appointment" it replied "we do not have an active appointment on
+    # our schedule for you", which was false -- the patient did have one.
+    #
+    # The lesson is general. An empty brief is not a safe brief; it is an invitation to
+    # invent. Every branch that reaches the model needs something true to say.
+    if "what_they_need" in missing:
+        return Reply(
+            opening="Understood — nothing has been changed.",
+            closing="What would you like me to do?",
+            goal="They said no, but nothing was waiting on their answer. Reassure them "
+                 "that nothing was changed and ask what they need. Say NOTHING about "
+                 "whether they do or do not have an appointment — you have not been "
+                 "told, and guessing would be worse than not mentioning it.",
         )
 
     return Reply(closing="Could you tell me a little more about what you need?")

@@ -49,7 +49,7 @@ import json
 import os
 from datetime import datetime
 
-from .clinic import DOCTORS, Appointment, ClinicDB, TIMEZONE
+from .clinic import DOCTORS, Appointment, ClinicDB
 from .policy import FreeSlot, Offer, PendingQuestion
 
 # The secret used to stamp tickets.
