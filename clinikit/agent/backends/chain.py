@@ -64,10 +64,25 @@ class ChainExtractor(Extractor):
                 self._resting_until.pop(extractor.name, None)
                 return result
             except ExtractorUnavailable as exc:
-                # Out of quota for the day rests much longer than a momentary blip.
-                out_of_quota = any(s in str(exc).lower()
-                                   for s in ("429", "resource_exhausted", "quota"))
-                self._resting_until[extractor.name] = now + (600.0 if out_of_quota else 60.0)
+                # How long to leave it alone depends on WHY it failed.
+                #
+                # Out of quota for the day: a long rest, because nothing will change for
+                # a while and every attempt is a wasted round trip.
+                #
+                # Slow or briefly unreachable: no rest at all. It was benching the
+                # provider for a full minute after a single slow call, which turned one
+                # unlucky request into a minute of "sorry, I'm having trouble" for the
+                # patient. A blip should cost one turn, not twenty.
+                #
+                # And never bench the last one standing -- a rest is only useful if there
+                # is somewhere else to go.
+                text = str(exc).lower()
+                out_of_quota = any(s in text for s in ("429", "resource_exhausted", "quota"))
+                is_last_resort = len(self._extractors) == 1
+
+                if out_of_quota and not is_last_resort:
+                    self._resting_until[extractor.name] = now + 600.0
+
                 self.skipped.append(extractor.name)
                 problems.append(f"{extractor.name}: {str(exc)[:90]}")
                 continue

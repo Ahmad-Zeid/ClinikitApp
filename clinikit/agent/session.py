@@ -45,7 +45,15 @@ from .phrasing import Phraser, ReplyFacts
 from .backends import CHAIN_ORDER, get_extractor
 from .backends.base import ExtractorUnavailable
 from .clinic import TIMEZONE, ClinicDB, seeded_db
-from .policy import Action, Context, Decision, Offer, WRITE_ACTIONS, decide
+from .policy import (
+    WRITE_ACTIONS,
+    Action,
+    Context,
+    Decision,
+    Offer,
+    PendingQuestion,
+    decide,
+)
 from .schema import Extraction, Intent
 from .tools import ToolResult
 
@@ -144,6 +152,8 @@ class Session:
         # --- everything below here is the memory ---
         self.known_slots: dict[str, str] = {}
         self.pending_offer: Optional[Offer] = None
+        self.pending_question: Optional[PendingQuestion] = None
+        self.offered_options: tuple = ()
         self.last_touched_appointment_id: Optional[str] = None
         self.clarifications: int = 0
         self.history: list[str] = []
@@ -172,13 +182,16 @@ class Session:
 
         decision = decide(extraction, ctx)
         result = tools.execute(decision, ctx)
-        reply = responder.respond(decision, result, ctx)
+        structured = responder.respond(decision, result, ctx, extraction)
 
         changed = result.ok and decision.action in WRITE_ACTIONS
+        reply = structured.as_text()
         reply_source, rejected = "template", None
         if self.natural_replies and self.phraser.available and degraded is None:
             phrased = self.phraser.rephrase(
-                _facts_for(decision, result, reply, changed, ctx), message
+                structured,
+                _facts_for(decision, result, structured, changed, ctx),
+                message,
             )
             reply, reply_source, rejected = phrased.text, phrased.source, phrased.rejected_because
 
@@ -209,10 +222,26 @@ class Session:
         read as a brand-new booking request, and the patient had to start again.
         """
         lines = list(self.history[-4:])
+
+        if self.offered_options:
+            shown = "; ".join(
+                f"{i}. " + (
+                    getattr(o, "full_name", None)
+                    or (f"{o.start:%A %d %B at %H:%M}" if getattr(o, "start", None) else str(o))
+                )
+                for i, o in enumerate(self.offered_options[:6], start=1)
+            )
+            lines.append(f"clinic just showed this numbered list: {shown}")
+
         if self.pending_offer is not None:
             lines.append(
                 f"clinic is waiting for a YES or NO on this exact offer: "
                 f"{self.pending_offer.summary}"
+            )
+        elif self.pending_question is not None:
+            lines.append(
+                f"clinic is waiting for a YES or NO on this question: "
+                f"{self.pending_question.summary}"
             )
         return lines
 
@@ -259,7 +288,9 @@ class Session:
             patient_id=self.patient_id,
             known_slots=dict(self.known_slots),
             pending_offer=self.pending_offer,
+            pending_question=self.pending_question,
             clarifications_so_far=self.clarifications,
+            offered_options=self.offered_options,
             last_touched_appointment_id=self.last_touched_appointment_id,
         )
 
@@ -272,6 +303,17 @@ class Session:
         If the agent ever remembers something wrong, the bug is in here.
         """
         self.turns.append(turn)
+
+        # A yes/no question is only live for the turn immediately after we ask it.
+        # Keeping it longer would mean a "yes" three messages later silently answers
+        # something the patient has long since moved on from.
+        self.pending_question = turn.decision.question
+
+        # Remember the numbered choices we just showed, so "the first one" resolves next
+        # turn. Only replaced when we actually showed something -- otherwise a follow-up
+        # question would wipe out the list the patient is still looking at.
+        if turn.decision.candidates:
+            self.offered_options = tuple(turn.decision.candidates)
 
         # Record BOTH sides. The reader used to see only the patient's own messages, so
         # it had no idea a question had just been asked -- and read "yes please book it"
@@ -345,6 +387,8 @@ class Session:
         """Start a fresh conversation, keeping the same appointment book."""
         self.known_slots.clear()
         self.pending_offer = None
+        self.pending_question = None
+        self.offered_options = ()
         self.clarifications = 0
         self.last_touched_appointment_id = None
         self.history.clear()
@@ -359,7 +403,7 @@ class Session:
         return sum(1 for t in self.turns if t.changed_the_book)
 
 
-def _facts_for(decision, result, template: str, changed: bool, ctx) -> ReplyFacts:
+def _facts_for(decision, result, structured, changed: bool, ctx) -> ReplyFacts:
     """
     Collect exactly what the reply is allowed to mention.
 
@@ -393,11 +437,24 @@ def _facts_for(decision, result, template: str, changed: bool, ctx) -> ReplyFact
         if isinstance(start, datetime):
             times.append(start)
 
+    # The appointment or offer being ASKED about has not been executed yet, so it is not
+    # in result.appointment -- but its time is right there in the reply we are about to
+    # reword. Leaving it out made the checker reject a perfectly correct confirmation
+    # question for "mentioning a time we did not offer".
+    if decision.appointment is not None:
+        times.append(decision.appointment.start)
+        doctor = ctx.db.doctor(decision.appointment.doctor_id)
+        if doctor is not None:
+            doctors.append(doctor.full_name)
+    if decision.offer is not None and decision.offer.start is not None:
+        times.append(decision.offer.start)
+
     return ReplyFacts(
-        template=template,
+        template=structured.as_text(),
         action=decision.action,
         changed_the_book=changed,
         doctors=tuple(dict.fromkeys(doctors)),
         times=tuple(dict.fromkeys(times)),
         reference=result.appointment.id if result.appointment else None,
+        has_list=bool(structured.body),
     )

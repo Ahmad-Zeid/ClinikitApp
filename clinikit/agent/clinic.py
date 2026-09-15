@@ -11,6 +11,7 @@ Saturday, closed Sunday, and doctors who each work a subset of the clinic's hour
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 from typing import Optional
@@ -43,6 +44,12 @@ CLINIC_HOURS: dict[int, Optional[tuple[time, time]]] = {
 
 WEEKDAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday",
                  "Friday", "Saturday", "Sunday"]
+
+# Plain facts about the clinic, so questions like "where are you?" have an answer instead
+# of falling through to "could you tell me more about what you need".
+CLINIC_NAME = "CliniKit Medical Centre"
+CLINIC_ADDRESS = "Rue Verdun, Hamra, Beirut"
+CLINIC_PHONE = "+961 1 000 000"
 
 
 def clinic_hours_on(d: date) -> Optional[tuple[time, time]]:
@@ -89,6 +96,30 @@ class Doctor:
     @property
     def short_name(self) -> str:
         return f"Dr. {self.first_name}"
+
+    @property
+    def hours_summary(self) -> str:
+        """
+        When this doctor works, written the way a receptionist would say it.
+
+        "Mondays, Wednesdays and Fridays, 10am to 6pm" -- not "(0, 2, 4) 10:00-18:00".
+        Offered whenever we suggest a doctor, so the patient can tell straight away
+        whether that person is any use to them.
+        """
+        days = [WEEKDAY_NAMES[d] + "s" for d in sorted(self.working_days)]
+        if len(days) == 1:
+            when = days[0]
+        elif len(days) == 5 and set(self.working_days) == {0, 1, 2, 3, 4}:
+            when = "weekdays"
+        else:
+            when = ", ".join(days[:-1]) + " and " + days[-1]
+
+        def clock(t: time) -> str:
+            hour = t.hour % 12 or 12
+            suffix = "am" if t.hour < 12 else "pm"
+            return f"{hour}{suffix}" if t.minute == 0 else f"{hour}:{t.minute:02d}{suffix}"
+
+        return f"{when}, {clock(self.start)} to {clock(self.end)}"
 
     def works_on(self, d: date) -> bool:
         return d.weekday() in self.working_days
@@ -159,6 +190,103 @@ def find_doctors(query: Optional[str]) -> list[Doctor]:
     # Fall back to a prefix match, which catches typos like "Geor" or "Nass".
     return [d for d in DOCTORS
             if d.first_name.lower().startswith(q) or d.last_name.lower().startswith(q)]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Pointing a patient at the right doctor
+# ──────────────────────────────────────────────────────────────────────────────
+#
+# A patient who says "something is wrong with my heart" should be told about the
+# cardiologist, not shown a general practitioner's diary. That is what this table does.
+#
+# THIS IS A CLINICAL DECISION AND IS TREATED AS ONE.
+#
+#   - We name a department. We never say what the symptom means, never suggest a
+#     diagnosis, never tell anyone how urgent their problem is.
+#   - The reply is always "Dr. Karim Nassar is our cardiologist", never "you should see
+#     a cardiologist" -- the difference matters. One is directory information. The other
+#     is medical advice, and this system is not qualified to give it.
+#   - In a real clinic this table would be written or approved by a doctor, and the
+#     README says so. It is here to show the shape of the idea, not to be relied on.
+
+SYMPTOM_ROUTES: dict[str, tuple[str, ...]] = {
+    "Cardiologist": (
+        "heart", "chest", "cardiac", "palpitation", "blood pressure", "bp",
+        "cholesterol", "pulse", "ecg", "angina",
+    ),
+    "Dermatologist": (
+        "skin", "rash", "acne", "mole", "eczema", "psoriasis", "itch", "hives",
+        "dermatolog", "spot on my",
+    ),
+    "Paediatrician": (
+        "child", "children", "kid", "baby", "infant", "toddler", "newborn",
+        "son", "daughter", "paediatric", "pediatric", "my boy", "my girl",
+    ),
+}
+
+# Matched on WHOLE WORDS, not substrings.
+#
+# It was substring matching at first, which forced awkward entries like "my son" instead
+# of "son" -- because a bare "son" also matches "person", "reason" and "season". The
+# workaround then failed on "his son has a fever", which is exactly the case it existed
+# for. Word boundaries let the entries be the words people actually use.
+_WORD_CACHE: dict[str, re.Pattern] = {}
+
+
+def _mentions(text: str, word: str) -> bool:
+    pattern = _WORD_CACHE.get(word)
+    if pattern is None:
+        pattern = re.compile(rf"(?<!\w){re.escape(word)}(?!\w)", re.I)
+        _WORD_CACHE[word] = pattern
+    return bool(pattern.search(text))
+
+# Anything the table does not recognise goes to a general practitioner, which is what a
+# real clinic does too: when in doubt, the GP sees you and refers you on.
+DEFAULT_SPECIALTY = "General Practitioner"
+
+
+def specialty_for(reason: Optional[str], fall_back_to_gp: bool = True) -> Optional[str]:
+    """
+    Which department a described problem belongs to.
+
+    `fall_back_to_gp` decides what happens when nothing in the table matches, and the two
+    callers genuinely want different things:
+
+      True  -- the patient IS booking and has described something. "My back hurts" is not
+               in the table, and a general practitioner is the right answer.
+      False -- the patient asked a question that might not be about a symptom at all.
+               "Do you take my insurance?" matches nothing, and falling back to a GP sent
+               a patient asking about insurance to a dermatologist's diary.
+
+    Returns the SPECIALTY, not a doctor -- several doctors may share one.
+    """
+    if not reason or not reason.strip():
+        return None
+    text = reason.lower()
+    for specialty, words in SYMPTOM_ROUTES.items():
+        if any(_mentions(text, word) for word in words):
+            return specialty
+    return DEFAULT_SPECIALTY if fall_back_to_gp else None
+
+
+def doctors_in(specialty: str) -> list[Doctor]:
+    return [d for d in DOCTORS if d.specialty == specialty]
+
+
+def suggest_doctors_for(
+    reason: Optional[str], fall_back_to_gp: bool = True
+) -> tuple[Optional[str], list[Doctor]]:
+    """
+    Given what the patient said is wrong, return (specialty, doctors who cover it).
+
+    ("Cardiologist", [Dr. Karim Nassar]) for "my heart has been racing".
+    (None, []) when nothing was described, or when nothing matched and the caller asked
+    not to fall back to a general practitioner.
+    """
+    specialty = specialty_for(reason, fall_back_to_gp=fall_back_to_gp)
+    if specialty is None:
+        return None, []
+    return specialty, doctors_in(specialty)
 
 
 # ──────────────────────────────────────────────────────────────────────────────

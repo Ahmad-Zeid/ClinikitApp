@@ -26,6 +26,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 from collections import deque
 from collections.abc import Sequence
@@ -36,8 +37,22 @@ from ..clinic import DOCTORS
 from ..schema import Extraction
 from .base import Extractor, ExtractorUnavailable
 
-PROMPT_VERSION = "v2"
+PROMPT_VERSION = "v5"
 CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "llm"
+
+# How long we will spend making a reply sound nicer before giving up and sending the
+# approved wording instead. Reading the message is essential; wording it is not.
+WORDING_BUDGET_SECONDS = 9.0
+
+# Allowance held back for reading messages.
+#
+# Both jobs draw on the same tokens-per-minute pot, and they are not equally important.
+# If reading runs out, the assistant cannot function at all -- it can only apologise. If
+# wording runs out, replies are a little plainer and nobody notices.
+#
+# So wording stops asking for tokens while there is still roughly one full reading call
+# left in the pot. It degrades quietly instead of starving the thing that matters.
+EXTRACTION_RESERVE_TOKENS = 2600
 
 
 @dataclass(frozen=True)
@@ -49,6 +64,17 @@ class Provider:
     env_key: str
     models: tuple[str, ...]
     requests_per_minute: int
+    tokens_per_minute: int = 8000
+    """
+    The limit that actually bites.
+
+    We originally throttled on requests only. Groq allows 30 a minute, so that felt
+    generous -- but the real ceiling is 8,000 TOKENS a minute, and one turn costs roughly
+    1,600 (a long extraction prompt plus a short wording call). That is about five turns
+    a minute, not thirty. We sailed past it, got rejected, and a reply that normally takes
+    two seconds took twenty-three.
+    """
+
     supports_json_schema: bool = True
     signup: str = ""
 
@@ -89,37 +115,40 @@ def _roster() -> str:
 
 
 SYSTEM_PROMPT = f"""\
-You read messages patients send to a clinic in Beirut and turn them into JSON. You never
-reply to the patient and never take any action.
+You read messages patients send to a clinic in Beirut and return JSON. You never reply to
+the patient and never take any action.
 
 Doctors:
 {_roster()}
 
-RULES
-1. Copy dates/times EXACTLY as written ("tomorrow", "after 5"). Never convert to a real
-   date - you do not know today's date.
+1. Copy dates and times VERBATIM ("tomorrow", "after 5"). Never convert to a real date -
+   you do not know today's date.
 2. Reschedule: preferred_date is the NEW date; the old one goes in
    existing_appointment_phrase. "from Monday to Wednesday" -> new=Wednesday, old=Monday.
-3. is_hedged = the patient explicitly said not to act yet ("don't book yet", "just
-   checking"). A plain question is NOT hedged. Politeness is NOT hedging.
-4. Only record a doctor they actually named. "a doctor"/"my doctor"/"someone" = nobody;
-   leave doctor empty (set refers_to_previous_visit if they meant a past doctor).
-5. Expect typos and Arabizi (Lebanese Arabic in Latin letters). Glossary:
-   badde=I want, shouf/shoufo=see, bukra=tomorrow, lyom=today, 3anjad=really, shu=what,
-   eymta=when, fi=is there, fadi/fadye=free, dawam=working hours, tabaakon=yours,
-   3iyede=clinic, mawad=appointment, baddi=I want, ba3dein=later, mnee7=good,
-   la2=no, eh/na3am=yes, 7akim/doktor=doctor, sa3a=hour/time, jomaa=Friday.
-6. confidence 0-1, honest. Vague message = low, so we ask instead of guessing.
-7. Asking to COME IN on a day ("can I come in Thursday?", "are you free Friday?") is
-   book_appointment. ask_opening_hours is ONLY for what hours the clinic operates.
+3. is_hedged = they explicitly said not to act yet ("don't book yet", "just checking").
+   A plain question is NOT hedged. Politeness is NOT hedging.
+4. Only record a doctor they actually named. "a doctor" / "my doctor" / "someone" name
+   nobody - leave doctor empty.
+5. Expect typos, and Lebanese Arabic written in Latin letters. Read both as normal language.
+6. confidence 0-1, honest. A vague message scores low so we ask instead of guessing.
+7. Three things that look alike:
+   - ask_doctor_availability = asking WHAT is free, without committing to a time.
+     "Is Dr George free tomorrow afternoon?", "anything available after 5?",
+     "any slots Thursday?". Still availability even if they clearly want to book.
+   - book_appointment = asking to BE BOOKED, or naming the time they want.
+     "Book me Friday at 4", "can I come in Thursday?", "I need an appointment".
+   - ask_opening_hours = ONLY what hours the clinic itself operates.
 8. A symptom with no request ("my back hurts") is book_appointment, modest confidence,
-   symptom in reason_for_visit. A bare greeting is "other", low confidence.
-9. confirm/deny: if the previous clinic message offered a specific appointment and this
-   message accepts it, the intent is "confirm" - even if it also says "book it"
-   ("yes", "go ahead", "yes please book it", "sounds good"). If it declines, "deny".
-   "ok thanks" with nothing pending is "other".
-10. NEVER copy a date, time or doctor from the examples above. Only record what appears
-   in the patient's own message. If the message names no date, preferred_date is null.
+   symptom in reason_for_visit. A bare hello is "greeting".
+9. confirm / deny are short replies to a question we just asked. "ok thanks" is "other".
+10. ask_clinic_info: location, parking, contact, which doctor treats what.
+10b. talk_to_human: ANY request for a person, however phrased or however rude - "get me
+    a human", "I'll call instead", "someone call me", "let me speak to reception".
+11. NEVER copy a date, time or doctor from the examples below. Only what this message says.
+12. option_reference: picking from a numbered list we showed - copy their words ("the
+    first one", "option 2"). Otherwise empty.
+13. request_summary: ALWAYS fill. A noun phrase that reads after "your question about..."
+    - "their insurance coverage", "a repeat prescription". Not "asks if...".
 
 Return only JSON."""
 
@@ -150,7 +179,13 @@ class OpenAICompatibleExtractor(Extractor):
         api_key: str | None = None,
         models: Sequence[str] | None = None,
         use_cache: bool = True,
-        budget_seconds: float = 25.0,
+        # Long enough to WAIT OUT a full rate-limit window rather than give up inside it.
+        #
+        # It was 25 seconds, which was shorter than the wait it sometimes needed -- so a
+        # busy minute produced "sorry, I'm having trouble" instead of a slow reply. A slow
+        # reply is a reply. An apology is not. Reading the message is the one thing that
+        # cannot degrade gracefully, so it is allowed to take its time.
+        budget_seconds: float = 60.0,
     ) -> None:
         if provider not in PROVIDERS:
             raise ValueError(f"Unknown provider {provider!r}. Known: {list(PROVIDERS)}")
@@ -167,12 +202,49 @@ class OpenAICompatibleExtractor(Extractor):
         except ImportError as exc:
             raise ExtractorUnavailable("the 'openai' package is not installed") from exc
 
-        self._client = OpenAI(api_key=key, base_url=self.provider.base_url, timeout=20.0)
+        # A short per-call timeout on purpose.
+        #
+        # Groq is usually under a second but occasionally takes eight. Two of those in
+        # one turn -- one to read the message, one to word the reply -- is a
+        # twenty-four-second wait for a patient. Giving up at seven seconds and asking a
+        # different model is almost always faster than waiting for the slow one, because
+        # the fallback normally answers in about a second.
+        self._client = OpenAI(
+            api_key=key,
+            base_url=self.provider.base_url,
+            timeout=7.0,
+            # The SDK retries twice on its own by default. Ours does too, and a retry
+            # inside a retry multiplies: a seven-second timeout quietly became
+            # twenty-one seconds per call, and a single slow model turned into a
+            # minute-long wait for a patient. Retrying is our job -- we know which other
+            # models are free and how much allowance each has left. The SDK does not.
+            max_retries=0,
+        )
         self._models = tuple(models or self.provider.models)
         self._use_cache = use_cache
         self._budget = budget_seconds
-        # Times of recent calls, used to stay under the per-minute limit.
-        self._recent_calls: deque[float] = deque()
+        # (time, tokens) per recent call, kept SEPARATELY FOR EACH MODEL.
+        #
+        # Every model has its own requests-per-minute and tokens-per-minute allowance.
+        # Counting them all against one shared total was expensive: when the big model
+        # filled up we slept for a minute, while two other models sat there completely
+        # unused. Tracking them apart means a full model is simply skipped.
+        self._windows: dict[str, deque[tuple[float, int]]] = {
+            m: deque() for m in self._models
+        }
+        self._last_model_called: str | None = None
+
+        # When a model told us "429, too many requests", and when it said we could
+        # return. Our own counters start empty on every restart, so after a busy session
+        # we cheerfully believe we have a full allowance, get refused, and then conclude
+        # there is nothing to wait for -- because our local window looks empty. The
+        # server's refusal is ground truth; our counting is only an estimate.
+        self._blocked_until: dict[str, float] = {}
+
+        # Set once a model reports the DAILY allowance is spent. Surfaced to the caller
+        # so the reason shown is "the free daily allowance is used up" rather than a
+        # vague "having trouble", which sends people hunting for a bug that is not there.
+        self.daily_quota_exhausted = False
 
         self.last_model_used: str | None = None
         self.last_latency: float | None = None
@@ -204,38 +276,74 @@ class OpenAICompatibleExtractor(Extractor):
         deadline = time.monotonic() + self._budget
         last_error: Exception | None = None
 
-        for model in self._models:
-            if time.monotonic() > deadline:
-                break
-            for attempt in range(2):
-                try:
-                    self._throttle()
-                    started = time.monotonic()
-                    response = self._client.chat.completions.create(
-                        model=model,
-                        messages=messages,
-                        temperature=0.0,
-                        response_format=self._response_format(),
-                    )
-                    self.last_latency = time.monotonic() - started
-                    self.last_model_used = model
+        # Reading a message is the expensive call: a long instruction block plus the
+        # examples plus the schema.
+        cost = 1300
 
-                    text = response.choices[0].message.content or ""
-                    result = Extraction.model_validate_json(_strip_fences(text))
-                    self._cache_put(message, history, result)
-                    return self._finalise(result, message)
-
-                except Exception as exc:  # noqa: BLE001
-                    last_error = exc
-                    # Each model has its OWN tokens-per-minute budget. So when one says
-                    # "too many requests", the fastest fix is a different model, not
-                    # waiting a minute for the same one to recover.
-                    if _is_rate_limited(exc):
-                        break
-                    if _is_transient(exc) and attempt == 0 and time.monotonic() < deadline:
-                        time.sleep(1.5)
-                        continue
+        # Two passes. The first uses only models with allowance left. If every model is
+        # saturated, wait for the soonest to free up and go round once more. Skipping a
+        # busy model costs nothing; waiting for it costs up to a minute.
+        for pass_number in (1, 2):
+            for model in self._models:
+                if time.monotonic() > deadline:
                     break
+                if pass_number == 1 and not self.has_budget(model, cost):
+                    continue
+
+                for attempt in range(2):
+                    try:
+                        self._note_call(model, cost)
+                        started = time.monotonic()
+                        response = self._client.chat.completions.create(
+                            model=model,
+                            messages=messages,
+                            temperature=0.0,
+                            response_format=self._response_format(),
+                        )
+                        self._record_usage(response)
+                        self.last_latency = time.monotonic() - started
+                        self.last_model_used = model
+
+                        text = response.choices[0].message.content or ""
+                        result = Extraction.model_validate_json(_strip_fences(text))
+                        self._cache_put(message, history, result)
+                        return self._finalise(result, message)
+
+                    except Exception as exc:  # noqa: BLE001
+                        last_error = exc
+                        # Rate-limited means this model's allowance is gone. Another
+                        # model has its own, so move on rather than wait.
+                        if _is_rate_limited(exc):
+                            self._note_refusal(model, exc)
+                            break
+                        if _is_transient(exc) and attempt == 0 and time.monotonic() < deadline:
+                            time.sleep(1.5)
+                            continue
+                        break
+
+            if pass_number == 1:
+                wait = self._seconds_until_free(cost)
+                if wait <= 0:
+                    break
+                # Wait as long as the budget allows and then try anyway, rather than
+                # giving up the moment the sums say we cannot fit.
+                #
+                # It used to bail out instantly when the wait exceeded the budget, so a
+                # busy minute produced "sorry, I'm having trouble" in a tenth of a
+                # second -- which looks broken, not busy. Trying and being refused is a
+                # better outcome than not trying: the refusal is handled, and often the
+                # allowance has freed up more than our own arithmetic expected.
+                remaining = deadline - time.monotonic()
+                if remaining <= 0.5:
+                    break
+                time.sleep(min(wait, remaining))
+
+        if self.daily_quota_exhausted:
+            raise ExtractorUnavailable(
+                f"{self.name}: the free daily token allowance is used up. It resets on "
+                f"the provider's daily cycle. Add another provider with "
+                f"CLINIKIT_PROVIDERS=groq,gemini, or use a different key."
+            ) from last_error
 
         raise ExtractorUnavailable(
             f"{self.name}: every model failed. Last error: "
@@ -255,23 +363,51 @@ class OpenAICompatibleExtractor(Extractor):
         # the smaller model is used first here. It is roughly twice as fast.
         models = sorted(self._models, key=lambda m: 0 if "20b" in m else 1)
 
+        # A hard ceiling on the whole attempt.
+        #
+        # Without one, three models times two attempts times a seven-second timeout came
+        # to forty-two seconds of trying to make a sentence sound nicer. Wording is a
+        # luxury: if it cannot be done quickly it should not be done at all, and the
+        # approved reply goes out instead. The caller treats a failure here as "use the
+        # template", which is always correct, just plainer.
+        deadline = time.monotonic() + WORDING_BUDGET_SECONDS
+
         last_error: Exception | None = None
         for model in models:
             for extra in ({"reasoning_effort": "low"}, {}):
+                if time.monotonic() > deadline:
+                    raise ExtractorUnavailable(
+                        f"{self.name}: wording took longer than "
+                        f"{WORDING_BUDGET_SECONDS}s; using the approved reply"
+                    )
+                # Ask for the wording cost PLUS the reserve, so wording gives up while
+                # there is still room to read the next message. See the note on
+                # EXTRACTION_RESERVE_TOKENS.
+                if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS):
+                    continue
                 try:
-                    self._throttle()
+                    # Rewording is much cheaper than reading: a short prompt, a short answer.
+                    self._note_call(model, 600)
                     response = self._client.chat.completions.create(
                         model=model, temperature=0.4, max_tokens=700,
                         messages=[{"role": "system", "content": system},
                                   {"role": "user", "content": user}],
                         **extra,
                     )
+                    self._record_usage(response)
                     text = (response.choices[0].message.content or "").strip()
                     if text:
                         return text
                 except Exception as exc:  # noqa: BLE001
                     last_error = exc
-                    continue
+                    if _is_rate_limited(exc):
+                        self._note_refusal(model, exc)
+                        break
+                    # `reasoning_effort` is a gpt-oss extra. If a model rejects it, the
+                    # retry without it is worth one go; any other failure means move on.
+                    if extra and "reasoning" in str(exc).lower():
+                        continue
+                    break
         raise ExtractorUnavailable(f"{self.name}: {str(last_error)[:120]}") from last_error
 
     # ---- helpers ------------------------------------------------------------
@@ -322,13 +458,26 @@ class OpenAICompatibleExtractor(Extractor):
             # brand new booking request. Instructions placed right next to the thing they
             # apply to get followed; the same words further away do not.
             pending = [l for l in lines if l.startswith("clinic is waiting")]
-            context = [l for l in lines if not l.startswith("clinic is waiting")]
+            listed = [l for l in lines if l.startswith("clinic just showed")]
+            context = [l for l in lines
+                       if not l.startswith(("clinic is waiting", "clinic just showed"))]
 
             if context:
                 parts.append({
                     "role": "system",
                     "content": ("Conversation so far (context only - extract ONLY from "
                                 f"the new message):\n" + "\n".join(context)),
+                })
+            if listed:
+                parts.append({
+                    "role": "system",
+                    "content": (
+                        f"{listed[-1]}\n\n"
+                        "If the next message picks one of those - \"the first one\", "
+                        "\"option 2\", \"the second\", \"the 10:30 one\", \"the last one\" - "
+                        "you MUST copy their exact words into option_reference. Without "
+                        "it we cannot tell which one they meant and have to ask again."
+                    ),
                 })
             if pending:
                 parts.append({
@@ -346,32 +495,85 @@ class OpenAICompatibleExtractor(Extractor):
         parts.append({"role": "user", "content": message})
         return parts
 
-    def _throttle(self) -> None:
-        """
-        Wait only when we are actually about to exceed the per-minute limit.
+    def _prune(self, model: str, now: float) -> None:
+        window = self._windows.setdefault(model, deque())
+        while window and now - window[0][0] > 60.0:
+            window.popleft()
 
-        This used to sleep a fixed 60/limit seconds before every call -- 2 seconds each
-        for Groq -- whether or not we had made a single request. Two calls per reply meant
-        4 seconds of waiting for nothing. Now we keep the times of recent calls and sleep
-        only when the last minute is genuinely full.
+    def has_budget(self, model: str, expected_tokens: int) -> bool:
         """
-        limit = self.provider.requests_per_minute
+        Could this model take another call right now without breaching a limit?
+
+        Two limits apply and both matter: requests per minute, and tokens per minute. The
+        token one is far tighter in practice -- see the note on `tokens_per_minute`.
+        """
         now = time.monotonic()
+        if self._blocked_until.get(model, 0.0) > now:
+            return False
+        self._prune(model, now)
+        window = self._windows.setdefault(model, deque())
+        if len(window) >= self.provider.requests_per_minute:
+            return False
+        return sum(t for _, t in window) + expected_tokens <= self.provider.tokens_per_minute
 
-        # Drop anything older than a minute; it no longer counts against us.
-        while self._recent_calls and now - self._recent_calls[0] > 60.0:
-            self._recent_calls.popleft()
+    def _seconds_until_free(self, expected_tokens: int) -> float:
+        """How long before ANY model can take a call. Used only when all are saturated."""
+        now = time.monotonic()
+        waits = []
+        for model in self._models:
+            blocked = self._blocked_until.get(model, 0.0)
+            if blocked > now:
+                waits.append(blocked - now + 0.05)
+                continue
+            self._prune(model, now)
+            window = self._windows.get(model)
+            if not window:
+                return 0.0
+            waits.append(60.0 - (now - window[0][0]) + 0.05)
+        return max(0.0, min(waits)) if waits else 0.0
 
-        if len(self._recent_calls) >= limit:
-            # Wait just long enough for the oldest call to fall out of the window.
-            sleep_for = 60.0 - (now - self._recent_calls[0]) + 0.05
-            if sleep_for > 0:
-                time.sleep(sleep_for)
-            now = time.monotonic()
-            while self._recent_calls and now - self._recent_calls[0] > 60.0:
-                self._recent_calls.popleft()
+    def _note_refusal(self, model: str, exc: Exception) -> None:
+        """
+        Believe the server when it says to back off, and for how long.
 
-        self._recent_calls.append(now)
+        Two very different refusals arrive as the same 429, and treating them the same
+        was costing us minutes:
+
+          "tokens per minute"  -- busy right now. Back in seconds. Worth waiting for.
+          "tokens per day"     -- the free allowance is spent until tomorrow. Waiting is
+                                  pointless; every retry is a wasted round trip, and the
+                                  honest thing is to stop asking and say so.
+        """
+        message = str(exc)
+        if _is_daily_quota(message):
+            self.daily_quota_exhausted = True
+            self._blocked_until[model] = time.monotonic() + 3600.0
+            return
+
+        seconds = 15.0
+        match = re.search(r"try again in ([\d.]+)\s*(m|s)", message, re.I)
+        if match:
+            value = float(match.group(1))
+            seconds = value * 60 if match.group(2).lower() == "m" else value
+        self._blocked_until[model] = time.monotonic() + min(seconds + 0.5, 65.0)
+
+    def _note_call(self, model: str, expected_tokens: int) -> None:
+        """Record a call optimistically; _record_usage corrects it with the real cost."""
+        self._windows.setdefault(model, deque()).append((time.monotonic(), expected_tokens))
+        self._last_model_called = model
+
+    def _record_usage(self, response) -> None:
+        usage = getattr(response, "usage", None)
+        model = self._last_model_called
+        if usage is None or model is None:
+            return
+        window = self._windows.get(model)
+        if not window:
+            return
+        total = getattr(usage, "total_tokens", None)
+        if total:
+            when, _ = window[-1]
+            window[-1] = (when, int(total))
 
     # ---- cache --------------------------------------------------------------
 
@@ -428,6 +630,12 @@ def _load_key(env_key: str) -> str | None:
     except ImportError:
         pass
     return os.environ.get(env_key)
+
+
+def _is_daily_quota(message: str) -> bool:
+    """Is this 429 about the DAILY allowance rather than the per-minute one?"""
+    low = message.lower()
+    return "per day" in low or "tpd" in low or "rpd" in low
 
 
 def _is_rate_limited(exc: Exception) -> bool:

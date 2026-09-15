@@ -262,6 +262,12 @@ function renderDecision(d) {
     p.textContent = 'Model wording rejected: ' + d.reply_rejected_because;
     $('decision').append(p);
   }
+  if (d.degraded_reason) {
+    const p = document.createElement('p');
+    p.className = 'why'; p.style.marginTop = '12px'; p.style.color = 'var(--guard)';
+    p.textContent = d.degraded_reason;
+    $('decision').append(p);
+  }
 }
 
 function renderExtraction(e, meta) {
@@ -303,11 +309,13 @@ async function send(text) {
     sessionId = d.session_id;
     thinking.remove();
 
-    if (d.degraded_reason) banner('FALLBACK', d.degraded_reason);
+    // The reply, and only the reply.
+    //
+    // "G3 No doctor was named" used to appear as a yellow banner in the conversation.
+    // Those are internal safety codes written for us, not for a patient — seeing one
+    // mid-chat reads like an error. They live in the inspector on the right now, where
+    // a reviewer can see exactly which rule fired without the patient being shown it.
     bubble(d.reply, 'bot');
-    if (d.guarantee && !d.changed_the_book) {
-      banner(d.guarantee, d.reason);
-    }
     renderDecision(d); renderExtraction(d.extraction, d); renderBook(d.appointments);
     $('status').innerHTML = `<span class="dot"></span>${d.action} · ${d.backend} · ${d.seconds}s`;
   } catch (err) {

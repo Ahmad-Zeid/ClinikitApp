@@ -42,6 +42,17 @@ _COMPLETION_CLAIMS = [
     "i have confirmed", "has been cancelled", "has been canceled", "i've cancelled",
     "i have cancelled", "has been moved", "i've moved", "i have moved",
     "has been rescheduled", "appointment is set", "all set for",
+    # Added after the model wrote "Your appointment with Dr. Karim Nassar is scheduled
+    # for Wednesday" on a turn that was only ASKING for confirmation. Nothing had been
+    # written to the appointment book. The patient would have believed they had an
+    # appointment they did not have -- exactly the failure this check exists to prevent,
+    # slipping through because the wording was not on the list.
+    # Kept deliberately narrow. "Would you like me to cancel your appointment with Dr.
+    # Karim?" is a perfectly good question, so phrases like "your appointment with" must
+    # NOT be banned -- over-blocking sends us back to stiff templates, which is the thing
+    # this whole layer exists to fix. Only wordings that assert a completed action.
+    "is scheduled for", "is set for", "is confirmed", "is reserved",
+    "we have you down", "we've got you down", "you're all set", "you are all set",
 ]
 
 # Promises about things this system cannot do at all.
@@ -50,10 +61,36 @@ _COMPLETION_CLAIMS = [
 _NON_ENGLISH_MARKERS = ["3a", "7a", "2a", "5a", "9a", "badd", "shou", "kif", "bukra",
                         "ma3", "3ando", "fadi", "el "]
 
+# Wordings that assess a patient's condition rather than pointing at a department.
+#
+# The system routes: "Dr. Karim Nassar is our cardiologist." It must never assess: what
+# the symptom might mean, how serious it is, or how quickly it needs attention. Those are
+# clinical judgements and nothing here is qualified to make them. A reply that drifts
+# into one is thrown away and the approved wording is sent instead.
+#
+# Note what is NOT banned: "you should see our cardiologist" is directory information in
+# a receptionist's mouth, and blocking it would cost naturalness for no safety gain.
+_CLINICAL_ADVICE = [
+    "sounds like", "could be a sign", "may have", "might have", "probably have",
+    "you likely", "this is likely", "diagnos", "symptoms suggest", "indicates",
+    "seek immediate", "seek urgent", "go to a&e", "go to the er", "emergency room",
+    "this is serious", "this is urgent", "right away", "as soon as possible you should",
+    "i recommend you", "i'd recommend you", "you need to be seen",
+]
+
 _IMPOSSIBLE_CLAIMS = [
-    "sent you a reminder", "sent a reminder", "sent you a confirmation",
-    "email", "e-mail", "text message", "sms", "call you back", "ring you",
-    "added to your calendar", "invoice", "payment", "insurance",
+    # Phrases, not bare words. Banning "insurance" outright meant we could not even say
+    # "I'm passing on your insurance question" -- the reply was rejected for mentioning
+    # the topic it was about. What must be blocked is PROMISING to do something the
+    # clinic cannot do, not naming the subject.
+    "sent you a reminder", "sent a reminder", "i'll send you a reminder",
+    "we'll send you a reminder", "sent you a confirmation", "i'll email",
+    "we'll email", "i will email", "we will email", "i'll text", "we'll text",
+    "send you an email", "send you a text", "send you an sms",
+    "i'll call you", "we'll call you", "i will call you", "we will call you",
+    "added to your calendar", "add it to your calendar",
+    "we'll invoice", "your insurance covers", "covered by your insurance",
+    "we accept your insurance", "we take your insurance",
 ]
 
 _TIME_RE = re.compile(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b", re.I)
@@ -73,6 +110,10 @@ class ReplyFacts:
     doctors: tuple[str, ...] = ()
     times: tuple[datetime, ...] = ()
     reference: str | None = None
+    has_list: bool = False
+    """True when a numbered list sits between the lead and the closing, so the model can
+    be told not to repeat or summarise something it cannot see."""
+
     extra_notes: tuple[str, ...] = field(default_factory=tuple)
 
 
@@ -83,6 +124,33 @@ class PhrasedReply:
     """'gemini' if the model's wording was used, otherwise 'template'."""
 
     rejected_because: str | None = None
+
+
+def _parse(raw: str) -> tuple[str, str]:
+    """
+    Pull the two rewritten parts out of the model's answer.
+
+    Expected shape is "LEAD: ...\\nCLOSING: ...". Models sometimes drop a label or add a
+    stray quote, so anything unlabelled before a CLOSING line is treated as the lead --
+    a slightly wrong split is still usable, whereas failing outright is not.
+    """
+    lead_lines: list[str] = []
+    closing_lines: list[str] = []
+    target = lead_lines
+
+    for line in (raw or "").splitlines():
+        stripped = line.strip().strip('"')
+        upper = stripped.upper()
+        if upper.startswith("LEAD:"):
+            target = lead_lines
+            stripped = stripped[5:].strip()
+        elif upper.startswith("CLOSING:"):
+            target = closing_lines
+            stripped = stripped[8:].strip()
+        if stripped and stripped.lower() != "(blank)":
+            target.append(stripped)
+
+    return " ".join(lead_lines).strip(), " ".join(closing_lines).strip()
 
 
 def _allowed_times(times: tuple[datetime, ...]) -> set[str]:
@@ -123,7 +191,12 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
     if len(hits) >= 2:
         return f"reply looks like Arabizi rather than English ({', '.join(hits[:3])})"
 
-    # 3. Does it promise something this system cannot do?
+    # 3. Has it strayed into assessing the patient rather than routing them?
+    for phrase in _CLINICAL_ADVICE:
+        if phrase in low:
+            return f"strays into clinical advice ({phrase!r})"
+
+    # 4. Does it promise something this system cannot do?
     for claim in _IMPOSSIBLE_CLAIMS:
         if claim in low:
             return f"promises something the system cannot do ({claim!r})"
@@ -157,24 +230,33 @@ def verify(candidate: str, facts: ReplyFacts) -> str | None:
 
 
 SYSTEM_PROMPT = """\
-You write short replies from a medical clinic in Beirut to a patient messaging them.
+You are the receptionist at a medical clinic in Beirut, writing back to a patient.
 
-You will be given an approved reply and the facts behind it. Rewrite the approved reply so
-it sounds like a warm, capable human receptionist.
+You are given an approved reply split into a LEAD (what comes before any list) and a
+CLOSING (what comes after). Rewrite both so they sound like a capable, warm human.
+
+A list of times or doctors may sit between them. You will not see it and must not
+reproduce it. Do not list anything yourself.
+
+TONE
+- Warm but professional. A good receptionist, not a chatbot.
+- Two or three short sentences at most across the whole reply.
+- If the patient mentioned a symptom or a problem, acknowledge it briefly first.
+- Say the useful thing early. Pleasantries do not lead.
+- No emoji. No exclamation marks. Never "Absolutely", "I'd be delighted", "Great news".
+- Only greet them if the approved LEAD greets them.
 
 HARD RULES
-- Use ONLY the facts given. Never add a time, a date, a doctor or a detail that is not
-  there.
+- Use ONLY the facts given. Never add a time, date, doctor or detail that is not there.
 - Never say something was booked, cancelled or moved unless the facts say it was.
-- Never promise reminders, emails, texts, calls, calendar invites or payments. The clinic
-  cannot do these.
-- Keep it to two or three short sentences.
-- ALWAYS reply in English. Never reply in Arabic or in Arabizi (Arabic written in Latin
-  letters), even if the patient wrote that way.
-- Do not add a greeting unless the approved reply has one.
-- Do not use emoji or exclamation marks.
+- Never promise reminders, emails, texts, calls, calendar invites or payments.
+- Never say anything about what a symptom might mean, how serious it is, or what the
+  patient should do about it. You are a receptionist, not a clinician.
+- Always write in English, even if the patient wrote in another language.
 
-Return only the reply text. No quotes, no explanation."""
+Reply in exactly this format and nothing else:
+LEAD: <the rewritten lead, or blank>
+CLOSING: <the rewritten closing, or blank>"""
 
 
 class Phraser:
@@ -189,50 +271,76 @@ class Phraser:
     def available(self) -> bool:
         return self._extractor is not None and hasattr(self._extractor, "write_text")
 
-    def rephrase(self, facts: ReplyFacts, patient_message: str = "") -> PhrasedReply:
+    def rephrase(self, reply, facts: ReplyFacts, patient_message: str = "") -> PhrasedReply:
+        """
+        Reword the prose around a reply, leaving the list of facts untouched.
+
+        The model never sees the body. That is what makes this safe to do on every reply,
+        including the ones with a list in them -- which is most of them, and which used to
+        be skipped entirely, leaving the whole thing sounding like a form.
+        """
         if not self.available:
-            return PhrasedReply(facts.template, "template", "no language model available")
+            return PhrasedReply(reply.as_text(), "template", "no language model available")
 
-        # Replies containing a list are left exactly as written.
-        #
-        # A list of free times or a list of doctors is already clear, and asking a model
-        # to reword it produces a run-on sentence with the bullets flattened into commas.
-        # Rewording helps a plain sentence; it only damages a list.
-        if facts.template.count("\n") >= 2 or "•" in facts.template:
-            return PhrasedReply(facts.template, "template", "contains a list — left as written")
+        lead = " ".join(p for p in (reply.acknowledgement, reply.opening) if p).strip()
+        if not lead and not reply.closing:
+            return PhrasedReply(reply.as_text(), "template", "nothing to reword")
 
-        prompt = self._prompt(facts, patient_message)
         try:
-            candidate = self._extractor.write_text(SYSTEM_PROMPT, prompt).strip().strip('"')
+            raw = self._extractor.write_text(
+                SYSTEM_PROMPT, self._prompt(lead, reply.closing, facts, patient_message)
+            )
         except Exception as exc:  # noqa: BLE001
-            return PhrasedReply(facts.template, "template",
+            return PhrasedReply(reply.as_text(), "template",
                                 f"model unavailable: {type(exc).__name__}")
 
-        if not candidate:
-            return PhrasedReply(facts.template, "template", "model returned nothing")
+        new_lead, new_closing = _parse(raw)
+        if not new_lead and not new_closing:
+            return PhrasedReply(reply.as_text(), "template", "model returned nothing usable")
 
-        problem = verify(candidate, facts)
+        # Check only the prose. The body is ours and was never sent.
+        prose = " ".join(p for p in (new_lead, new_closing) if p)
+        problem = verify(prose, facts)
         if problem:
             self.rejections.append(problem)
-            return PhrasedReply(facts.template, "template", problem)
+            return PhrasedReply(reply.as_text(), "template", problem)
 
-        return PhrasedReply(candidate, getattr(self._extractor, "name", "model"))
+        blocks = []
+        if new_lead:
+            blocks.append(new_lead)
+        if reply.body:
+            blocks.append("\n".join(reply.body))
+        if new_closing:
+            blocks.append(new_closing)
+
+        return PhrasedReply("\n\n".join(blocks), getattr(self._extractor, "name", "model"))
 
     @staticmethod
-    def _prompt(facts: ReplyFacts, patient_message: str) -> str:
+    def _prompt(lead: str, closing: str, facts: ReplyFacts, patient_message: str) -> str:
         lines = []
         if patient_message:
             lines.append(f"The patient wrote: {patient_message}")
-        lines.append(f"\nApproved reply (rewrite this):\n{facts.template}")
+        lines.append(f"\nLEAD (rewrite): {lead or '(blank)'}")
+        lines.append(f"CLOSING (rewrite): {closing or '(blank)'}")
         lines.append("\nFacts you may use:")
         lines.append(f"- action taken: {facts.action}")
-        lines.append(f"- appointment book changed: {'yes' if facts.changed_the_book else 'NO'}")
+        if facts.changed_the_book:
+            lines.append("- the appointment book WAS changed. You may say it is done.")
+        else:
+            lines.append(
+                "- NOTHING WAS BOOKED, MOVED OR CANCELLED. The appointment book is "
+                "unchanged. Do not write 'is scheduled for', 'is set for', 'is "
+                "confirmed', or anything else implying it has happened. If you are "
+                "asking them to confirm, make it clearly a question."
+            )
         if facts.doctors:
-            lines.append(f"- doctors mentioned: {', '.join(facts.doctors)}")
+            lines.append(f"- doctors involved: {', '.join(facts.doctors)}")
         if facts.times:
-            lines.append("- times mentioned: " +
+            lines.append("- times involved: " +
                          ", ".join(f"{t:%A %d %B %H:%M}" for t in facts.times))
         if facts.reference:
             lines.append(f"- booking reference: {facts.reference}")
-        lines.append("\nRewrite the approved reply. Add nothing.")
+        if facts.has_list:
+            lines.append("- a numbered list sits between LEAD and CLOSING. Do not repeat "
+                         "it, do not summarise it, do not mention how many items it has.")
         return "\n".join(lines)

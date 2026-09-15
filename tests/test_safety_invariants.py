@@ -178,6 +178,7 @@ def test_G7_deciding_never_changes_the_appointment_book(now, db):
 # The whole test set, through every backend
 # ══════════════════════════════════════════════════════════════════════════════
 
+@pytest.mark.live
 @pytest.mark.parametrize("backend", available_backends())
 def test_no_test_case_ever_changes_the_appointment_book(backend, now):
     """

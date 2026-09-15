@@ -28,11 +28,19 @@ THE SEVEN GUARANTEES
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field, replace
 from datetime import date, datetime
 from typing import Optional
 
-from .clinic import Appointment, ClinicDB, Doctor, clinic_hours_on, find_doctors
+from .clinic import (
+    Appointment,
+    ClinicDB,
+    Doctor,
+    clinic_hours_on,
+    find_doctors,
+    suggest_doctors_for,
+)
 from .schema import Extraction, Intent
 from .temporal import AMBIGUOUS_HOUR, CLOSED_DAY, PAST_DATE, Resolved, resolve
 
@@ -114,6 +122,26 @@ class Offer:
 
 
 @dataclass(frozen=True)
+class PendingQuestion:
+    """
+    What a plain "yes" would mean, when the last thing we said was a yes/no question.
+
+    An Offer covers "shall I book this?" -- a specific appointment waiting for consent.
+    But plenty of our questions are not offers: "Would you like me to check when Dr.
+    Nassar is free?" is a yes/no question with a clear follow-up, and "yes please" to it
+    used to come back as "I'm not sure which request you're confirming" -- while the
+    patient was answering the question we had just asked them.
+
+    Deliberately NOT an Offer, and deliberately cannot lead to a write. Saying yes to
+    "shall I look something up" must never book anything.
+    """
+
+    kind: str                       # currently only "check_availability"
+    summary: str = ""
+    doctor_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class Context:
     """
     A read-only snapshot of everything the decision may depend on.
@@ -129,6 +157,18 @@ class Context:
     known_slots: dict = field(default_factory=dict)
     pending_offer: Optional[Offer] = None
     clarifications_so_far: int = 0
+
+    pending_question: Optional[PendingQuestion] = None
+    """The yes/no question we asked last turn, if it had a concrete follow-up."""
+
+    offered_options: tuple = ()
+    """
+    The numbered choices we showed the patient last turn, in the order shown.
+
+    Needed so "the first one" means something. Without it, we list four times and then
+    cannot accept a reference to any of them -- which reads as the assistant not having
+    been paying attention to its own message.
+    """
 
     last_touched_appointment_id: Optional[str] = None
     """
@@ -169,11 +209,30 @@ class Decision:
     offer: Optional[Offer] = None
     """An offer to remember for the next turn. The session layer stores this."""
 
+    question: Optional[PendingQuestion] = None
+    """A yes/no question we are asking, so next turn's "yes" has something to mean."""
+
     missing: tuple[str, ...] = ()
     """What we still need from the patient, e.g. ("doctor", "date")."""
 
     candidates: tuple = ()
     """Options to present: ambiguous doctors, or free slots to choose from."""
+
+    specialty: Optional[str] = None
+    """
+    The department a described problem belongs to, when we are suggesting a doctor.
+
+    Set only by the routing path. It names a department -- it never carries anything
+    about what the symptom might mean. See the note above SYMPTOM_ROUTES in clinic.py.
+    """
+
+    topic: Optional[str] = None
+    """
+    What the patient wanted, in the model's own words, carried through for a human.
+
+    This is what stops "other" being a dead end: instead of "could you tell me more",
+    the person who picks up the conversation sees "asking about their insurance".
+    """
 
     @property
     def is_write(self) -> bool:
@@ -193,12 +252,70 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     earlier rule that decided to do something.
     """
 
+    # --- 0. A greeting is answered, not investigated -------------------------
+    # Placed before the confidence check on purpose. "hi" carries almost no information,
+    # so it scores low -- and the confidence rule then treated it as a failure to
+    # understand and replied "could you tell me more about what you need". Saying hello
+    # back is not a risk; it is the entire correct response.
+    if extraction.intent == Intent.GREETING:
+        return Decision(
+            action=Action.PROVIDE_INFORMATION,
+            reason="The patient said hello. Greeting them back and offering help.",
+            topic="greeting",
+        )
+
     # --- 1. An explicit request for a person always wins ---------------------
     if extraction.intent == Intent.TALK_TO_HUMAN:
         return Decision(
             action=Action.HANDOFF_TO_HUMAN,
             reason="The patient asked to speak to a person.",
         )
+
+    # --- 1b. Picking one of the choices we listed ----------------------------
+    # Deliberately BEFORE the confidence gate AND the confirmation rule.
+    #
+    # Before the confidence gate, because "the first one" carries almost no words and
+    # therefore scores low -- and the gate then replied "could you tell me more about
+    # what you need" to somebody who had just answered our own numbered list. This is
+    # safe to let through: the reference is resolved by plain pattern matching against
+    # options WE stored, and the result still needs a confirmation before anything is
+    # written.
+    #
+    # Before the confirmation rule, "The second one" is often read as a
+    # confirmation, and if the confirm rule ran first it would find nothing pending and
+    # reply "I don't have anything waiting for a yes" -- while the patient is looking at
+    # the numbered list we just sent them. A specific choice beats a bare yes.
+    if extraction.option_reference and ctx.offered_options:
+        picked = _resolve_option(extraction.option_reference, ctx)
+        if picked is None:
+            return Decision(
+                action=Action.ASK_FOR_MORE_INFORMATION,
+                reason=(f"Could not tell which option {extraction.option_reference!r} "
+                        f"refers to among the {len(ctx.offered_options)} shown."),
+                missing=("which_option",),
+                candidates=tuple(ctx.offered_options),
+            )
+        if isinstance(picked, Doctor):
+            with_doctor = extraction.model_copy(update={"doctor": picked.full_name})
+            resolved = resolve(extraction.preferred_date, extraction.preferred_time, ctx.now)
+            if not resolved.has_date:
+                # They picked a doctor and said nothing about when. Asking "what day?" is
+                # what a form does. Showing that doctor's next free times is what a
+                # receptionist does, and it moves things forward instead of back a step.
+                return _remember_single_slot(Decision(
+                    action=Action.CHECK_AVAILABILITY,
+                    reason=f"Chose {picked.full_name} from the list; showing their next "
+                           f"free times.",
+                    **_availability_lookup(with_doctor, ctx, doctor=picked),
+                ))
+            return _propose_booking(with_doctor, ctx)
+        if isinstance(picked, Appointment):
+            return _propose_cancel(
+                extraction.model_copy(
+                    update={"existing_appointment_phrase": picked.id}), ctx
+            )
+        return _validate_exact_slot(picked.doctor, picked.start, ctx)
+
 
     # --- 2. Not confident enough to act -------------------------- G6 --------
     # Checked early, and before anything that could write. A low-confidence reading is
@@ -226,14 +343,27 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     # --- 3. "Yes" -------------------------------------------------- G2 ------
     # A confirmation is only meaningful against an offer we ourselves made.
     if extraction.intent == Intent.CONFIRM:
-        if ctx.pending_offer is None:
-            return Decision(
-                action=Action.ASK_FOR_MORE_INFORMATION,
-                reason="The patient agreed to something, but nothing was offered to agree to.",
-                guarantee="G2",
-                missing=("what_to_confirm",),
-            )
-        return _execute_offer(ctx.pending_offer, ctx)
+        if ctx.pending_offer is not None:
+            return _execute_offer(ctx.pending_offer, ctx)
+
+        # Not an offer, but we did ask them a yes/no question. Answer it.
+        # This path can only ever look things up -- see PendingQuestion.
+        if ctx.pending_question is not None and ctx.pending_question.kind == "check_availability":
+            doctors = [d for d in (ctx.db.doctor(i) for i in ctx.pending_question.doctor_ids)
+                       if d is not None]
+            only = doctors[0] if len(doctors) == 1 else None
+            return _remember_single_slot(Decision(
+                action=Action.CHECK_AVAILABILITY,
+                reason=f"Said yes to: {ctx.pending_question.summary}",
+                **_availability_lookup(extraction, ctx, doctor=only),
+            ))
+
+        return Decision(
+            action=Action.ASK_FOR_MORE_INFORMATION,
+            reason="The patient agreed to something, but nothing was offered to agree to.",
+            guarantee="G2",
+            missing=("what_to_confirm",),
+        )
 
     # --- 4. "No" -------------------------------------------------------------
     if extraction.intent == Intent.DENY:
@@ -248,6 +378,55 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
         return Decision(
             action=Action.PROVIDE_INFORMATION,
             reason="The patient asked about opening hours. No booking involved.",
+            topic="opening_hours",
+        )
+
+    # --- 5b. A question about the clinic itself ------------------------------
+    # "Who do I see about my heart?" is answered by naming the department -- never by
+    # saying anything about the symptom. See the note above SYMPTOM_ROUTES.
+    if extraction.intent == Intent.ASK_CLINIC_INFO:
+        # Both fields, joined. "My son has a fever" often arrives as
+        # reason_for_visit="fever" with the "my son" part only in the summary -- and "my
+        # son" is what points at the paediatrician. Looking at one field alone sent a
+        # child to a general practitioner.
+        described = " ".join(p for p in (extraction.reason_for_visit,
+                                         extraction.request_summary) if p)
+
+        # fall_back_to_gp=False matters here. With it on, ANY question produced a doctor
+        # suggestion -- "do you take my insurance?" came back recommending a
+        # dermatologist. Only route when a real symptom was recognised.
+        specialty, doctors = suggest_doctors_for(described, fall_back_to_gp=False)
+        if doctors and specialty:
+            return Decision(
+                action=Action.PROVIDE_INFORMATION,
+                reason=f"Asked which doctor covers this. Naming our {specialty.lower()}.",
+                specialty=specialty,
+                candidates=tuple(doctors),
+                topic="which_doctor",
+                question=PendingQuestion(
+                    kind="check_availability",
+                    summary=f"checking when our {specialty.lower()} is free",
+                    doctor_ids=tuple(d.id for d in doctors),
+                ),
+            )
+
+        # Things we actually hold: where we are, how to reach us, when we are open.
+        question = (extraction.request_summary or "").lower()
+        if any(word in question for word in
+               ("where", "location", "address", "find", "parking", "phone", "number",
+                "contact", "reach", "hours", "open", "close", "directions")):
+            return Decision(
+                action=Action.PROVIDE_INFORMATION,
+                reason="A question about the clinic that we hold the answer to.",
+                topic="clinic_info",
+            )
+
+        # Everything else -- insurance, billing, prescriptions, referrals. We do not
+        # hold these answers, and guessing at them would be worse than useless.
+        return Decision(
+            action=Action.HANDOFF_TO_HUMAN,
+            reason=f"Not something this assistant can answer: {extraction.request_summary}.",
+            topic=extraction.request_summary or "a question about the clinic",
         )
 
     # --- 6. The patient told us not to act yet --------------------- G1 ------
@@ -287,6 +466,19 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
         return _propose_booking(extraction, ctx)
 
     # --- 11. Anything else ---------------------------------------------------
+    # This used to reply "could you tell me more about what you need" -- a dead end for
+    # anyone asking about insurance, prescriptions or parking.
+    #
+    # The reader now always writes a plain-language summary of what was wanted, whatever
+    # it was, so we can hand the conversation to a person WITH that context instead of
+    # asking the patient to rephrase something we were never going to understand.
+    if extraction.request_summary:
+        return Decision(
+            action=Action.HANDOFF_TO_HUMAN,
+            reason=f"Outside what this assistant covers: {extraction.request_summary}.",
+            topic=extraction.request_summary,
+        )
+
     return Decision(
         action=Action.ASK_FOR_MORE_INFORMATION,
         reason="The message was not a recognisable clinic request.",
@@ -552,6 +744,61 @@ def _propose_reschedule(extraction: Extraction, ctx: Context) -> Decision:
 # Small helpers
 # ──────────────────────────────────────────────────────────────────────────────
 
+_ORDINALS = {
+    "first": 1, "1st": 1, "earliest": 1,
+    "second": 2, "2nd": 2,
+    "third": 3, "3rd": 3,
+    "fourth": 4, "4th": 4,
+    "fifth": 5, "5th": 5,
+    "last": -1, "latest": -1,
+}
+
+
+def _resolve_option(reference: str, ctx: Context):
+    """
+    Work out which of the listed choices the patient meant.
+
+    Handles "the first one", "option 2", "the 9am one", "the last one". Returns the
+    chosen item, or None when it cannot be worked out -- in which case the caller asks
+    rather than picking something. Guessing here would book the wrong appointment.
+
+    Times are checked BEFORE numbers, because "the 9am one" contains a 9 that is a time,
+    not a position in the list.
+    """
+    text = reference.lower().strip()
+    options = list(ctx.offered_options)
+    if not options:
+        return None
+
+    # --- a time, e.g. "the 9am one", "the 11:30" ---
+    clock = re.search(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b", text)
+    if clock and (clock.group(3) or clock.group(2)):
+        hour, minute, meridiem = int(clock.group(1)), int(clock.group(2) or 0), clock.group(3)
+        if meridiem == "pm" and hour != 12:
+            hour += 12
+        if meridiem == "am" and hour == 12:
+            hour = 0
+        for option in options:
+            start = getattr(option, "start", None)
+            if start is not None and start.hour == hour and start.minute == minute:
+                return option
+
+    # --- a word, e.g. "the first one", "the last one" ---
+    for word, position in _ORDINALS.items():
+        if re.search(rf"\b{word}\b", text):
+            index = len(options) - 1 if position == -1 else position - 1
+            return options[index] if 0 <= index < len(options) else None
+
+    # --- a bare number, e.g. "option 2", "number 3", "2" ---
+    number = re.search(r"\b(\d{1,2})\b", text)
+    if number:
+        index = int(number.group(1)) - 1
+        if 0 <= index < len(options):
+            return options[index]
+
+    return None
+
+
 def _resolve_doctor(
     extraction: Extraction, ctx: Context
 ) -> tuple[Optional[Doctor], Optional[Decision]]:
@@ -570,6 +817,25 @@ def _resolve_doctor(
                 reason="The patient referred to a previous doctor we cannot identify.",
                 guarantee="G3", problem="doctor_previous", missing=("doctor",),
             )
+        # No doctor named -- but if they told us what is wrong, point them at the right
+        # department rather than handing over the whole staff list and making them guess.
+        described = " ".join(p for p in (extraction.reason_for_visit,
+                                         extraction.request_summary) if p)
+        specialty, suggested = suggest_doctors_for(described)
+        if suggested and specialty and extraction.reason_for_visit:
+            return None, Decision(
+                action=Action.ASK_FOR_MORE_INFORMATION,
+                reason=f"No doctor named, but they described something our "
+                       f"{specialty.lower()} covers.",
+                guarantee="G3", problem="doctor_suggested", missing=("doctor",),
+                specialty=specialty, candidates=tuple(suggested),
+                question=PendingQuestion(
+                    kind="check_availability",
+                    summary=f"checking when our {specialty.lower()} is free",
+                    doctor_ids=tuple(d.id for d in suggested),
+                ),
+            )
+
         return None, Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
             reason="No doctor was named.",
@@ -608,6 +874,12 @@ def _identify_appointment(
 
     phrase = (extraction.existing_appointment_phrase or "").lower()
     named_doctor = (extraction.doctor or "").lower()
+
+    # Picked straight off a numbered list: the option resolver puts the exact id here,
+    # so there is nothing to match on and nothing to guess.
+    exact = next((a for a in existing if a.id.lower() == phrase), None)
+    if exact is not None:
+        return exact, None
 
     # "that", "it", "this one" straight after we acted on something means that thing.
     vague = phrase.strip() in ("", "that", "it", "this", "this one", "that one",

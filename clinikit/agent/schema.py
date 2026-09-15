@@ -37,9 +37,14 @@ class Intent(str, Enum):
     TALK_TO_HUMAN = "talk_to_human"
     OTHER = "other"
 
-    # --- added for multi-turn confirmation (see README) ---
-    CONFIRM = "confirm"
-    DENY = "deny"
+    # --- additions, all deliberate and all explained ---------------------
+    # The seven above are the brief's list, untouched. These four exist because a real
+    # conversation needs them, and each would otherwise be forced into "other", where the
+    # only possible reply is "could you tell me more" -- a dead end.
+    CONFIRM = "confirm"            # "yes", answering a question we just asked
+    DENY = "deny"                  # "no thanks", same
+    GREETING = "greeting"          # "hi" -- a greeting is not a failure to understand
+    ASK_CLINIC_INFO = "ask_clinic_info"  # where are you, parking, what does Dr X treat
 
 
 class Extraction(BaseModel):
@@ -138,6 +143,27 @@ class Extraction(BaseModel):
     reason_for_visit: Optional[str] = Field(
         default=None,
         description="Any stated medical reason, e.g. 'follow-up', 'sore throat'.",
+    )
+
+    option_reference: Optional[str] = Field(
+        default=None,
+        description=(
+            "If the patient is picking from a list we just showed them, copy how they "
+            "referred to it: 'the first one', 'the 9am one', 'option 2', 'the second'. "
+            "Leave empty if they are not choosing from a list."
+        ),
+    )
+
+    # ---------- what they actually wanted, in your own words ----------
+    request_summary: str = Field(
+        default="",
+        description=(
+            "One short line saying what the patient wants, in your own words, with no "
+            "restrictions. Fill this in EVERY time, including when intent is 'other'. "
+            "Examples: 'asking whether the clinic accepts their insurance', 'wants a "
+            "prescription refill', 'asking where the clinic is'. This is how information "
+            "that does not fit the intent list still reaches a human."
+        ),
     )
 
     # ---------- transparency ----------
