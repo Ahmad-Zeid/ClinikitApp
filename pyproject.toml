@@ -1,0 +1,29 @@
+# Vercel reads this file to work out three things: which Python to use, what to install,
+# and which object is the web app. Everything else about the project lives elsewhere.
+#
+# WHY THE DEPENDENCY LIST HERE IS SHORTER THAN requirements.txt
+#     requirements.txt is for a person setting the project up locally, so it installs
+#     both parts: the chat assistant AND the no-show model, plus Jupyter for the notebook.
+#     The deployed site only serves Part 1. Shipping scikit-learn, pandas, matplotlib and
+#     Jupyter to it would add hundreds of megabytes that no request ever touches, and
+#     every cold start would pay for them.
+#
+#     So this list is deliberately the runtime half only.
+
+[project]
+name = "clinikit-assistant"
+version = "1.0.0"
+description = "Conversational clinic assistant — Part 1 of the CliniKit AI assessment"
+requires-python = ">=3.12"
+
+dependencies = [
+    "fastapi>=0.115",         # the web service
+    "openai>=1.50",           # talks to Gemini through its OpenAI-compatible endpoint
+    "pydantic>=2.0",          # the extraction schema
+    "python-dotenv>=1.0",     # loads .env locally; on the host, real env vars are used
+]
+
+[tool.vercel]
+# The app object to serve. Without this Vercel hunts for app.py/main.py/index.py in the
+# project root and finds nothing, because ours lives inside the package.
+entrypoint = "clinikit.api.main:app"

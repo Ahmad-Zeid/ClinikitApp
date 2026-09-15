@@ -1,0 +1,15 @@
+# Keep the deployed bundle to just the chat assistant.
+# Part 2 (the no-show model), the evaluation harness and the tests are all part of the
+# submission, but no web request ever touches them.
+
+ml/
+eval/
+tests/
+.venv/
+.cache/
+.pytest_cache/
+*.csv
+*.ipynb
+*.joblib
+*.pdf
+CLAUDE.md

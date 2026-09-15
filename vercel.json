@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "clinikit/api/main.py": {
+      "excludeFiles": "{ml/**,eval/**,tests/**,.cache/**,.venv/**,**/*.csv,**/*.ipynb,**/*.pdf,**/*.joblib,**/*.png}"
+    }
+  }
+}
