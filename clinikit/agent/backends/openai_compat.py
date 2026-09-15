@@ -38,7 +38,16 @@ from ..schema import Extraction
 from .base import Extractor, ExtractorUnavailable
 
 PROMPT_VERSION = "v7"
-CACHE_DIR = Path(__file__).resolve().parents[3] / ".cache" / "llm"
+
+# Where answers we have already paid for are kept, so re-running the same message is free.
+#
+# Most hosts give you a read-only disk with one writable scratch folder, usually /tmp, and
+# wipe it whenever they feel like it. That is fine for a cache -- losing it costs money,
+# not correctness -- but the path has to be changeable. Set CLINIKIT_CACHE_DIR=/tmp/clinikit
+# when deploying.
+CACHE_ROOT = Path(os.environ.get("CLINIKIT_CACHE_DIR")
+                  or Path(__file__).resolve().parents[3] / ".cache")
+CACHE_DIR = CACHE_ROOT / "llm"
 
 # How long we will spend making a reply sound nicer before giving up and sending the
 # approved wording instead. Reading the message is essential; wording it is not.
@@ -120,7 +129,7 @@ class DailyUsage:
         return dict(self._counts)
 
 
-DAILY_USAGE = DailyUsage(CACHE_DIR.parent / "daily_usage.json")
+DAILY_USAGE = DailyUsage(CACHE_ROOT / "daily_usage.json")
 
 
 @dataclass(frozen=True)
@@ -729,11 +738,22 @@ class OpenAICompatibleExtractor(Extractor):
             return None
 
     def _cache_put(self, message: str, history: Sequence[str], result: Extraction) -> None:
+        """
+        Save an answer for next time.
+
+        Wrapped in try/except because this is the only part of reading a message that
+        touches the disk, and on a read-only host it raises. It used to, and it took the
+        whole reply down with it -- the patient lost their answer so that we could fail
+        to save a copy of it. A cache that cannot be written is a cache we do without.
+        """
         if not self._use_cache:
             return
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        (CACHE_DIR / f"{self._key(message, history)}.json").write_text(
-            result.model_dump_json(indent=1))
+        try:
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            (CACHE_DIR / f"{self._key(message, history)}.json").write_text(
+                result.model_dump_json(indent=1))
+        except OSError:
+            pass
 
 
 def _strip_descriptions(node) -> None:
