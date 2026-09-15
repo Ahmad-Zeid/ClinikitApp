@@ -95,9 +95,20 @@ That told me something useful. The interpretation is contested; the observable f
 
 Seven intents taken straight from the brief, plus four I added for conversational reality: `confirm`, `deny`, `greeting`, and `ask_clinic_info`. Without those, "yes" and "hello" both collapse into `other`, and the only sensible reply to `other` is "could you tell me more" — a dead end in the middle of a conversation.
 
-I did consider letting the model classify freely instead of picking from a list. I decided against it, because the intent gates the write path, and I don't want a fuzzy value deciding whether something gets cancelled.
+I went back and forth on whether to let the model describe the intent in its own words instead of picking from a list. A closed list is rigid, and real requests don't respect it.
 
-But a closed list throws information away. So there's a free-text `request_summary` field the model fills in every time, in its own words: *"asking whether the clinic takes their insurance"*, *"wants a repeat prescription"*. The list stays rigid where it's load-bearing, and nothing meaningful gets lost to `other`.
+Where I landed is that both are true, so the message gets read twice. **The label stays closed**, because it gates the write path and I don't want a free-text value deciding whether something gets cancelled. Alongside it, **a free-text `request_summary` the model fills in every time**, with no restrictions on wording.
+
+You can see the split on a message that fits none of the eleven labels:
+
+```
+"can i get a copy of my vaccination record"
+
+  intent          = other                                  ← constrained
+  request_summary = "a copy of their vaccination record"   ← free
+```
+
+`other` on its own tells nobody anything. The summary is enough for reception to act on. So the model classifies freely where nothing is at stake, and picks from the list where the write path is.
 
 ## Extracting information
 
