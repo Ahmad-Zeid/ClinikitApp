@@ -25,29 +25,36 @@ import os
 
 # Which providers "auto" tries, in order.
 #
-# GROQ FIRST, GEMINI AS THE OVERFLOW. Both halves of that were measured, not assumed.
+# GEMINI FIRST, GROQ AS THE BACKUP.
 #
-# Per call, Groq is clearly better for this job:
-#     Groq    1-2 seconds, 92% intent accuracy on our test set
-#     Gemini  5-16 seconds, and slower to follow the prompt's finer rules
+# SPEED IS NO LONGER THE DECIDER. It used to be: Groq answered in 1-2 seconds while
+# Gemini took 5-16. That gap closed when we moved to Gemini's flash-lite model, which
+# our own evaluation measures at a 1.2s median. Both are fast enough that a patient
+# cannot tell them apart, so the tie is broken on how long each one lasts.
 #
-# But their free allowances run out in completely different ways:
+# THEIR FREE ALLOWANCES RUN OUT IN COMPLETELY DIFFERENT WAYS:
+#     Gemini  1,500 REQUESTS a day, and NO daily token cap. Our calls are small, so the
+#             size of each one is irrelevant. That is ~1,500 turns.
 #     Groq    200,000 TOKENS per model per day. Our reading prompt is ~1,300 tokens, so
-#             that is about 460 calls across three models -- while 2,000 of our allowed
-#             requests sit unused. The token cap is what stops us.
-#     Gemini  1,500 REQUESTS a day and NO daily token cap. Call size is irrelevant.
+#             the token cap bites at roughly 460 calls -- long before the request
+#             allowance is touched.
 #
-# So: spend Groq's tokens first, because those calls are fast and accurate. When they
-# run out, Gemini carries on for another ~750 turns at a slower pace. Roughly a thousand
-# conversations a day between them, on two free accounts and no card.
+# Gemini is therefore the bigger tank, and it goes first. Groq covers the overflow, and
+# the two together carry roughly two thousand turns a day on free accounts and no card.
+#
+# ONE PRACTICAL NOTE, FOUND THE HARD WAY
+#     Groq's API is unreachable from some networks -- ours answers Cloudflare's 403 from
+#     a home connection in Lebanon while working perfectly from the deployed site. That
+#     is a second, quieter reason to lead with Gemini: it is the provider that works from
+#     everywhere we run.
 #
 # The handover is automatic and survives restarts: daily usage is written to
 # .cache/daily_usage.json. It used to live only in memory, so every restart believed it
 # had a fresh day's allowance and kept calling an exhausted provider.
 #
-# Override with: CLINIKIT_PROVIDERS=gemini,groq
+# Override with: CLINIKIT_PROVIDERS=groq,gemini
 CHAIN_ORDER = tuple(
-    p.strip() for p in os.environ.get("CLINIKIT_PROVIDERS", "groq,gemini").split(",")
+    p.strip() for p in os.environ.get("CLINIKIT_PROVIDERS", "gemini,groq").split(",")
     if p.strip()
 )
 
