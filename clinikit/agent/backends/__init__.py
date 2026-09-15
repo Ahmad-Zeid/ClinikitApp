@@ -25,16 +25,30 @@ import os
 
 # Which providers "auto" tries, in order.
 #
-# Groq only by default. Gemini's free tier is 1,500 requests a day and a single
-# evaluation run can use most of it -- after which every request fails with 429 and the
-# assistant has nothing to say. Keeping a provider in the queue that is usually out of
-# quota costs a wasted call on every single message.
+# GROQ FIRST, GEMINI AS THE OVERFLOW. Both halves of that were measured, not assumed.
 #
-# The others are one environment variable away, which is the point of the whole
-# multi-provider design:
-#     CLINIKIT_PROVIDERS=groq,gemini,openrouter
+# Per call, Groq is clearly better for this job:
+#     Groq    1-2 seconds, 92% intent accuracy on our test set
+#     Gemini  5-16 seconds, and slower to follow the prompt's finer rules
+#
+# But their free allowances run out in completely different ways:
+#     Groq    200,000 TOKENS per model per day. Our reading prompt is ~1,300 tokens, so
+#             that is about 460 calls across three models -- while 2,000 of our allowed
+#             requests sit unused. The token cap is what stops us.
+#     Gemini  1,500 REQUESTS a day and NO daily token cap. Call size is irrelevant.
+#
+# So: spend Groq's tokens first, because those calls are fast and accurate. When they
+# run out, Gemini carries on for another ~750 turns at a slower pace. Roughly a thousand
+# conversations a day between them, on two free accounts and no card.
+#
+# The handover is automatic and survives restarts: daily usage is written to
+# .cache/daily_usage.json. It used to live only in memory, so every restart believed it
+# had a fresh day's allowance and kept calling an exhausted provider.
+#
+# Override with: CLINIKIT_PROVIDERS=gemini,groq
 CHAIN_ORDER = tuple(
-    p.strip() for p in os.environ.get("CLINIKIT_PROVIDERS", "groq").split(",") if p.strip()
+    p.strip() for p in os.environ.get("CLINIKIT_PROVIDERS", "groq,gemini").split(",")
+    if p.strip()
 )
 
 
@@ -60,11 +74,10 @@ def get_extractor(name: str = "auto") -> Extractor:
         from .rules import RuleBasedExtractor
         return RuleBasedExtractor()
 
-    if name == "gemini":
-        from .gemini import GeminiExtractor
-        return GeminiExtractor()
-
-    if name in ("groq", "openrouter"):
+    if name in ("gemini", "groq", "openrouter"):
+        # All three speak the OpenAI format, Gemini included via Google's compatibility
+        # endpoint. One class, three providers, and every one of them gets the same
+        # retries, budgets and model fallback for free.
         from .openai_compat import OpenAICompatibleExtractor
         return OpenAICompatibleExtractor(provider=name)
 
@@ -76,15 +89,9 @@ def patient_facing_backends() -> list[str]:
     found = []
     try:
         from .openai_compat import OpenAICompatibleExtractor
-        for provider in ("groq", "openrouter"):
+        for provider in ("gemini", "groq", "openrouter"):
             if OpenAICompatibleExtractor.is_configured(provider):
                 found.append(provider)
-    except ImportError:
-        pass
-    try:
-        from .gemini import GeminiExtractor
-        if GeminiExtractor.is_configured():
-            found.append("gemini")
     except ImportError:
         pass
     # Put them back in preference order, then offer the combined chain.

@@ -285,7 +285,7 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
     # confirmation, and if the confirm rule ran first it would find nothing pending and
     # reply "I don't have anything waiting for a yes" -- while the patient is looking at
     # the numbered list we just sent them. A specific choice beats a bare yes.
-    if extraction.option_reference and ctx.offered_options:
+    if _is_really_picking_an_option(extraction, ctx):
         picked = _resolve_option(extraction.option_reference, ctx)
         if picked is None:
             return Decision(
@@ -357,6 +357,17 @@ def decide(extraction: Extraction, ctx: Context) -> Decision:
                 reason=f"Said yes to: {ctx.pending_question.summary}",
                 **_availability_lookup(extraction, ctx, doctor=only),
             ))
+
+        # A list is on screen and they said yes. They mean one of those -- we just do
+        # not know which. "I don't have anything waiting for a yes" is technically true
+        # and completely useless when the patient is looking at four options we sent.
+        if ctx.offered_options:
+            return Decision(
+                action=Action.ASK_FOR_MORE_INFORMATION,
+                reason="Said yes while a list of options was on screen; asking which one.",
+                missing=("which_option",),
+                candidates=tuple(ctx.offered_options),
+            )
 
         return Decision(
             action=Action.ASK_FOR_MORE_INFORMATION,
@@ -752,6 +763,42 @@ _ORDINALS = {
     "fifth": 5, "5th": 5,
     "last": -1, "latest": -1,
 }
+
+
+def _is_really_picking_an_option(extraction: Extraction, ctx: Context) -> bool:
+    """
+    Is this message actually choosing from the list we showed?
+
+    The reader sometimes fills option_reference when the patient is doing nothing of the
+    sort. It happened with "which doctor should I see if I have problems with my heart":
+    a list of doctors was on screen, the reader decided that counted as picking one, and
+    the patient was shown the first doctor's diary instead of the cardiologist.
+
+    So the reference has to survive two checks, both deterministic:
+
+      1. The words must ACTUALLY APPEAR in the patient's message. Same rule we use for
+         dates -- the reader reports what it read, and we verify we can find it. A
+         reference the patient never typed is an invention.
+      2. The message must not also be describing a problem. "The first one" is a
+         selection; "which doctor for my heart" is a question that happens to contain a
+         number-ish word.
+    """
+    if not extraction.option_reference or not ctx.offered_options:
+        return False
+
+    message = (extraction.raw_message or "").lower()
+    reference = extraction.option_reference.lower().strip()
+    if message and reference not in message:
+        # Allow a shortened form: the reader may report "the first one" for "first".
+        core = reference.replace("the ", "").replace(" one", "").strip()
+        if not core or core not in message:
+            return False
+
+    # Describing a symptom is not picking an appointment slot.
+    if extraction.reason_for_visit:
+        return False
+
+    return True
 
 
 def _resolve_option(reference: str, ctx: Context):

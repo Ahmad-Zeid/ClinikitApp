@@ -181,6 +181,41 @@ def health() -> dict:
     }
 
 
+@app.get("/api/quota")
+def quota() -> dict:
+    """
+    How much of today's free allowance is left, per provider.
+
+    Worth having visible rather than discovered. The two free tiers run out in completely
+    different ways -- Groq by tokens, Gemini by request count -- and knowing which one is
+    close to the edge explains a slow reply far better than guessing does.
+    """
+    from ..agent.backends.openai_compat import DAILY_USAGE, PROVIDERS
+
+    spent = DAILY_USAGE.summary()
+    out = []
+    for provider_name, provider in PROVIDERS.items():
+        for model in provider.models:
+            used = spent.get(f"{provider_name}:{model}")
+            if not used:
+                continue
+            row = {
+                "provider": provider_name,
+                "model": model,
+                "requests_used": used["requests"],
+                "requests_limit": provider.requests_per_day,
+                "tokens_used": used["tokens"],
+                "tokens_limit": provider.tokens_per_day,
+            }
+            if provider.tokens_per_day:
+                row["percent_used"] = round(100 * used["tokens"] / provider.tokens_per_day)
+            else:
+                row["percent_used"] = round(
+                    100 * used["requests"] / provider.requests_per_day)
+            out.append(row)
+    return {"date": DAILY_USAGE._today, "models": out}
+
+
 @app.get("/api/scenarios")
 def scenarios() -> dict:
     """Canned conversations, so a reviewer can click rather than think up messages."""

@@ -55,6 +55,74 @@ WORDING_BUDGET_SECONDS = 9.0
 EXTRACTION_RESERVE_TOKENS = 2600
 
 
+class DailyUsage:
+    """
+    How much of today's allowance we have spent, remembered across restarts.
+
+    Per-minute counters can live in memory: a restart takes longer than a minute, so
+    starting fresh is roughly correct. Daily counters cannot. Ours did, and the result
+    was that every restart believed it had a whole day's allowance again -- so we kept
+    calling a provider that had been exhausted hours earlier, and each call cost a round
+    trip to be told no.
+
+    Stored as a small JSON file. If it cannot be read or written, everything still works;
+    we simply lose the memory of what today cost, which is no worse than before.
+    """
+
+    def __init__(self, path: Path) -> None:
+        self._path = path
+        self._today = ""
+        self._counts: dict[str, dict[str, int]] = {}
+        self._load()
+
+    def _load(self) -> None:
+        today = time.strftime("%Y-%m-%d")
+        self._today = today
+        try:
+            data = json.loads(self._path.read_text())
+            if data.get("date") == today:
+                self._counts = data.get("counts", {})
+        except Exception:
+            self._counts = {}
+
+    def _save(self) -> None:
+        try:
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+            self._path.write_text(json.dumps({"date": self._today, "counts": self._counts}))
+        except Exception:
+            pass
+
+    def _roll_over_if_new_day(self) -> None:
+        today = time.strftime("%Y-%m-%d")
+        if today != self._today:
+            self._today, self._counts = today, {}
+
+    def get(self, key: str) -> dict[str, int]:
+        self._roll_over_if_new_day()
+        return self._counts.get(key, {"requests": 0, "tokens": 0})
+
+    def add(self, key: str, requests: int = 0, tokens: int = 0) -> None:
+        self._roll_over_if_new_day()
+        entry = self._counts.setdefault(key, {"requests": 0, "tokens": 0})
+        entry["requests"] += requests
+        entry["tokens"] += tokens
+        self._save()
+
+    def exhaust(self, key: str, limit: int) -> None:
+        """Mark a model as spent for the day, after the provider says so."""
+        self._roll_over_if_new_day()
+        entry = self._counts.setdefault(key, {"requests": 0, "tokens": 0})
+        entry["tokens"] = max(entry["tokens"], limit)
+        self._save()
+
+    def summary(self) -> dict[str, dict[str, int]]:
+        self._roll_over_if_new_day()
+        return dict(self._counts)
+
+
+DAILY_USAGE = DailyUsage(CACHE_DIR.parent / "daily_usage.json")
+
+
 @dataclass(frozen=True)
 class Provider:
     """Everything that differs between one AI company and another."""
@@ -65,6 +133,23 @@ class Provider:
     models: tuple[str, ...]
     requests_per_minute: int
     tokens_per_minute: int = 8000
+    requests_per_day: int = 1000
+    tokens_per_day: int | None = None
+    """
+    Daily token cap, or None when the provider does not have one.
+
+    This is THE difference between the two providers we use, and it decides which should
+    be primary:
+
+      Groq    200,000 tokens per model per day. Our reading prompt is ~1,300 tokens, so
+              that is about 150 calls per model -- even though we are allowed 1,000
+              requests. The token cap bites first, by a long way.
+
+      Gemini  No daily token cap at all. 1,500 requests a day, whatever size they are.
+
+    Our calls are large and not very numerous, so a request-counted allowance suits us
+    and a token-counted one does not. Hence Gemini first.
+    """
     """
     The limit that actually bites.
 
@@ -80,6 +165,24 @@ class Provider:
 
 
 PROVIDERS: dict[str, Provider] = {
+    "gemini": Provider(
+        name="gemini",
+        # Google publishes an OpenAI-compatible endpoint, so Gemini needs no separate
+        # code -- it inherits the retries, budgets and model fallback built here.
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        env_key="GEMINI_API_KEY",
+        models=(
+            "gemini-3-flash-preview",
+            "gemini-3.1-flash-lite",
+            "gemini-3.5-flash",
+            "gemini-flash-latest",
+        ),
+        requests_per_minute=10,
+        tokens_per_minute=250_000,
+        requests_per_day=1500,
+        tokens_per_day=None,          # the important bit
+        signup="https://aistudio.google.com/apikey  (free, no card)",
+    ),
     "groq": Provider(
         name="groq",
         base_url="https://api.groq.com/openai/v1",
@@ -94,6 +197,9 @@ PROVIDERS: dict[str, Provider] = {
             "qwen/qwen3.8-27b",
         ),
         requests_per_minute=30,
+        tokens_per_minute=8000,
+        requests_per_day=1000,
+        tokens_per_day=200_000,
         signup="https://console.groq.com  (free, no card)",
     ),
     "openrouter": Provider(
@@ -383,7 +489,12 @@ class OpenAICompatibleExtractor(Extractor):
                 # Ask for the wording cost PLUS the reserve, so wording gives up while
                 # there is still room to read the next message. See the note on
                 # EXTRACTION_RESERVE_TOKENS.
-                if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS):
+                # Hold back TOKENS (Groq's tight limit) and also REQUESTS (Gemini's).
+                # Gemini allows only 10 calls a minute, so two calls per turn means five
+                # turns before it stops -- and wording must not be what spends the last
+                # one. Reading the next message matters more than wording this reply.
+                if not self.has_budget(model, 600 + EXTRACTION_RESERVE_TOKENS,
+                                       reserve_requests=2):
                     continue
                 try:
                     # Rewording is much cheaper than reading: a short prompt, a short answer.
@@ -500,7 +611,8 @@ class OpenAICompatibleExtractor(Extractor):
         while window and now - window[0][0] > 60.0:
             window.popleft()
 
-    def has_budget(self, model: str, expected_tokens: int) -> bool:
+    def has_budget(self, model: str, expected_tokens: int,
+                   reserve_requests: int = 0) -> bool:
         """
         Could this model take another call right now without breaching a limit?
 
@@ -510,9 +622,19 @@ class OpenAICompatibleExtractor(Extractor):
         now = time.monotonic()
         if self._blocked_until.get(model, 0.0) > now:
             return False
+
+        # Daily allowance first, and read from disk so a restart does not wipe it.
+        spent = DAILY_USAGE.get(f"{self.name}:{model}")
+        if spent["requests"] >= self.provider.requests_per_day:
+            return False
+        if (self.provider.tokens_per_day is not None
+                and spent["tokens"] + expected_tokens > self.provider.tokens_per_day):
+            return False
+
+        # Then this minute.
         self._prune(model, now)
         window = self._windows.setdefault(model, deque())
-        if len(window) >= self.provider.requests_per_minute:
+        if len(window) + reserve_requests >= self.provider.requests_per_minute:
             return False
         return sum(t for _, t in window) + expected_tokens <= self.provider.tokens_per_minute
 
@@ -548,6 +670,10 @@ class OpenAICompatibleExtractor(Extractor):
         if _is_daily_quota(message):
             self.daily_quota_exhausted = True
             self._blocked_until[model] = time.monotonic() + 3600.0
+            # Write it down, so tomorrow's restart does not have to rediscover it the
+            # expensive way.
+            if self.provider.tokens_per_day is not None:
+                DAILY_USAGE.exhaust(f"{self.name}:{model}", self.provider.tokens_per_day)
             return
 
         seconds = 15.0
@@ -574,6 +700,7 @@ class OpenAICompatibleExtractor(Extractor):
         if total:
             when, _ = window[-1]
             window[-1] = (when, int(total))
+            DAILY_USAGE.add(f"{self.name}:{model}", requests=1, tokens=int(total))
 
     # ---- cache --------------------------------------------------------------
 
