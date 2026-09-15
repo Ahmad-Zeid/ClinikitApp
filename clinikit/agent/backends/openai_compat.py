@@ -37,7 +37,7 @@ from ..clinic import DOCTORS
 from ..schema import Extraction
 from .base import Extractor, ExtractorUnavailable
 
-PROMPT_VERSION = "v7"
+PROMPT_VERSION = "v8"   # bumped when the prompt changes, so cached answers are re-read
 
 # Where answers we have already paid for are kept, so re-running the same message is free.
 #
@@ -269,15 +269,22 @@ Doctors:
 5. Expect typos, and Lebanese Arabic written in Latin letters. Read both as normal language.
 6. confidence 0-1, honest. A vague message scores low so we ask instead of guessing.
 7. Three things that look alike:
-   - ask_doctor_availability = asking WHAT is free, without committing to a time.
+   - ask_doctor_availability = asking WHAT IS FREE. The subject is the schedule.
      "Is Dr George free tomorrow afternoon?", "anything available after 5?",
-     "any slots Thursday?". Still availability even if they clearly want to book.
-   - book_appointment = asking to BE BOOKED, or naming the time they want.
-     "Book me Friday at 4", "can I come in Thursday?", "I need an appointment".
+     "any slots Thursday?", "what does his Tuesday look like?".
+   - book_appointment = asking TO BE SEEN, or naming the time they want. The subject is
+     the patient. "Book me Friday at 4", "can I come in Thursday?",
+     "Can I see Dr George tomorrow afternoon?", "I need an appointment".
+   - The test is who the sentence is about, not how polite it is. "Is HE free?" asks
+     about the schedule. "Can I SEE him?" asks about the patient. Both may end in a
+     booking; that is not what decides the label.
    - ask_opening_hours = ONLY what hours the clinic itself operates.
 8. A symptom with no request ("my back hurts") is book_appointment, modest confidence,
    symptom in reason_for_visit. A bare hello is "greeting".
-9. confirm / deny are short replies to a question we just asked. "ok thanks" is "other".
+9. confirm / deny are short replies to a question we just asked ("yes", "no thanks").
+   "ok thanks" is "other". READ THE WORD "NOT". A message telling us NOT to do something
+   is never confirm: "don't cancel my appointment, I still want it" is other, because
+   they are stopping an action, not agreeing to one.
 10. ask_clinic_info: location, parking, contact, which doctor treats what.
 10b. talk_to_human: ANY request for a person, however phrased or however rude - "get me
     a human", "I'll call instead", "someone call me", "let me speak to reception".
@@ -415,6 +422,12 @@ class OpenAICompatibleExtractor(Extractor):
         deadline = time.monotonic() + self._budget
         last_error: Exception | None = None
 
+        # Did we actually call anything? If every model was already known to be out of
+        # allowance, the answer is no -- and "every model failed" would be a lie. It used
+        # to say exactly that, followed by "NoneType: None", because there was no error
+        # to report. Nothing had gone wrong; there had simply been nothing left to try.
+        attempted = False
+
         # Reading a message is the expensive call: a long instruction block plus the
         # examples plus the schema.
         cost = 1300
@@ -431,6 +444,7 @@ class OpenAICompatibleExtractor(Extractor):
 
                 for attempt in range(2):
                     try:
+                        attempted = True
                         self._note_call(model, cost)
                         started = time.monotonic()
                         response = self._client.chat.completions.create(
@@ -477,11 +491,14 @@ class OpenAICompatibleExtractor(Extractor):
                     break
                 time.sleep(min(wait, remaining))
 
-        if self.daily_quota_exhausted:
+        if self.daily_quota_exhausted or not attempted:
+            # Two routes here, one message. Either a model told us today's allowance is
+            # gone, or our own record of today's spending said so before we called. The
+            # patient-visible outcome is identical, so the explanation should be too.
             raise ExtractorUnavailable(
-                f"{self.name}: the free daily token allowance is used up. It resets on "
-                f"the provider's daily cycle. Add another provider with "
-                f"CLINIKIT_PROVIDERS=groq,gemini, or use a different key."
+                f"{self.name}: today's free allowance is used up. It resets on the "
+                f"provider's daily cycle. Add or reorder providers with "
+                f"CLINIKIT_PROVIDERS, or use a different key."
             ) from last_error
 
         raise ExtractorUnavailable(

@@ -187,9 +187,52 @@ def find_doctors(query: Optional[str]) -> list[Doctor]:
     if exact:
         return exact
 
-    # Fall back to a prefix match, which catches typos like "Geor" or "Nass".
+    # Fall back to a prefix match, which catches shortenings like "Geor" or "Nass".
+    prefix = [d for d in DOCTORS
+              if d.first_name.lower().startswith(q) or d.last_name.lower().startswith(q)]
+    if prefix:
+        return prefix
+
+    # Last resort: allow ONE wrong letter.
+    #
+    # The brief promises typing mistakes, and they are not all at the end of the word.
+    # "Dr Karin" for Dr Karim is one substituted letter, and until this existed the
+    # patient was told "we have no doctor by that name" -- which is both wrong and rude.
+    #
+    # Deliberately last, and deliberately one letter. Anything looser starts matching
+    # doctors the patient never meant, and if two doctors are this close to what was
+    # written, BOTH come back and the caller asks which -- it never picks for them.
+    #
+    # Safe to do at all because no near-match can book anything on its own. The patient
+    # is asked to confirm first, and that question names the doctor in full ("Dr. Karim
+    # Nassar, Wednesday at 11"), so a wrong guess is visible before it can matter.
     return [d for d in DOCTORS
-            if d.first_name.lower().startswith(q) or d.last_name.lower().startswith(q)]
+            if _within_one_letter(q, d.first_name.lower())
+            or _within_one_letter(q, d.last_name.lower())]
+
+
+def _within_one_letter(written: str, actual: str) -> bool:
+    """
+    Is `written` the same as `actual` apart from at most one letter?
+
+    Covers the three ways a single slip happens: a letter typed wrong ("Karin"/"Karim"),
+    a letter left out ("Karm"), and a letter added ("Karimm"). Names shorter than four
+    letters are not fuzzy-matched at all -- at that length one letter is too much of the
+    word, and "Ali" would match "Ala".
+    """
+    if len(actual) < 4 or abs(len(written) - len(actual)) > 1:
+        return False
+    if written == actual:
+        return True
+
+    if len(written) == len(actual):            # one letter typed wrong
+        return sum(a != b for a, b in zip(written, actual)) == 1
+
+    shorter, longer = sorted((written, actual), key=len)   # one letter missing or added
+    for i in range(len(longer)):
+        if longer[:i] + longer[i + 1:] == shorter:
+            return True
+    return False
 
 
 # ──────────────────────────────────────────────────────────────────────────────

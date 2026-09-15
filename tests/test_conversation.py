@@ -15,7 +15,6 @@ from clinikit.agent.policy import (
     WRITE_ACTIONS,
     Action,
     Context,
-    Doctor,
     FreeSlot,
     decide,
 )
@@ -122,7 +121,6 @@ def test_suggestion_names_a_department_and_says_nothing_clinical(now, db):
 
 def _four_slots(now):
     doctor = next(d for d in DOCTORS if d.id == "d_karim")
-    base = now.replace(hour=10, minute=0) + (now.replace(hour=0) - now.replace(hour=0))
     from datetime import timedelta
     day = now + timedelta(days=(2 - now.weekday()) % 7 or 7)  # a Wednesday, Karim works
     return tuple(
@@ -282,7 +280,6 @@ def test_declining_a_list_does_not_talk_about_booking(now, db):
     "No problem, I won't book that" -- nothing was being booked. The template was wrong
     for the situation, and the model dutifully reworded a wrong sentence.
     """
-    from clinikit.agent.policy import FreeSlot
     options = _four_slots(now)
     ctx = Context(now=now, db=db, offered_options=options, pending_offer=None)
     decision = decide(E(intent=Intent.DENY), ctx)
@@ -448,3 +445,106 @@ def test_next_weekday_is_further_out_than_the_bare_one(now):
     plain, _ = resolve_date("thursday", now)
     later, _ = resolve_date("next thursday", now)
     assert later[0] > plain[0]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Misspelled doctor names
+#
+# The brief promises "typing mistakes". A patient who writes "Dr Karin" means Dr Karim,
+# and until the matcher allowed for one wrong letter they were told the clinic has no
+# doctor by that name -- wrong, and rude about it.
+# ══════════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.parametrize("written, expected", [
+    ("Dr. Karin", "Dr. Karim Nassar"),     # one letter typed wrong
+    ("karym", "Dr. Karim Nassar"),         # two ways of hearing the same name
+    ("Karm", "Dr. Karim Nassar"),          # a letter left out
+    ("Karimm", "Dr. Karim Nassar"),        # a letter typed twice
+    ("Nassr", "Dr. Karim Nassar"),         # the surname, misspelled
+    ("georg", "Dr. George Haddad"),        # a shortening, not a typo
+])
+def test_a_single_typo_still_finds_the_right_doctor(written, expected):
+    from clinikit.agent.clinic import find_doctors
+
+    matches = find_doctors(written)
+    assert [d.full_name for d in matches] == [expected]
+
+
+def test_a_name_that_is_nobodys_is_still_nobodys():
+    """
+    Forgiving typos must not become inventing doctors. "Dr. House" is not a near miss
+    for anyone here, and the patient must be told so rather than handed a stranger.
+    """
+    from clinikit.agent.clinic import find_doctors
+
+    assert find_doctors("Dr. House") == []
+    assert find_doctors("xyz") == []
+
+
+def test_two_near_misses_are_both_returned_rather_than_guessed_between():
+    """
+    The whole point of returning a list. "Dr. Khoury" is two real doctors, and the
+    caller must ask which -- fuzzy matching must never quietly pick one.
+    """
+    from clinikit.agent.clinic import find_doctors
+
+    assert len(find_doctors("Dr. Khoury")) == 2
+
+
+def test_very_short_names_are_not_fuzzy_matched():
+    """
+    At three letters, one wrong letter is a third of the word. Allowing it would make
+    unrelated short names match each other.
+    """
+    from clinikit.agent.clinic import _within_one_letter
+
+    assert not _within_one_letter("ala", "ali")
+    assert _within_one_letter("karin", "karim")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# "tomorrow aftrnoon"
+#
+# A misspelled part of the day used to match nothing, which meant NO time limit was
+# applied -- so the clinic offered 10:00 am while the reply, echoing the patient's own
+# word, called it the afternoon. Wrong slots under a right-sounding heading.
+# ══════════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.parametrize("phrase", [
+    "afternoon", "aftrnoon", "the afternoon", "tomorrow afternoon", "late aftrnoon",
+])
+def test_afternoon_survives_a_typo(phrase):
+    from datetime import time as clock
+
+    from clinikit.agent.temporal import resolve_time
+
+    earliest, latest, problems = resolve_time(phrase)
+    assert not problems
+    assert earliest == clock(12, 0), f"{phrase!r} should start the window at noon"
+    assert latest == clock(17, 0)
+
+
+@pytest.mark.parametrize("phrase, earliest, latest", [
+    ("mornin", None, 12),
+    ("evning", 17, None),
+])
+def test_other_parts_of_the_day_survive_a_typo(phrase, earliest, latest):
+    from clinikit.agent.temporal import resolve_time
+
+    lo, hi, problems = resolve_time(phrase)
+    assert not problems
+    assert (lo.hour if lo else None) == earliest
+    assert (hi.hour if hi else None) == latest
+
+
+def test_a_word_that_is_not_a_time_of_day_is_not_forced_into_one():
+    """
+    Forgiving one letter must not start matching unrelated words. "afternoon" and
+    "afterwards" are not the same request, and neither is a plain clock reading.
+    """
+    from datetime import time as clock
+
+    from clinikit.agent.temporal import resolve_time
+
+    assert resolve_time("4pm")[:2] == (clock(16, 0), clock(16, 30))
+    assert resolve_time("")[:2] == (None, None)

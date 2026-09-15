@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from typing import Optional
 
-from .clinic import CLINIC_HOURS, TIMEZONE, clinic_hours_on
+from .clinic import CLINIC_HOURS, TIMEZONE, _within_one_letter, clinic_hours_on
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Problem codes
@@ -293,6 +293,35 @@ _PARTS_OF_DAY = {
 }
 
 
+def _match_part_of_day(phrase: str) -> Optional[tuple[Optional[time], Optional[time]]]:
+    """
+    Match "afternoon" even when it arrives as "aftrnoon".
+
+    WHY THIS IS NOT JUST A DICTIONARY LOOKUP
+        It was, and the failure was quiet and bad. A patient wrote "tmrw aftrnoon". The
+        typo matched nothing, so no time limit was applied at all -- and the clinic
+        cheerfully offered 10:00 am while the reply, echoing the patient, called it the
+        afternoon. Wrong slots under a right-sounding heading is worse than saying
+        "sorry, when did you mean?".
+
+        Matching is done word by word, so "late aftrnoon" and "tomorrow afternoon" both
+        land, and one wrong letter is forgiven -- long enough words only, so short ones
+        cannot collide.
+    """
+    if phrase in _PARTS_OF_DAY:
+        return _PARTS_OF_DAY[phrase]
+
+    for word in re.findall(r"[a-z]+", phrase):
+        if word in _PARTS_OF_DAY:
+            return _PARTS_OF_DAY[word]
+        for known, window in _PARTS_OF_DAY.items():
+            if " " in known or len(known) < 6:
+                continue
+            if _within_one_letter(word, known):
+                return window
+    return None
+
+
 def _parse_clock(text: str, day: Optional[date]) -> tuple[Optional[time], tuple[str, ...]]:
     """
     Parse a clock reading such as "4", "4pm", "4:30", "16:00".
@@ -358,9 +387,9 @@ def resolve_time(
     if p in _VAGUE_TIME:
         return None, None, ()
 
-    if p in _PARTS_OF_DAY:
-        lo, hi = _PARTS_OF_DAY[p]
-        return lo, hi, ()
+    part = _match_part_of_day(p)
+    if part is not None:
+        return part[0], part[1], ()
 
     # "after 5", "later than 5"
     m = re.fullmatch(r"(?:after|past|later than|from)\s+(.+)", p)
